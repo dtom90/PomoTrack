@@ -189,6 +189,13 @@ const mutations = {
     state.rewards.push(reward)
   },
   
+  updateReward (state, { rewardId, ...rewardUpdates }) {
+    const index = state.rewards.findIndex(r => r.id === rewardId)
+    if (index !== -1) {
+      Vue.set(state.rewards, index, { ...state.rewards[index], ...rewardUpdates })
+    }
+  },
+  
   overwriteState (state, newState) {
     const r = confirm('WARNING: Loading state from this file will COMPLETELY OVERWRITE your current data with the data provided in this file. Are you ABSOLUTELY sure that you want to do this?')
     if (r === true) {

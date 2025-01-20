@@ -7,25 +7,40 @@
     scrollable
     ok-only
   >
+    <p>Rewards to Cash In</p>
+    <hr/>
     <div
-      v-for="reward in rewards"
+      v-for="reward in rewards.filter(r => !r.isCashedIn)"
       :key="reward.id"
-      class="flex"
+      class="flex reward"
     >
       <font-awesome-icon icon="star" />
-      <b>&nbsp;{{ getTaskById(reward.taskId).name }}&nbsp;</b>
-      <button
-        v-if="!reward.isCashedIn"
-        class="btn btn-primary"
+      <b>&nbsp;{{ getTaskById(reward.taskId).name }}&nbsp;&nbsp;</b>
+      <b-button
+        variant="primary"
+        @click="cashInReward({ rewardId: reward.id, isCashedIn: true })"
       >
-        Cash In
-      </button>
+        <font-awesome-icon icon="money-bill" />
+        <span>&nbsp;Cash In</span>
+      </b-button>
+    </div>
+    
+    <hr/>
+    <p>Cashed-in Rewards</p>
+    <hr/>
+    <div
+      v-for="reward in rewards.filter(r => r.isCashedIn)"
+      :key="reward.id"
+      class="flex reward"
+    >
+      <font-awesome-icon icon="star" />
+      <b>&nbsp;{{ getTaskById(reward.taskId).name }}&nbsp;&nbsp;</b>
       <b-badge
-        v-else
         variant="success"
         class="badge-lg"
       >
-        Cashed In
+        <font-awesome-icon icon="check" />
+        <span>&nbsp;Cashed In</span>
       </b-badge>
     </div>
   </b-modal>
@@ -49,16 +64,16 @@ export default {
 
   methods: {
     ...mapActions([
-      'reorderTags'
+      'cashInReward'
     ])
   }
 }
 </script>
 
-<style>
+<style scoped>
 .badge-lg {
   font-size: 1rem; /* Adjust the size as needed */
-  font-style: normal;
+  font-weight: normal;
   padding: 0.75rem; /* Adjust the padding as needed */
 }
 </style>

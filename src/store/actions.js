@@ -295,6 +295,11 @@ const actions = {
     }
   },
   
+  async cashInReward ({ state, commit }, { rewardId, isCashedIn }) {
+    await dexieDb.rewards.update(rewardId, { isCashedIn })
+    commit('updateReward', { rewardId, isCashedIn })
+  },
+  
   async selectTask ({ state, dispatch }, { taskId }) {
     await dispatch('updateSetting', { key: 'selectedTaskID', value: taskId })
   },
