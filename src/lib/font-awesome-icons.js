@@ -19,9 +19,9 @@ import {
   faArrowRight,
   faUpload,
   faDownload,
-  faClock
+  faClock, faStar
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faBars, faTrashAlt, faPlay, faPause, faStop, faSave, faSort, faCaretUp, faCaretDown, faFilter, faEllipsisV, faCog, faPencilAlt, faPlus, faTimes, faArrowRight, faClock, faUpload, faDownload)
+library.add(faBars, faTrashAlt, faPlay, faPause, faStop, faSave, faSort, faCaretUp, faCaretDown, faFilter, faEllipsisV, faCog, faPencilAlt, faPlus, faTimes, faArrowRight, faClock, faUpload, faDownload, faStar)
 export { FontAwesomeIcon }

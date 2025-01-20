@@ -2,6 +2,19 @@
   <div>
     <!-- TaskList Title Section -->
     <div class="title-section">
+      <!-- Rewards Button -->
+      <div
+        v-if="isCompletedList"
+      >
+        <button
+          v-b-modal.rewardsModal
+          class="btn btn-light"
+        >
+          <font-awesome-icon icon="star" />
+          <span>&nbsp;Rewards</span>
+        </button>
+      </div>
+
       <!-- TaskList Title -->
       <h3 class="title">
         {{ title }}
