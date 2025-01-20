@@ -137,8 +137,15 @@ const actions = {
         completedValue = Date.now()
       }
       const taskUpdates = { completed: completedValue }
+      const reward = {
+        id: 'reward-' + nanoid(),
+        taskId,
+        isCashedIn: false
+      }
       await dexieDb.tasks.update(taskId, taskUpdates)
+      await dexieDb.rewards.add(reward)
       commit('updateTask', { taskId, taskUpdates })
+      commit('addReward', { reward })
     }
   },
   
