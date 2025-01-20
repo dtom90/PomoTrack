@@ -137,14 +137,14 @@
           >
             Archive All
           </button>
-          <button
-            id="delete-btn"
-            class="btn btn-danger"
-            title="Delete all list tasks"
-            @click="deleteTasks"
-          >
-            Delete All
-          </button>
+          <!--          <button-->
+          <!--            id="delete-btn"-->
+          <!--            class="btn btn-danger"-->
+          <!--            title="Delete all list tasks"-->
+          <!--            @click="deleteTasks"-->
+          <!--          >-->
+          <!--            Delete All-->
+          <!--          </button>-->
         </div>
       </div>
     </div>

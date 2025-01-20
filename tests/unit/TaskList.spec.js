@@ -133,16 +133,16 @@ describe('TaskList', () => {
       
     })
     
-    it('should delete all tasks when the button is clicked', () => {
-      
-      if (title === 'Done') {
-        const deleteAllBtn = wrapper.find('button[title="Delete all list tasks"]')
-        expect(deleteAllBtn.text()).toEqual('Delete All')
-        deleteAllBtn.trigger('click')
-        expect(mutations.deleteTasks).toHaveBeenCalled()
-      }
-      
-    })
+    // it('should delete all tasks when the button is clicked', () => {
+    //
+    //   if (title === 'Done') {
+    //     const deleteAllBtn = wrapper.find('button[title="Delete all list tasks"]')
+    //     expect(deleteAllBtn.text()).toEqual('Delete All')
+    //     deleteAllBtn.trigger('click')
+    //     expect(mutations.deleteTasks).toHaveBeenCalled()
+    //   }
+    //
+    // })
     
   })
   

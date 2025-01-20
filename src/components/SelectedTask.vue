@@ -115,15 +115,15 @@
               </span>
             </b-button>
             
-            <b-button
-              block
-              variant="danger"
-              title="Delete task"
-              @click="deleteTask({id: task.id})"
-            >
-              <font-awesome-icon icon="trash-alt" />
-              <span>&nbsp;&nbsp;Delete</span>
-            </b-button>
+            <!--            <b-button-->
+            <!--              block-->
+            <!--              variant="danger"-->
+            <!--              title="Delete task"-->
+            <!--              @click="deleteTask({id: task.id})"-->
+            <!--            >-->
+            <!--              <font-awesome-icon icon="trash-alt" />-->
+            <!--              <span>&nbsp;&nbsp;Delete</span>-->
+            <!--            </b-button>-->
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@ import Checkbox from './Checkbox'
 import TagList from './TagList'
 import Countdown from './Countdown'
 import ActivityView from './ActivityView'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 
@@ -306,9 +306,9 @@ export default {
       'removeTaskTag'
     ]),
     
-    ...mapMutations([
-      'deleteTask'
-    ]),
+    // ...mapMutations([
+    //   'deleteTask'
+    // ]),
     
     editName () {
       if (this.possibleEdit) {

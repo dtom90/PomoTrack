@@ -78,13 +78,13 @@ describe('SelectedTask', () => {
       
     })
     
-    it('renders a delete button for removing the task', () => {
-      
-      const deleteButton = wrapper.find('[title="Delete task"]')
-      deleteButton.trigger('click')
-      expect(mutations.deleteTask).toHaveBeenCalledWith(state, { id: task.id })
-      
-    })
+    // it('renders a delete button for removing the task', () => {
+    //
+    //   const deleteButton = wrapper.find('[title="Delete task"]')
+    //   deleteButton.trigger('click')
+    //   expect(mutations.deleteTask).toHaveBeenCalledWith(state, { id: task.id })
+    //
+    // })
     
   })
   

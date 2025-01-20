@@ -8,7 +8,7 @@
     ok-only
   >
     <p>Rewards to Cash In</p>
-    <hr/>
+    <hr>
     <div
       v-for="reward in rewards.filter(r => !r.isCashedIn)"
       :key="reward.id"
@@ -25,9 +25,9 @@
       </b-button>
     </div>
     
-    <hr/>
+    <hr>
     <p>Cashed-in Rewards</p>
-    <hr/>
+    <hr>
     <div
       v-for="reward in rewards.filter(r => r.isCashedIn)"
       :key="reward.id"
