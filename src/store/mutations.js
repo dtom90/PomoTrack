@@ -4,8 +4,9 @@ import initialState from './initialState'
 
 const mutations = {
   
-  setState (state, { tasks, tags, taskTagMaps, logs, settings }) {
+  setState (state, { tasks, tags, taskTagMaps, logs, rewards, settings }) {
     state.tasks = tasks
+    state.rewards = rewards
     state.tasks.forEach(task => {
       task.tags = []
       task.log = []
@@ -160,26 +161,43 @@ const mutations = {
     $('#activityModal').modal('hide')
   },
   
-  deleteTask (state, payload) {
-    const index = state.tasks.findIndex(t => t.id === payload.id)
-    const task = state.tasks[index]
-    if (task.completed || confirm(`Are you sure you want to delete task ${task.name}? the task is not yet complete!`)) {
-      state.tasks.splice(index, 1)
-      if (state.tempState.activeTaskID === payload.id) { // If we are deleting the active task, clear activeTaskID
-        state.tempState.activeTaskID = null
-        state.tempState.running = false
-      }
-      // else if (state.selectedTaskID === task.id && state.tempState.activeTaskID) { // If another task is active while we delete this, switch to it
-      //   state.selectedTaskID = state.tempState.activeTaskID
-      // }
+  // deleteTask (state, payload) {
+  //   const index = state.tasks.findIndex(t => t.id === payload.id)
+  //   const task = state.tasks[index]
+  //   if (task.completed || confirm(`Are you sure you want to delete task ${task.name}? the task is not yet complete!`)) {
+  //     state.tasks.splice(index, 1)
+  //     if (state.tempState.activeTaskID === payload.id) { // If we are deleting the active task, clear activeTaskID
+  //       state.tempState.activeTaskID = null
+  //       state.tempState.running = false
+  //     }
+  //     // else if (state.selectedTaskID === task.id && state.tempState.activeTaskID) { // If another task is active while we delete this, switch to it
+  //     //   state.selectedTaskID = state.tempState.activeTaskID
+  //     // }
+  //   }
+  // },
+  //
+  // deleteTasks (state) {
+  //   const completedTasks = state.tasks.filter(t => t.completed)
+  //   if (completedTasks.length === 1 || confirm(`Are you sure that you want to delete all ${completedTasks.length} completed tasks?`)) {
+  //     state.tasks = state.tasks.filter(t => !t.completed)
+  //   }
+  // },
+  
+  /** Rewards **/
+  
+  addReward (state, { reward }) {
+    state.rewards.push(reward)
+  },
+  
+  updateReward (state, { rewardId, ...rewardUpdates }) {
+    const index = state.rewards.findIndex(r => r.id === rewardId)
+    if (index !== -1) {
+      Vue.set(state.rewards, index, { ...state.rewards[index], ...rewardUpdates })
     }
   },
   
-  deleteTasks (state) {
-    const completedTasks = state.tasks.filter(t => t.completed)
-    if (completedTasks.length === 1 || confirm(`Are you sure that you want to delete all ${completedTasks.length} completed tasks?`)) {
-      state.tasks = state.tasks.filter(t => !t.completed)
-    }
+  deleteReward (state, { rewardId }) {
+    state.rewards = state.rewards.filter(r => r.id !== rewardId)
   },
   
   overwriteState (state, newState) {

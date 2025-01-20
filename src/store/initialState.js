@@ -2,6 +2,7 @@ const initialState = {
   tasks: [],
   tags: {},
   tagOrder: [],
+  rewards: [],
   totalTarget: {},
   
   tempState: {

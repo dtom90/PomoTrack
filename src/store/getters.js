@@ -1,4 +1,8 @@
 const getters = {
+  getTaskById: state => (taskId) => {
+    return state.tasks.find(t => t.id === taskId)
+  },
+  
   selectedTask (state) {
     return state.tasks.find(t => t.id === state.settings.selectedTaskID)
   },

@@ -10,6 +10,7 @@
     >
       <div
         v-if="!isNarrowScreen"
+        id="incomplete-tasks-section"
         class="section task-list"
       >
         <TaskList title="To Do" />
@@ -57,6 +58,7 @@
       
       <div
         v-if="!isNarrowScreen"
+        id="completed-tasks-section"
         class="section task-list"
       >
         <TaskList title="Done" />
@@ -82,6 +84,9 @@
     <!-- Tag Modal -->
     <TagModal />
     
+    <!-- Rewards Modal -->
+    <RewardsModal />
+    
     <!-- Data Modal -->
     <DataModal />
   </div>
@@ -92,7 +97,7 @@ import Navbar from './Navbar'
 import TaskList from './TaskList'
 import ActiveTask from './ActiveTask'
 import SelectedTask from './SelectedTask'
-import { ActivityModal, AllActivityModal, StandupModal, TagModal, DataModal } from './modals'
+import { ActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModal, DataModal } from './modals'
 
 import { mapGetters } from 'vuex'
 import $ from 'jquery'
@@ -114,6 +119,7 @@ export default {
     AllActivityModal,
     StandupModal,
     TagModal,
+    RewardsModal,
     DataModal
   },
   
