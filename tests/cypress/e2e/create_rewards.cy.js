@@ -120,4 +120,23 @@ describe('create rewards', () => {
       })
     })
   })
+  
+  it('removes reward when task is de-completed', () => {
+    // Arrange
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My First Task{enter}')
+    
+    // Act
+    cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
+    cy.get('#selected-task-container input[type="checkbox"][title="Mark task incomplete"]').click()
+    
+    // Assert
+    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('div.modal-dialog').within(() => {
+      cy.contains('Rewards').should('be.visible')
+      cy.get('div').contains('My First Task').should('not.exist')
+      cy.get('button').contains('Cash In').should('not.exist')
+    })
+  })
 })

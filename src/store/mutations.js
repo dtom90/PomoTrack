@@ -196,6 +196,10 @@ const mutations = {
     }
   },
   
+  deleteReward (state, { rewardId }) {
+    state.rewards = state.rewards.filter(r => r.id !== rewardId)
+  },
+  
   overwriteState (state, newState) {
     const r = confirm('WARNING: Loading state from this file will COMPLETELY OVERWRITE your current data with the data provided in this file. Are you ABSOLUTELY sure that you want to do this?')
     if (r === true) {

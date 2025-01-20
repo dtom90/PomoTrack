@@ -138,15 +138,24 @@ const actions = {
         completedValue = Date.now()
       }
       const taskUpdates = { completed: completedValue }
-      const reward = {
-        id: 'reward-' + nanoid(),
-        taskId,
-        isCashedIn: false
-      }
       await dexieDb.tasks.update(taskId, taskUpdates)
-      await dexieDb.rewards.add(reward)
       commit('updateTask', { taskId, taskUpdates })
-      commit('addReward', { reward })
+
+      if (taskUpdates.completed) {
+        const reward = {
+          id: 'reward-' + nanoid(),
+          taskId,
+          isCashedIn: false
+        }
+        await dexieDb.rewards.add(reward)
+        commit('addReward', { reward })
+      } else {
+        const reward = state.rewards.find(r => r.taskId === taskId)
+        if (reward) {
+          await dexieDb.rewards.delete(reward.id)
+          commit('deleteReward', { rewardId: reward.id })
+        }
+      }
     }
   },
   
