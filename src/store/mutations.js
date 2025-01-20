@@ -4,8 +4,9 @@ import initialState from './initialState'
 
 const mutations = {
   
-  setState (state, { tasks, tags, taskTagMaps, logs, settings }) {
+  setState (state, { tasks, tags, taskTagMaps, logs, rewards, settings }) {
     state.tasks = tasks
+    state.rewards = rewards
     state.tasks.forEach(task => {
       task.tags = []
       task.log = []
