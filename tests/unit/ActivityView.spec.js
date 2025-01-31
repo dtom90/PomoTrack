@@ -39,6 +39,7 @@ const shouldBehaveLikeActivityView = function (type) {
       datasets: [{
         label: wrapper.props('element'),
         backgroundColor: '#2020FF',
+        barThickness: 70,
         data: [day1Duration, day2Duration].map(dur => dur / 60000)
       }]
     })

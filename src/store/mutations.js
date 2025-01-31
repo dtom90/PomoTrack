@@ -83,7 +83,12 @@ const mutations = {
         newLog[logIndex] = log
         task.log = newLog
         Vue.set(state.tasks, taskIndex, { ...task, log: newLog })
-        state.tempState.running = log.stopped === null
+        if (log.stopped === null) {
+          state.tempState.running = true
+        } else {
+          state.tempState.running = false
+          state.tempState.activeTaskID = null
+        }
       }
     }
   },
