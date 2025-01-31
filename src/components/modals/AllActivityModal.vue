@@ -4,8 +4,10 @@
     title="All Activity"
     size="lg"
     ok-only
+    @shown="modalShown"
   >
     <ActivityView
+      v-if="isModalShown"
       id="allActivity"
       element="All Activity"
       :log="allActivity"
@@ -24,10 +26,21 @@ export default {
     ActivityView
   },
   
+  data: () => ({
+    isModalShown: false
+  }),
+  
   computed: {
     ...mapGetters([
       'allActivity'
     ])
+  },
+  
+  methods: {
+    modalShown () {
+      // Wait until the modal is shown before rendering ActivityView
+      this.isModalShown = true
+    }
   }
 }
 </script>
