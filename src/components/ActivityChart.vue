@@ -1,8 +1,18 @@
 <template>
-  <Bar
-    :data="chartData"
-    :options="chartOptions"
-  />
+  <div
+    ref="chartContainer"
+    class="chart-container"
+  >
+    <div
+      ref="chartContainerBody"
+      class="chart-container-body"
+    >
+      <Bar
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -16,6 +26,7 @@ import cloneDeep from 'lodash.clonedeep'
 ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale, ChartPluginDataLabels, ChartPluginAnnotation)
 
 const defaultChartOptions = {
+  maintainAspectRatio: false,
   scales: {
     y: {
       scaleLabel: {
@@ -119,20 +130,66 @@ export default {
   
   data: function () {
     return {
-      chartOptions: {}
+      chartOptions: {},
+      observer: null
     }
   },
   
   watch: {
     target: function (newTarget) {
       this.chartOptions = chartOptions(newTarget)
+    },
+    
+    chartData: function () {
+      this.updateWith()
     }
   },
 
   mounted () {
     this.chartOptions = chartOptions(this.target, true)
+    this.updateWith()
+    this.observeWidthChange()
+  },
+  
+  beforeDestroy () {
+    if (this.observer) {
+      this.observer.disconnect()
+    }
+  },
+  
+  methods: {
+    updateWith () {
+      this.$refs.chartContainerBody.style.width = Math.max(
+        this.$refs.chartContainer.clientWidth,
+        140 + 140 * this.chartData.labels.length
+      ) + 'px'
+    },
+    
+    observeWidthChange () {
+      const chartContainer = this.$refs.chartContainer
+      if (!chartContainer) return
+      
+      this.observer = new ResizeObserver(() => {
+        this.updateWith()
+      })
+      
+      this.observer.observe(chartContainer)
+    }
   }
 }
 
 export { defaultChartOptions }
 </script>
+
+<style scoped>
+
+.chart-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-container-body {
+  min-height: 300px;
+}
+
+</style>

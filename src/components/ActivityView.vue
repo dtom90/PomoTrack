@@ -3,6 +3,7 @@
     :id="id"
     class="activity-view"
   >
+    <!-- Daily / Weekly / Monthly view switch -->
     <div class="view-select d-flex justify-content-center position-relative">
       <div
         class="btn-group btn-group-toggle"
@@ -76,17 +77,12 @@
     </div>
     
     <!-- ActivityChart -->
-    <div
-      ref="chartWrapper"
-      class="chart-wrapper"
-    >
-      <ActivityChart
-        ref="activityChart"
-        :chart-data="chartData"
-        :styles="chartStyles"
-        :target="target * 60"
-      />
-    </div>
+    <ActivityChart
+      ref="activityChart"
+      :chart-data="chartData"
+      :styles="chartStyles"
+      :target="target * 60"
+    />
     
     <br>
     
@@ -299,7 +295,8 @@ function dailyChartData (that) {
     datasets: [{
       label: that.element,
       backgroundColor: '#2020FF',
-      data: []
+      data: [],
+      barThickness: 70
     }]
   }
   
@@ -366,7 +363,7 @@ function weeklyChartData (that) {
 function monthlyChartData (that) {
   const monthlyActivity = {}
   let month
-
+  
   // Create monthlyActivity Object from log
   for (const event of that.log) {
     month = that.displayMonthISO(event.started)
@@ -410,11 +407,6 @@ function monthlyChartData (that) {
 
 .activity-view {
   padding: 20px;
-}
-
-.chart-wrapper {
-  width: 100%;
-  overflow-x: auto;
 }
 
 #viewLogSwitch {
