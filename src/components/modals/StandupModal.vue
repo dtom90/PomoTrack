@@ -6,7 +6,8 @@
     scrollable
     ok-only
   >
-    <h4>{{ lastDayDisplay }}</h4>
+    <h4>Yesterday</h4>
+    <h6>{{ lastDayDisplay }}</h6>
     <br>
     <table class="table">
       <tr

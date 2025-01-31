@@ -2,19 +2,6 @@
   <div>
     <!-- TaskList Title Section -->
     <div class="title-section">
-      <!-- Rewards Button -->
-      <div
-        v-if="isCompletedList"
-      >
-        <button
-          v-b-modal.rewardsModal
-          class="btn btn-light"
-        >
-          <font-awesome-icon icon="star" />
-          <span>&nbsp;Rewards</span>
-        </button>
-      </div>
-
       <!-- TaskList Title -->
       <h3 class="title">
         {{ title }}
@@ -79,7 +66,6 @@
       <!-- Done List Menu -->
       <div
         v-if="isCompletedList"
-        class="dropright"
       >
         <button
           :id="btnId"
@@ -91,6 +77,7 @@
         </button>
         
         <div
+          id="done-menu"
           class="dropdown-menu"
         >
           <div class="input-group">
@@ -341,8 +328,7 @@ export default {
     ]),
 
     ...mapMutations([
-      'updateTempState',
-      'deleteTasks'
+      'updateTempState'
     ]),
     
     addNewTask () {
@@ -427,6 +413,10 @@ export default {
 
 #filter-menu {
   width: 200px;
+}
+
+#done-menu {
+  width: 170px;
 }
 
 #filter-menu .form-check {

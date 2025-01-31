@@ -249,24 +249,7 @@ export default {
     secondReminderSeconds () {
       return -(this.secondReminderMinutes * 60)
     }
-    
-    // running () {
-    //   return this.tempState.running
-    // }
-    
   },
-  
-  // watch: {
-  //   running (newVal, oldVal) {
-  //     if (newVal !== oldVal) {
-  //       if (newVal) {
-  //         this.timer.start()
-  //       } else {
-  //         this.timer.pause()
-  //       }
-  //     }
-  //   }
-  // },
   
   mounted: function () {
     this.secondsRemaining = this.totalSeconds
@@ -287,10 +270,8 @@ export default {
     ]),
 
     ...mapMutations([
-      'unpauseTask',
-      'setRunning',
+      'updateTempState',
       'resetRunning',
-      'setTaskInactive'
     ]),
     
     onTimerClick () {
@@ -334,7 +315,7 @@ export default {
         } else if (this.active) {
           this.startTask({ taskId: this.taskId })
         } else { // this is a rest interval, simply toggle running
-          this.setRunning(!this.tempState.running)
+          this.updateTempState({ key: 'running', value: !this.tempState.running })
         }
         this.timer.start()
       }
@@ -407,8 +388,8 @@ export default {
     resetTimer () {
       this.timer.clear()
       this.endInterval()
-      this.setTaskInactive()
-      this.setRunning(false)
+      this.updateTempState({ key: 'activeTaskID', value: null })
+      this.updateTempState({ key: 'running', value: false })
       if (this.active) {
         this.activeIntervalStarted = false
       }

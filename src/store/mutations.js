@@ -93,10 +93,6 @@ const mutations = {
     }
   },
   
-  setTaskInactive (state) {
-    state.tempState.activeTaskID = null
-  },
-  
   deleteInterval (state, { taskId, logId }) {
     const taskIndex = state.tasks.findIndex(t => t.id === taskId)
     if (taskIndex === -1) return
@@ -109,10 +105,6 @@ const mutations = {
     Vue.set(state.tasks, taskIndex, { ...task, log: newLog })
   },
   
-  setRunning (state, value) {
-    state.tempState.running = value
-  },
-
   resetRunning (state) {
     if (state.tempState.activeTaskID) {
       const activeTask = state.tasks.find(t => t.id === state.tempState.activeTaskID)
@@ -144,12 +136,6 @@ const mutations = {
       state.tags[tag.id] = tag
     })
     state.tagOrder = reorderedTags.map(tag => tag.id)
-  },
-  
-  setTarget (state, payload) {
-    const targetElement = 'tag' in payload ? state.tags[payload.tag] : state.totalTarget
-    const targetType = Object.keys(payload).filter(key => key.includes('Target'))
-    Vue.set(targetElement, targetType, payload[targetType])
   },
   
   updateTag (state, { tagId, tagUpdates }) {

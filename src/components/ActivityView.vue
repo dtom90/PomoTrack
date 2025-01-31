@@ -130,7 +130,7 @@
 import Log from './Log'
 import ActivityChart from './ActivityChart'
 import AddIntervalDropdown from './dropdowns/AddIntervalDropdown'
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import time from '../lib/time'
 
 export default {
@@ -269,10 +269,6 @@ export default {
       'deleteInterval'
     ]),
     
-    ...mapMutations([
-      'setTarget'
-    ]),
-    
     calculateTimeSpent (log) {
       return log.filter(interval => interval.timeSpent)
         .reduce((total, interval) => total + interval.timeSpent, 0)
@@ -393,7 +389,7 @@ function monthlyChartData (that) {
     chartData.labels.push(that.displayMonthHuman(month))
     chartData.datasets[0].data.push(that.msToMinutes(that.calculateTimeSpent(monthlyActivity[month].log)))
   })
-
+  
   return chartData
 }
 

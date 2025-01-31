@@ -306,10 +306,6 @@ export default {
       'removeTaskTag'
     ]),
     
-    // ...mapMutations([
-    //   'deleteTask'
-    // ]),
-    
     editName () {
       if (this.possibleEdit) {
         this.editingName = true
