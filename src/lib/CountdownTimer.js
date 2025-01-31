@@ -1,9 +1,9 @@
 export default class CountdownTimer {
-  constructor (seconds, tickCallback, finishCallback) {
+  constructor (seconds, decrementTimerCallback, finishTimerCallback) {
     this.totalSeconds = seconds
     this.remainingSeconds = this.totalSeconds
-    this.tickCallback = tickCallback
-    this.finishCallback = finishCallback
+    this.decrementTimerCallback = decrementTimerCallback
+    this.finishTimerCallback = finishTimerCallback
     this.ID = null
   }
   
@@ -20,9 +20,9 @@ export default class CountdownTimer {
       const remainingMs = t.endTime - Date.now()
       t.remainingSeconds = Math.round(remainingMs / 1000)
       if (t.remainingSeconds <= 0) {
-        t.finishCallback(t.remainingSeconds)
+        t.finishTimerCallback(t.remainingSeconds)
       } else {
-        t.tickCallback(t.remainingSeconds)
+        t.decrementTimerCallback(t.remainingSeconds)
       }
     }, 1000)
   }

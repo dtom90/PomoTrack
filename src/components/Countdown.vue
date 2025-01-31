@@ -132,7 +132,7 @@
           type="button"
           class="btn btn-light btn-lg"
           :disabled="editing"
-          :title="(overtime ? 'Stop' : (tempState.running ? 'Pause' : 'Start')) + ' timer'"
+          :title="playPauseTitle"
           @click="toggleTimer"
         >
           <font-awesome-icon :icon="playPauseIcon" />
@@ -167,7 +167,8 @@ export default {
     overtime: false,
     secondReminderDisplayed: false,
     secondsRemaining: 0,
-    notificationList: []
+    notificationList: [],
+    timer: null
   }),
   
   computed: {
@@ -187,6 +188,10 @@ export default {
     
     playPauseIcon () {
       return this.overtime ? 'stop' : this.tempState.running ? 'pause' : 'play'
+    },
+    
+    playPauseTitle () {
+      return this.overtime ? 'Stop' : (this.tempState.running ? 'Pause' : 'Start') + ' timer'
     },
     
     cssProps () {
@@ -245,7 +250,23 @@ export default {
       return -(this.secondReminderMinutes * 60)
     }
     
+    // running () {
+    //   return this.tempState.running
+    // }
+    
   },
+  
+  // watch: {
+  //   running (newVal, oldVal) {
+  //     if (newVal !== oldVal) {
+  //       if (newVal) {
+  //         this.timer.start()
+  //       } else {
+  //         this.timer.pause()
+  //       }
+  //     }
+  //   }
+  // },
   
   mounted: function () {
     this.secondsRemaining = this.totalSeconds
@@ -320,17 +341,21 @@ export default {
     },
     
     decrementTimer (secondsRemaining) {
-      this.secondsRemaining = secondsRemaining
-      if (this.active) {
-        this.updateTaskTimer({ taskId: this.taskId })
-        if (this.notificationsEnabled && this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
-          const notification = notifications.notify('Finished Working, Take a Break!')
-          this.secondReminderDisplayed = true
-          // add to notificationList for later closure
-          if (notification && notification instanceof Notification) {
-            this.notificationList.push(notification)
+      if (this.tempState.running) {
+        this.secondsRemaining = secondsRemaining
+        if (this.active) {
+          this.updateTaskTimer({ taskId: this.taskId })
+          if (this.notificationsEnabled && this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
+            const notification = notifications.notify('Finished Working, Take a Break!')
+            this.secondReminderDisplayed = true
+            // add to notificationList for later closure
+            if (notification && notification instanceof Notification) {
+              this.notificationList.push(notification)
+            }
           }
         }
+      } else {
+        this.timer.pause()
       }
     },
     
