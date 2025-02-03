@@ -271,7 +271,7 @@ export default {
 
     ...mapMutations([
       'updateTempState',
-      'resetRunning',
+      'resetRunning'
     ]),
     
     onTimerClick () {

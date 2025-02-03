@@ -4,6 +4,7 @@
   >
     <b-dropdown
       id="add-interval-dropdown"
+      ref="addIntervalDropdown"
       right
       variant="light"
       toggle-class="text-decoration-none"
@@ -180,7 +181,7 @@ export default {
     handleBlur (event) {
       if (event.sourceCapabilities === null && this.dropdownHide !== null) {
         setTimeout(() => {
-          this.$refs.dropdown.show()
+          this.$refs.addIntervalDropdown.show()
           setTimeout(() => event.target.focus(), 50)
         }, 50)
       }
@@ -195,7 +196,7 @@ export default {
         timeSpent: this.minutesToMs(this.durationMinutes),
         stopped: this.stringToMs(this.stopTime)
       })
-      this.$refs.dropdown.hide()
+      this.$refs.addIntervalDropdown.hide()
     }
   }
 }
