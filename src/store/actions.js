@@ -168,8 +168,8 @@ const actions = {
     }
   },
   
-  async archiveTasks ({ state, commit }) {
-    const completedTasks = state.tasks.filter(t => t.completed && !t.archived)
+  async archiveTasks ({ getters, commit }) {
+    const completedTasks = getters.completedTasksFiltered.filter(t => !t.archived)
     if (completedTasks.length === 0) {
       alert('No completed tasks to archive')
       return

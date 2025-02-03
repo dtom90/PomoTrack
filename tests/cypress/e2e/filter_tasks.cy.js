@@ -46,21 +46,37 @@ describe('filter tasks', () => {
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 0)
     cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 1)
   })
-  
+
   it('should remove filter to show all again', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
     cy.contains('.dropdown-menu', 'Filter on:').within(() => {
       cy.contains('button', firstTagName).click()
     })
-    
+
     // Act
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
       cy.get('button > svg.fa-times').click()
     })
-    
+
     // Assert
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 1)
     cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 1)
+  })
+  
+  it('should filter completed task list', () => {
+    // Arrange
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
+    
+    // Act
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    
+    // Assert
+    cy.contains('#completed-task-list .task', 'My First Task').should('have.length', 1)
+    cy.contains('#completed-task-list .task', 'My Second Task').should('have.length', 0)
   })
 })

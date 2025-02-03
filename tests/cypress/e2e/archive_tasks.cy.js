@@ -48,6 +48,28 @@ describe('create tasks', () => {
     cy.reload()
     cy.get('#completed-task-list .task').should('not.exist')
   })
+  
+  it('archives only visible completed tasks when filtering', () => {
+    // Arrange
+    cy.get('button > svg.fa-plus').click()
+    cy.get('input[placeholder="add new tag"]')
+      .should('have.focus').type('my tag' + '{enter}')
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', 'my tag').click()
+    })
+    
+    // Act
+    cy.get('button > svg.fa-caret-down').click()
+    cy.get('button').contains('Archive All').click()
+    
+    // Assert
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
+      cy.get('button > svg.fa-times').click()
+    })
+    cy.get('#completed-task-list .task').should('have.length', 1)
+  })
 
   it('hides an incomplete archived task from the list', () => {
     // Act
