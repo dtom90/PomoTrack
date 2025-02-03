@@ -336,7 +336,12 @@ export default {
           }
         }
       } else {
-        this.timer.pause()
+        if (this.overtime) {
+          this.overtime = false
+          this.resetTimer()
+        } else {
+          this.timer.pause()
+        }
       }
     },
     

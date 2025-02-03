@@ -20,7 +20,7 @@ const state = cloneDeep(initialState)
 
 const getters = {
   incompleteTasks: () => tasks,
-  completedTasks: () => tasks,
+  completedTasksFiltered: () => tasks,
   unselectedTags: () => []
 }
 

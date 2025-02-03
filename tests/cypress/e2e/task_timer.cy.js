@@ -117,7 +117,7 @@ describe('task timer', () => {
     })
   })
 
-  it('sets timer to 6 seconds then starts timer, should count all the way down', () => {
+  it('sets timer to 3 seconds then starts timer, should count all the way down', () => {
     // Arrange
     cy.get('div').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
@@ -135,7 +135,7 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play')
   })
 
-  it('break timer to 6 seconds then starts timer, should count all the way down', () => {
+  it('break timer to 3 seconds then starts timer, should count all the way down', () => {
     // Arrange
     cy.get('button > svg.fa-times').click()
     cy.get('div').contains('5:00').click()
@@ -194,5 +194,80 @@ describe('task timer', () => {
     cy.get('tr').last().within(() => {
       cy.get('td').contains('Stopped')
     })
+  })
+
+  it('should stop timer when task completed', () => {
+    // Arrange
+    cy.get('div').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.get('button > svg.fa-cog').click()
+    cy.get('.form-check').contains('Continue Timer when Interval Complete').click()
+    cy.get('button').contains('Activity Log').click()
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+
+    // Act
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').click()
+
+    // Assert
+    cy.get('tr').last().within(() => {
+      cy.get('td').contains('Stopped')
+    })
+  })
+
+  it('should stop timer when task completed and not continue next task', () => {
+    // Arrange
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Second Task{enter}')
+    cy.get('div').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.get('button > svg.fa-cog').click()
+    cy.get('.form-check').contains('Continue Timer when Interval Complete').click()
+    cy.get('button').contains('Activity Log').click()
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+
+    // Act
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
+
+    // Assert
+    cy.get('#incomplete-task-list .task').click()
+    cy.get('button#active-task-container').should('not.exist')
+    cy.get('#timer-display').scrollIntoView()
+    cy.get('#countdown-container').contains('0:02').should('be.visible')
+    cy.wait(2000)
+    cy.get('button > svg.fa-play').should('be.visible')
+    cy.get('#countdown-container').contains('0:02').should('be.visible')
+  })
+  
+  it('should reset timer when task completed during overtime', () => {
+    // Arrange
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Second Task{enter}')
+    cy.get('div').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.get('button > svg.fa-cog').click()
+    cy.get('.form-check').contains('Continue Timer when Interval Complete').click()
+    cy.get('button').contains('Activity Log').click()
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('#countdown-container').contains('0:01')
+    cy.get('#countdown-container').contains('+0:00')
+    cy.get('#countdown-container').contains('+0:01')
+    
+    // Act
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
+    
+    // Assert
+    cy.get('#incomplete-task-list .task').click()
+    cy.get('button#active-task-container').should('not.exist')
+    cy.get('#timer-display').scrollIntoView()
+    cy.get('#countdown-container').contains('5:00').should('be.visible')
+    cy.get('button > svg.fa-play').should('be.visible')
   })
 })
