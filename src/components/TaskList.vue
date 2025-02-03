@@ -2,19 +2,6 @@
   <div>
     <!-- TaskList Title Section -->
     <div class="title-section">
-      <!-- Rewards Button -->
-      <div
-        v-if="isCompletedList"
-      >
-        <button
-          v-b-modal.rewardsModal
-          class="btn btn-light"
-        >
-          <font-awesome-icon icon="star" />
-          <span>&nbsp;Rewards</span>
-        </button>
-      </div>
-
       <!-- TaskList Title -->
       <h3 class="title">
         {{ title }}
@@ -79,7 +66,6 @@
       <!-- Done List Menu -->
       <div
         v-if="isCompletedList"
-        class="dropright"
       >
         <button
           :id="btnId"
@@ -91,6 +77,7 @@
         </button>
         
         <div
+          id="done-menu"
           class="dropdown-menu"
         >
           <div class="input-group">
@@ -255,7 +242,7 @@ export default {
     ]),
     ...mapGetters([
       'incompleteTasks',
-      'completedTasks',
+      'completedTasksFiltered',
       'selectedTask',
       'unselectedTags'
     ]),
@@ -314,13 +301,7 @@ export default {
       }
     },
     completedTaskList () {
-      let completedTasks = this.settings.selectedTagIds.length > 0
-        ? (
-          this.settings.filterOperator === 'and'
-            ? this.completedTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-            : this.completedTasks.filter(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-        )
-        : this.completedTasks
+      let completedTasks = this.completedTasksFiltered
       completedTasks = this.tempState.showArchived ? completedTasks : completedTasks.filter(t => !t.archived)
       return completedTasks && this.sortOrder !== 'Oldest'
         ? completedTasks.slice().reverse()
@@ -341,8 +322,7 @@ export default {
     ]),
 
     ...mapMutations([
-      'updateTempState',
-      'deleteTasks'
+      'updateTempState'
     ]),
     
     addNewTask () {
@@ -355,10 +335,13 @@ export default {
     async selectTagFilter (tagId, e) {
       e.stopPropagation()
       await this.addTagFilter({ tagId })
+      // Select some task with the selected tag
       if (!this.selectedTask || (this.selectedTask && !this.settings.selectedTagIds.some(tag => this.selectedTask.tags.includes(tag)))) {
         let tasksWithTag = this.incompleteTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
         if (!tasksWithTag) {
-          tasksWithTag = this.completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
+          let completedTasks = this.completedTasksFiltered
+          completedTasks = this.tempState.showArchived ? completedTasks : completedTasks.filter(t => !t.archived)
+          tasksWithTag = completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
         }
         if (tasksWithTag) {
           await this.selectTask({ taskId: tasksWithTag.id })
@@ -427,6 +410,10 @@ export default {
 
 #filter-menu {
   width: 200px;
+}
+
+#done-menu {
+  width: 170px;
 }
 
 #filter-menu .form-check {

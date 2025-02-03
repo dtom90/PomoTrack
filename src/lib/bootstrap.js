@@ -11,6 +11,7 @@ import {
   BadgePlugin,
   ButtonPlugin,
   InputGroupPlugin,
+  FormPlugin,
   FormGroupPlugin,
   FormInputPlugin,
   FormCheckboxPlugin,
@@ -26,6 +27,7 @@ Vue.use(LinkPlugin)
 Vue.use(BadgePlugin)
 Vue.use(ButtonPlugin)
 Vue.use(InputGroupPlugin)
+Vue.use(FormPlugin)
 Vue.use(FormGroupPlugin)
 Vue.use(FormInputPlugin)
 Vue.use(FormCheckboxPlugin)

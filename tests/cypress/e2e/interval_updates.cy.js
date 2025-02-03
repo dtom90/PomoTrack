@@ -5,6 +5,21 @@ describe('interval updates', () => {
       .type('My First Task{enter}')
   })
   
+  it('should display start and end times in manual interval panel', () => {
+    // Arrange
+    cy.get('button').contains('Activity Log').click()
+    
+    // Act
+    cy.get('.activity-view button > svg.fa-plus').click()
+    
+    // Assert
+    cy.get('#add-interval-dropdown .dropdown-menu').within(() => {
+      cy.get('fieldset').contains('Started:')
+      cy.get('fieldset').contains('Duration:')
+      cy.get('fieldset').contains('Stopped:')
+    })
+  })
+  
   it('should manually add an interval', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
@@ -34,7 +49,7 @@ describe('interval updates', () => {
     // Assert
     cy.get('.activity-view tr').should('not.exist')
   })
-  
+
   it('should manually delete an interval after page reload', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
@@ -42,13 +57,13 @@ describe('interval updates', () => {
     cy.get('.activity-view button').contains('Add Interval').click()
     cy.reload()
     cy.get('button').contains('Activity Log').click()
-    
+
     // Act
     cy.get('tr').last().within(() => {
       cy.get('button > svg.fa-ellipsis-v').click()
       cy.get('button').contains('Delete Interval').click()
     })
-    
+
     // Assert
     cy.get('.activity-view tr').should('not.exist')
   })

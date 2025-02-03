@@ -7,7 +7,7 @@ describe('create rewards', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
 
     // Assert
     cy.get('div.modal-dialog').contains('Rewards').should('be.visible')
@@ -23,7 +23,7 @@ describe('create rewards', () => {
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
 
     // Assert
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
       cy.get('div').contains('My First Task').should('be.visible')
@@ -42,7 +42,7 @@ describe('create rewards', () => {
     cy.reload()
 
     // Assert
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
       cy.get('div').contains('My First Task').should('be.visible')
@@ -56,7 +56,7 @@ describe('create rewards', () => {
       .click()
       .type('My First Task{enter}')
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
 
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
@@ -76,7 +76,7 @@ describe('create rewards', () => {
       .click()
       .type('My First Task{enter}')
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
 
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
@@ -87,7 +87,7 @@ describe('create rewards', () => {
     cy.reload()
 
     // Assert
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
       cy.get('button').contains('Cash In').should('not.exist')
@@ -105,7 +105,7 @@ describe('create rewards', () => {
       .click()
       .type('My Second Task{enter}')
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
     
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
@@ -132,7 +132,7 @@ describe('create rewards', () => {
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task incomplete"]').click()
     
     // Assert
-    cy.get('#completed-tasks-section button').contains('Rewards').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Rewards').click()
     cy.get('div.modal-dialog').within(() => {
       cy.contains('Rewards').should('be.visible')
       cy.get('div').contains('My First Task').should('not.exist')

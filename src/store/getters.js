@@ -24,7 +24,19 @@ const getters = {
   completedTasks (state) {
     let completedTasks = state.tasks.filter(t => t.completed)
     completedTasks = completedTasks.sort((a, b) => a.completed - b.completed)
-    return state.completedOrder === 'Recent' ? completedTasks.reverse() : completedTasks
+    return completedTasks
+  },
+  
+  completedTasksFiltered (state) {
+    let completedTasks = state.tasks.filter(t => t.completed)
+    completedTasks = completedTasks.sort((a, b) => a.completed - b.completed)
+    return state.settings.selectedTagIds.length > 0
+      ? (
+        state.settings.filterOperator === 'and'
+          ? completedTasks.filter(task => state.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
+          : completedTasks.filter(task => state.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
+      )
+      : completedTasks
   },
   
   unselectedTags: state => Object.keys(state.tags).filter(tag => !state.settings.selectedTagIds.includes(tag)),

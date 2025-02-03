@@ -37,6 +37,8 @@ export default {
     
     stringToMs: (str) => dayjs(str).valueOf(),
     
+    stringToMinutes: (str) => this.msToMinutes(this.stringToMs(str)),
+    
     // a and b are javascript Date objects
     dateDiffInDays (a, b) {
       const [ua, ub] = [a, b].map(day => dayjs.utc(day))

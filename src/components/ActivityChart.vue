@@ -64,16 +64,6 @@ const defaultChartOptions = {
     annotation: {
       annotations: {}
     }
-  },
-  animation: {
-    duration: 0,
-    onComplete: function (event) {
-      if (event.numSteps === 0) {
-        const canvas = event.chart.canvas
-        const chartWrapper = canvas.parentElement.parentElement
-        chartWrapper.scrollLeft = canvas.clientWidth
-      }
-    }
   }
 }
 
@@ -97,7 +87,7 @@ const baseTargetLine = Object.freeze({
   }
 })
 
-function chartOptions (target = null, scrollRight = false) {
+function chartOptions (target = null) {
   const chartOptions = cloneDeep(defaultChartOptions)
   if (target) {
     const annotations = cloneDeep(baseTargetLine)
@@ -105,9 +95,6 @@ function chartOptions (target = null, scrollRight = false) {
     annotations.label.yValue = target
     annotations.label.content = 'Target: ' + displayChartDuration(target)
     chartOptions.plugins.annotation.annotations = annotations
-  }
-  if (scrollRight === false) {
-    chartOptions.animation.onComplete = () => {}
   }
   return chartOptions
 }
@@ -140,14 +127,22 @@ export default {
       this.chartOptions = chartOptions(newTarget)
     },
     
-    chartData: function () {
+    chartData: function (newChartData, oldChartData) {
       this.updateWith()
+      if (newChartData.datasets[0].label !== oldChartData.datasets[0].label) {
+        this.$nextTick(() => {
+          this.scrollRight()
+        })
+      }
     }
   },
 
   mounted () {
     this.chartOptions = chartOptions(this.target, true)
     this.updateWith()
+    this.$nextTick(() => {
+      this.scrollRight()
+    })
     this.observeWidthChange()
   },
   
@@ -163,6 +158,10 @@ export default {
         this.$refs.chartContainer.clientWidth,
         140 + 140 * this.chartData.labels.length
       ) + 'px'
+    },
+    
+    scrollRight () {
+      this.$refs.chartContainer.scrollLeft = this.$refs.chartContainer.scrollWidth
     },
     
     observeWidthChange () {

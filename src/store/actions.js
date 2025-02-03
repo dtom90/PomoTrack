@@ -168,8 +168,8 @@ const actions = {
     }
   },
   
-  async archiveTasks ({ state, commit }) {
-    const completedTasks = state.tasks.filter(t => t.completed && !t.archived)
+  async archiveTasks ({ getters, commit }) {
+    const completedTasks = getters.completedTasksFiltered.filter(t => !t.archived)
     if (completedTasks.length === 0) {
       alert('No completed tasks to archive')
       return
@@ -183,13 +183,13 @@ const actions = {
     }
   },
   
-  async addInterval ({ state, commit }, { taskId, stopped, timeSpent }) {
+  async addInterval ({ state, commit }, { taskId, started, timeSpent, stopped }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
       const log = {
         id: 'log-' + nanoid(),
         taskId,
-        started: stopped - timeSpent,
+        started: started,
         stopped: stopped,
         timeSpent: timeSpent
       }

@@ -35,8 +35,16 @@ describe('AllActivityModal', () => {
     
   })
   
-  it('should display an ActivityView in the modal body with the correct element and log', () => {
+  it('should not show modal by default', () => {
     
+    // should not find component
+    expect(wrapper.findComponent(ActivityView).exists()).toBe(false)
+    
+  })
+  
+  it('should display an ActivityView in the modal body with the correct element and log', async () => {
+    
+    await wrapper.vm.modalShown()
     expect(wrapper.findComponent(ActivityView).props()).toEqual({
       element: 'All Activity',
       log,
