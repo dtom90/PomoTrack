@@ -3,7 +3,7 @@
     style="display: flex; justify-content: flex-end;"
   >
     <b-dropdown
-      ref="dropdown"
+      id="add-interval-dropdown"
       right
       variant="light"
       toggle-class="text-decoration-none"
@@ -18,29 +18,50 @@
       </template>
       <b-dropdown-form @submit="addIntervalButtonClicked">
         <b-form-group>
+          Started:
+          <VueCtkDateTimePicker
+            :value="startTime"
+            :format="displayDateTimeFormat()"
+            :right="true"
+            @input="onStartTimeInput"
+          />
+        </b-form-group>
+        
+        <b-form-group>
           Duration:
-          <b-input-group append="minutes">
+          <b-input-group>
             <b-form-input
               ref="appendMinutesInput"
-              v-model="appendMinutes"
+              :value="durationMinutes"
+              :state="durationMinutes > 0 ? null : false"
+              aria-describedby="input-live-feedback"
               type="number"
+              @input="onDurationMinutesInput"
               @blur="handleBlur"
             />
+            <b-input-group-append is-text>
+              Minutes
+            </b-input-group-append>
+            <b-form-invalid-feedback id="input-live-feedback">
+              Duration must be greater than 0
+            </b-form-invalid-feedback>
           </b-input-group>
         </b-form-group>
         
         <b-form-group>
-          Ending At:
+          Stopped:
           <VueCtkDateTimePicker
-            v-model="endTime"
+            :value="stopTime"
             :format="displayDateTimeFormat()"
             :right="true"
+            @input="onStopTimeInput"
           />
         </b-form-group>
         
         <b-btn
           variant="primary"
           style="width: 258px"
+          :disabled="durationMinutes <= 0"
           @click="addIntervalButtonClicked"
         >
           Add Interval
@@ -77,8 +98,10 @@ export default {
       dropdownShown: false,
       dropdownHide: null,
       intentionalEnter: false,
-      appendMinutes: 25,
-      endTime: this.displayDateTimeHuman()
+      startTime: null,
+      durationMinutes: 25,
+      stopTime: this.displayDateTimeHuman(),
+      anchored: ['stopTime', 'durationMinutes']
     }
   },
   
@@ -86,7 +109,59 @@ export default {
     ...mapActions(['addInterval']),
     
     dropdownWillShow () {
-      this.endTime = this.displayDateTimeHuman()
+      this.stopTime = this.displayDateTimeHuman()
+      this.updateStartTime()
+    },
+    
+    onStartTimeInput (newValue) {
+      this.startTime = newValue
+      if (!this.anchored.includes('startTime')) {
+        this.anchored.shift()
+        this.anchored.push('startTime')
+      }
+      if (this.anchored.includes('durationMinutes')) {
+        this.updateStopTime()
+      } else if (this.anchored.includes('stopTime')) {
+        this.updateDurationMinutes()
+      }
+      const start = this.stringToMs(this.stopTime) - this.minutesToMs(this.durationMinutes)
+      this.startTime = this.displayDateTimeHuman(start)
+    },
+    onDurationMinutesInput (newValue) {
+      this.durationMinutes = newValue
+      if (!this.anchored.includes('durationMinutes')) {
+        this.anchored.shift()
+        this.anchored.push('durationMinutes')
+      }
+      if (this.anchored.includes('startTime')) {
+        this.updateStopTime()
+      } else if (this.anchored.includes('stopTime')) {
+        this.updateStartTime()
+      }
+    },
+    onStopTimeInput (newValue) {
+      this.stopTime = newValue
+      if (!this.anchored.includes('stopTime')) {
+        this.anchored.shift()
+        this.anchored.push('stopTime')
+      }
+      if (this.anchored.includes('durationMinutes')) {
+        this.updateStartTime()
+      } else if (this.anchored.includes('startTime')) {
+        this.updateDurationMinutes()
+      }
+    },
+    
+    updateStartTime () {
+      this.startTime = this.displayDateTimeHuman(this.stringToMs(this.stopTime) - this.minutesToMs(this.durationMinutes))
+    },
+    
+    updateDurationMinutes () {
+      this.durationMinutes = this.msToMinutes(this.stringToMs(this.stopTime) - this.stringToMs(this.startTime))
+    },
+    
+    updateStopTime () {
+      this.stopTime = this.displayDateTimeHuman(this.stringToMs(this.startTime) + this.minutesToMs(this.durationMinutes))
     },
     
     dropdownWillHide (event) {
@@ -116,8 +191,9 @@ export default {
       event.preventDefault()
       this.addInterval({
         taskId: this.taskId,
-        stopped: this.stringToMs(this.endTime),
-        timeSpent: this.minutesToMs(this.appendMinutes)
+        started: this.stringToMs(this.startTime),
+        timeSpent: this.minutesToMs(this.durationMinutes),
+        stopped: this.stringToMs(this.stopTime)
       })
       this.$refs.dropdown.hide()
     }

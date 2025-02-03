@@ -183,13 +183,13 @@ const actions = {
     }
   },
   
-  async addInterval ({ state, commit }, { taskId, stopped, timeSpent }) {
+  async addInterval ({ state, commit }, { taskId, started, timeSpent, stopped }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
       const log = {
         id: 'log-' + nanoid(),
         taskId,
-        started: stopped - timeSpent,
+        started: started,
         stopped: stopped,
         timeSpent: timeSpent
       }
