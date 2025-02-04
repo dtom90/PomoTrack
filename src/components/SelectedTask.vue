@@ -219,7 +219,7 @@
       id="taskActivity"
       class="border-top top-margin"
       :task-id="task.id"
-      :element="task.name"
+      :label="task.name"
       :log="task.log"
     />
     <br>

@@ -13,7 +13,8 @@
     <ActivityView
       v-if="tempState.modalTagId && isModalShown"
       id="tagActivity"
-      :element="tempState.modalTagId"
+      :tag-id="tag.id"
+      :label="tag.tagName"
       :log="tagActivity(tempState.modalTagId)"
     />
   </b-modal>
@@ -38,12 +39,17 @@ export default {
   
   computed: {
     ...mapState([
+      'tags',
       'tempState'
     ]),
     
     ...mapGetters([
       'tagActivity'
-    ])
+    ]),
+    
+    tag: function () {
+      return this.tags[this.tempState.modalTagId]
+    }
   }
 }
 </script>

@@ -125,7 +125,11 @@ export default {
       type: String,
       default: null
     },
-    element: {
+    tagId: {
+      type: String,
+      default: null
+    },
+    label: {
       type: String,
       default: null
     },
@@ -163,7 +167,7 @@ export default {
           return null
         }
         const type = this.chartType + 'Target'
-        const targetElement = this.element === 'All Activity' ? this.settings : this.tags[this.element]
+        const targetElement = this.label === 'All Activity' ? this.settings : this.tags[this.tagId]
         return targetElement[type]
       },
       set (value) {
@@ -171,14 +175,14 @@ export default {
         if (numValue < 0) {
           numValue = 0
         }
-        if (this.element === 'All Activity') {
+        if (this.label === 'All Activity') {
           this.updateSetting({
             key: this.chartType + 'Target',
             value: numValue
           })
         } else {
           this.updateTag({
-            tagId: this.element,
+            tagId: this.tagId,
             [this.chartType + 'Target']: numValue
           })
         }
@@ -278,7 +282,7 @@ function dailyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: [],
       barThickness: 70
@@ -326,7 +330,7 @@ function weeklyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: []
     }]
@@ -363,7 +367,7 @@ function monthlyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: []
     }]
