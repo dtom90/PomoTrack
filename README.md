@@ -29,16 +29,12 @@ yarn run web:dev
 ```
 yarn run lint
 ```
-#### Run unit tests with jest
-```
-yarn run test:unit
-```
 #### Run end-to-end tests with [TestCafé](https://testcafe.devexpress.com/) (with dev or prod server)
 ```
 yarn run test:e2e:dev
 yarn run test:e2e:prod
 ```
-#### Run all tests (lint, unit tests, end-to-end tests)
+#### Run basic tests (lint, audit)
 ```
 yarn run test
 ```
