@@ -278,8 +278,8 @@ const actions = {
       if (tag.order !== i) {
         tag.order = i
         await dexieDb.tags.put(tag)
-        reorderedTags.push(tag)
       }
+      reorderedTags.push(tag)
     }
     commit('updateTagOrder', { reorderedTags })
   },

@@ -33,3 +33,17 @@
 .dropdown-menu {
   padding: 8px;
 }
+
+//noinspection CssInvalidPropertyValue
+.draggable-item {
+  cursor: -webkit-grab !important;
+  cursor: -moz-grab !important;
+  cursor: grab !important;
+}
+
+//noinspection CssInvalidPropertyValue
+.draggable-item:active {
+  cursor: -webkit-grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: grabbing !important;
+}

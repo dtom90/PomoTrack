@@ -1,7 +1,6 @@
 <template>
   <b-modal
     id="rewardsModal"
-    content-class="tag-modal-content"
     title="Rewards"
     size="lg"
     scrollable
