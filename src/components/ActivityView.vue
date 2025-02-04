@@ -5,43 +5,15 @@
   >
     <!-- Daily / Weekly / Monthly view switch -->
     <div class="view-select d-flex justify-content-center position-relative">
-      <div
-        class="btn-group btn-group-toggle"
-      >
-        <label
-          :class="'btn btn-light' + (chartType === 'Daily' ? ' active' : '')"
-          title="Top of List"
-        >
-          <input
-            type="radio"
-            value="daily"
-            @click="chartType = 'Daily'"
-          >
-          Daily Activity
-        </label>
-        <label
-          :class="'btn btn-light' + (chartType === 'Weekly' ? ' active' : '')"
-          title="Bottom of List"
-        >
-          <input
-            type="radio"
-            value="weekly"
-            @click="chartType = 'Weekly'"
-          >
-          Weekly Activity
-        </label>
-        <label
-          :class="'btn btn-light' + (chartType === 'Monthly' ? ' active' : '')"
-          title="Bottom of List"
-        >
-          <input
-            type="radio"
-            value="weekly"
-            @click="chartType = 'Monthly'"
-          >
-          Monthly Activity
-        </label>
-      </div>
+      <b-form-group>
+        <b-form-radio-group
+          v-model="chartType"
+          :options="chartTypeOptions"
+          buttons
+          button-variant="light"
+          @change="onChartTypeChange"
+        />
+      </b-form-group>
       <div
         v-if="!isTaskActivity"
         class="position-absolute"
@@ -167,6 +139,7 @@ export default {
   
   data: function () {
     return {
+      chartTypeOptions: ['Daily', 'Weekly', 'Monthly'],
       chartType: 'Daily',
       logVisible: false
     }
@@ -284,6 +257,10 @@ export default {
     calculateTimeSpent (log) {
       return log.filter(interval => interval.timeSpent)
         .reduce((total, interval) => total + interval.timeSpent, 0)
+    },
+    
+    onChartTypeChange () {
+      this.$refs.activityChart.scrollRight()
     },
     
     toggleLog () {
