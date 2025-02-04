@@ -37,13 +37,31 @@ describe('interval updates', () => {
   it('should not alter timer after adding interval', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
+
+    // Act
+    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view button').contains('Add Interval').click()
+
+    // Assert
+    cy.get('#countdown-container button > svg.fa-play').should('exist')
+  })
+
+  it('should keep running interval at top when manually adding during running interval', () => {
+    // Arrange
+    cy.get('#countdown-container button > svg.fa-play').click()
+    cy.get('button').contains('Activity Log').click()
     
     // Act
     cy.get('.activity-view button > svg.fa-plus').click()
     cy.get('.activity-view button').contains('Add Interval').click()
     
     // Assert
-    cy.get('#countdown-container button > svg.fa-play').should('exist')
+    cy.get('.activity-view tr').first().within(() => {
+      cy.get('td').contains('Running')
+    })
+    cy.get('.activity-view tr').last().within(() => {
+      cy.get('td').contains('Stopped')
+    })
   })
 
   it('should manually delete an interval', () => {
