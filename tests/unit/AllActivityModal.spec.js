@@ -46,10 +46,11 @@ describe('AllActivityModal', () => {
     
     await wrapper.setData({ isModalShown: true })
     expect(wrapper.findComponent(ActivityView).props()).toEqual({
-      element: 'All Activity',
+      label: 'All Activity',
       log,
       id: 'allActivity',
-      taskId: null
+      taskId: null,
+      tagId: null
     })
     
   })
