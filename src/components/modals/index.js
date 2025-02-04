@@ -1,4 +1,4 @@
-import ActivityModal from './ActivityModal'
+import TagActivityModal from './TagActivityModal.vue'
 import AllActivityModal from './AllActivityModal'
 import StandupModal from './StandupModal'
 import DataModal from './DataModal'
@@ -6,7 +6,7 @@ import TagModal from './TagModal'
 import RewardsModal from './RewardsModal'
 
 export {
-  ActivityModal,
+  TagActivityModal,
   AllActivityModal,
   StandupModal,
   DataModal,

@@ -4,7 +4,8 @@
     title="All Activity"
     size="lg"
     ok-only
-    @shown="modalShown"
+    @shown="isModalShown = true"
+    @hidden="isModalShown = false"
   >
     <ActivityView
       v-if="isModalShown"
@@ -20,7 +21,7 @@ import ActivityView from '../ActivityView'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'ActivityModal',
+  name: 'AllActivityModal',
   
   components: {
     ActivityView
@@ -34,13 +35,6 @@ export default {
     ...mapGetters([
       'allActivity'
     ])
-  },
-  
-  methods: {
-    modalShown () {
-      // Wait until the modal is shown before rendering ActivityView
-      this.isModalShown = true
-    }
   }
 }
 </script>

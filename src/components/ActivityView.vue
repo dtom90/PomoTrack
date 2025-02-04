@@ -235,6 +235,18 @@ export default {
         }
       }
       
+      for (const day in dailyActivity) {
+        dailyActivity[day].log.sort((a, b) => {
+          if ('completed' in a) {
+            return -1
+          }
+          if ('completed' in b) {
+            return 1
+          }
+          return b.started - a.started
+        })
+      }
+      
       const dailyActivityArray = Object.entries(dailyActivity)
       dailyActivityArray.sort(([day1], [day2]) => this.stringToMs(day2) - this.stringToMs(day1))
       return dailyActivityArray

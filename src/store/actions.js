@@ -194,7 +194,7 @@ const actions = {
         timeSpent: timeSpent
       }
       await dexieDb.logs.add(log)
-      commit('startTask', { log })
+      commit('updateLog', { log })
     }
   },
   
