@@ -8,10 +8,10 @@ describe('interval updates', () => {
   it('should display start and end times in manual interval panel', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
-    
+
     // Act
     cy.get('.activity-view button > svg.fa-plus').click()
-    
+
     // Assert
     cy.get('#add-interval-dropdown .dropdown-menu').within(() => {
       cy.get('fieldset').contains('Started:')
@@ -19,7 +19,7 @@ describe('interval updates', () => {
       cy.get('fieldset').contains('Stopped:')
     })
   })
-  
+
   it('should manually add an interval', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
@@ -32,6 +32,18 @@ describe('interval updates', () => {
     cy.get('tr').last().within(() => {
       cy.get('td').contains('Time Spent: 25 minutes')
     })
+  })
+
+  it('should not alter timer after adding interval', () => {
+    // Arrange
+    cy.get('button').contains('Activity Log').click()
+    
+    // Act
+    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view button').contains('Add Interval').click()
+    
+    // Assert
+    cy.get('#countdown-container button > svg.fa-play').should('exist')
   })
 
   it('should manually delete an interval', () => {

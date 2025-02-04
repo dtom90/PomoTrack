@@ -78,7 +78,7 @@ const mutations = {
     if (taskIndex !== -1) {
       const task = state.tasks[taskIndex]
       const logIndex = task.log.findIndex(l => l.id === log.id)
-      if (logIndex !== -1) {
+      if (logIndex >= 0) {
         const newLog = [...task.log]
         newLog[logIndex] = log
         task.log = newLog
@@ -89,6 +89,8 @@ const mutations = {
           state.tempState.running = false
           state.tempState.activeTaskID = null
         }
+      } else {
+        Vue.set(state.tasks, taskIndex, { ...task, log: [...task.log, log] })
       }
     }
   },
