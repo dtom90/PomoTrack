@@ -12,6 +12,7 @@ import { promises as fs } from 'fs'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+autoUpdater.autoDownload = false
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'info'
 log.info('App starting...')
@@ -49,7 +50,7 @@ function createWindow () {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.checkForUpdates()
   }
   
   // Open links in the default browser window
@@ -66,26 +67,56 @@ function createWindow () {
 autoUpdater.on('checking-for-update', () => {
   log.info('Checking for update...')
 })
-autoUpdater.on('update-available', (info) => {
-  sendStatusToWindow('Update available.')
-  log.info(info)
-})
+
 autoUpdater.on('update-not-available', (info) => {
   log.info('Update not available.')
   log.info(info)
 })
+
+autoUpdater.on('update-available', (info) => {
+  log.info(info)
+  sendStatusToWindow('Update available: ' + info.version)
+  const result = dialog.showMessageBoxSync({
+    type: 'question',
+    buttons: ['Download', 'Later'],
+    defaultId: 0,
+    cancelId: 1,
+    title: 'Update Available',
+    message: 'Update for DevTrack is available. Would you like to download it now?',
+    detail: 'Version ' + info.version
+  })
+  if (result === 0) {
+    log.info('autoUpdater.downloadUpdate...')
+    autoUpdater.downloadUpdate()
+  }
+})
+
 autoUpdater.on('error', (err) => {
   sendStatusToWindow('Error in auto-updater. ' + err)
 })
+
 autoUpdater.on('download-progress', (progressObj) => {
   let logMessage = 'Download speed: ' + progressObj.bytesPerSecond
   logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%'
   logMessage = logMessage + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
   log.info(logMessage)
 })
+
 autoUpdater.on('update-downloaded', (info) => {
-  sendStatusToWindow('Update downloaded')
   log.info(info)
+  const result = dialog.showMessageBoxSync({
+    type: 'question',
+    buttons: ['Install & Restart', 'Later'],
+    defaultId: 0,
+    cancelId: 1,
+    title: 'Update Ready',
+    message: 'The update has been downloaded. Do you want to install it now?'
+  })
+  
+  if (result === 0) {
+    log.info('autoUpdater.quitAndInstall...')
+    autoUpdater.quitAndInstall()
+  }
 })
 
 // Quit when all windows are closed.

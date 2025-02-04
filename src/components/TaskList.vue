@@ -180,8 +180,6 @@
       v-model="incompleteTaskList"
       class="list-group"
       animation="200"
-      @start="startDrag"
-      @end="endDrag"
     >
       <Task
         v-for="task in incompleteTaskList"
@@ -349,14 +347,6 @@ export default {
           await this.selectTask({ taskId: null })
         }
       }
-    },
-
-    startDrag () {
-      this.$el.closest('html').classList.add('draggable-cursor')
-    },
-
-    endDrag () {
-      this.$el.closest('html').classList.remove('draggable-cursor')
     }
   }
 }
@@ -423,14 +413,6 @@ export default {
 .custom-icons img {
   width: 1.4em;
   height: 1.4em;
-}
-
-//noinspection CssInvalidPropertyValue
-#incomplete-task-list .list-group-item {
-  cursor: move;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-  cursor: grab;
 }
 
 .sortable-chosen {

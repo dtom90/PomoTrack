@@ -10,7 +10,7 @@
     <ActivityView
       v-if="isModalShown"
       id="allActivity"
-      element="All Activity"
+      label="All Activity"
       :log="allActivity"
     />
   </b-modal>

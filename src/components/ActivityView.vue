@@ -5,43 +5,15 @@
   >
     <!-- Daily / Weekly / Monthly view switch -->
     <div class="view-select d-flex justify-content-center position-relative">
-      <div
-        class="btn-group btn-group-toggle"
-      >
-        <label
-          :class="'btn btn-light' + (chartType === 'Daily' ? ' active' : '')"
-          title="Top of List"
-        >
-          <input
-            type="radio"
-            value="daily"
-            @click="chartType = 'Daily'"
-          >
-          Daily Activity
-        </label>
-        <label
-          :class="'btn btn-light' + (chartType === 'Weekly' ? ' active' : '')"
-          title="Bottom of List"
-        >
-          <input
-            type="radio"
-            value="weekly"
-            @click="chartType = 'Weekly'"
-          >
-          Weekly Activity
-        </label>
-        <label
-          :class="'btn btn-light' + (chartType === 'Monthly' ? ' active' : '')"
-          title="Bottom of List"
-        >
-          <input
-            type="radio"
-            value="weekly"
-            @click="chartType = 'Monthly'"
-          >
-          Monthly Activity
-        </label>
-      </div>
+      <b-form-group>
+        <b-form-radio-group
+          v-model="chartType"
+          :options="chartTypeOptions"
+          buttons
+          button-variant="light"
+          @change="onChartTypeChange"
+        />
+      </b-form-group>
       <div
         v-if="!isTaskActivity"
         class="position-absolute"
@@ -153,7 +125,11 @@ export default {
       type: String,
       default: null
     },
-    element: {
+    tagId: {
+      type: String,
+      default: null
+    },
+    label: {
       type: String,
       default: null
     },
@@ -167,6 +143,7 @@ export default {
   
   data: function () {
     return {
+      chartTypeOptions: ['Daily', 'Weekly', 'Monthly'],
       chartType: 'Daily',
       logVisible: false
     }
@@ -190,7 +167,7 @@ export default {
           return null
         }
         const type = this.chartType + 'Target'
-        const targetElement = this.element === 'All Activity' ? this.settings : this.tags[this.element]
+        const targetElement = this.label === 'All Activity' ? this.settings : this.tags[this.tagId]
         return targetElement[type]
       },
       set (value) {
@@ -198,14 +175,14 @@ export default {
         if (numValue < 0) {
           numValue = 0
         }
-        if (this.element === 'All Activity') {
+        if (this.label === 'All Activity') {
           this.updateSetting({
             key: this.chartType + 'Target',
             value: numValue
           })
         } else {
           this.updateTag({
-            tagId: this.element,
+            tagId: this.tagId,
             [this.chartType + 'Target']: numValue
           })
         }
@@ -237,13 +214,9 @@ export default {
       
       for (const day in dailyActivity) {
         dailyActivity[day].log.sort((a, b) => {
-          if ('completed' in a) {
-            return -1
-          }
-          if ('completed' in b) {
-            return 1
-          }
-          return b.started - a.started
+          const aTime = a.completed || a.started
+          const bTime = b.completed || b.started
+          return bTime - aTime
         })
       }
       
@@ -286,6 +259,10 @@ export default {
         .reduce((total, interval) => total + interval.timeSpent, 0)
     },
     
+    onChartTypeChange () {
+      this.$refs.activityChart.scrollRight()
+    },
+    
     toggleLog () {
       this.logVisible = !this.logVisible
     },
@@ -301,7 +278,7 @@ function dailyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: [],
       barThickness: 70
@@ -349,7 +326,7 @@ function weeklyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: []
     }]
@@ -386,7 +363,7 @@ function monthlyChartData (that) {
   const chartData = {
     labels: [],
     datasets: [{
-      label: that.element,
+      label: that.label,
       backgroundColor: '#2020FF',
       data: []
     }]

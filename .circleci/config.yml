@@ -12,7 +12,7 @@ jobs:
           docker_layer_caching: true
       - checkout
       - run:
-          name: Run packages audit, lint, and unit tests
+          name: Run packages audit and lint
           command: ./docker/test_basic.sh
   test-cypress:
     docker:

@@ -10,8 +10,6 @@
     <draggable
       v-model="tagOrder"
       animation="200"
-      @start="startDrag"
-      @end="endDrag"
     >
       <div
         v-for="tagId in tagOrder"
@@ -24,7 +22,7 @@
         >
           <button
             type="button"
-            class="btn move-btn"
+            class="btn move-btn draggable-item"
             :style="`backgroundColor: ${tags[tagId].color}`"
           >
             <font-awesome-icon icon="bars" />
@@ -67,13 +65,7 @@ export default {
   methods: {
     ...mapActions([
       'reorderTags'
-    ]),
-    startDrag () {
-      document.body.classList.add('draggable-cursor')
-    },
-    endDrag () {
-      document.body.classList.remove('draggable-cursor')
-    }
+    ])
   }
 }
 </script>
@@ -98,10 +90,6 @@ export default {
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
     0 0 13px rgba(0, 0, 0, 0.1),
     0 0 23px rgba(0, 0, 0, 0.1);
-    cursor: move;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
   }
   
   .move-btn:hover {

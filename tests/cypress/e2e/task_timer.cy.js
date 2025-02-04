@@ -242,7 +242,7 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play').should('be.visible')
     cy.get('#countdown-container').contains('0:02').should('be.visible')
   })
-  
+
   it('should reset timer when task completed during overtime', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')
@@ -259,15 +259,50 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('0:01')
     cy.get('#countdown-container').contains('+0:00')
     cy.get('#countdown-container').contains('+0:01')
-    
+
     // Act
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
-    
+
     // Assert
     cy.get('#incomplete-task-list .task').click()
     cy.get('button#active-task-container').should('not.exist')
     cy.get('#timer-display').scrollIntoView()
     cy.get('#countdown-container').contains('5:00').should('be.visible')
     cy.get('button > svg.fa-play').should('be.visible')
+  })
+  
+  it('should order All Activity log in chronological order', () => {
+    // Arrange
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Second Task{enter}')
+    cy.get('#incomplete-task-list .task').first().click()
+    cy.get('div').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+
+    // Act
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
+    cy.get('#incomplete-task-list .task').first().click()
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('#countdown-container').contains('0:01')
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
+    
+    // Assert
+    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('#allActivityModal').within(() => {
+      cy.get('button').contains('Activity Log').click()
+      cy.get('tr').eq(0).contains('My Second Task')
+      cy.get('tr').eq(0).contains('Completed')
+      cy.get('tr').eq(1).contains('My Second Task')
+      cy.get('tr').eq(1).contains('Started')
+      cy.get('tr').eq(2).contains('My First Task')
+      cy.get('tr').eq(2).contains('Completed')
+      cy.get('tr').eq(3).contains('My First Task')
+      cy.get('tr').eq(3).contains('Started')
+    })
   })
 })

@@ -13,6 +13,7 @@ import {
   InputGroupPlugin,
   FormPlugin,
   FormGroupPlugin,
+  FormRadioPlugin,
   FormInputPlugin,
   FormCheckboxPlugin,
   DropdownPlugin,
@@ -29,6 +30,7 @@ Vue.use(ButtonPlugin)
 Vue.use(InputGroupPlugin)
 Vue.use(FormPlugin)
 Vue.use(FormGroupPlugin)
+Vue.use(FormRadioPlugin)
 Vue.use(FormInputPlugin)
 Vue.use(FormCheckboxPlugin)
 Vue.use(DropdownPlugin)

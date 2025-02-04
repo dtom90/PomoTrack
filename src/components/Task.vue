@@ -1,7 +1,7 @@
 <template>
   <!--  Task List Group Item Wrapper  -->
   <li
-    :class="'task list-group-item list-group-item-action form-check'+active"
+    :class="'task draggable-item list-group-item list-group-item-action form-check'+active"
     @click="selectTask({ taskId: task.id })"
   >
     <div class="d-flex align-items-center">

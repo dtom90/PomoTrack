@@ -2,7 +2,7 @@
 set -e 
 
 echo
-echo "Running Packages Audit, Lint, and Unit Tests..."
+echo "Running Packages Audit and Lint..."
 echo
 ./test_basic.sh
 
