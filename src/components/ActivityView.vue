@@ -214,13 +214,9 @@ export default {
       
       for (const day in dailyActivity) {
         dailyActivity[day].log.sort((a, b) => {
-          if ('completed' in a) {
-            return -1
-          }
-          if ('completed' in b) {
-            return 1
-          }
-          return b.started - a.started
+          const aTime = a.completed || a.started
+          const bTime = b.completed || b.started
+          return bTime - aTime
         })
       }
       

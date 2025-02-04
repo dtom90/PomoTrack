@@ -67,7 +67,9 @@
         </template>
         
         <template v-if="event.completed">
-          <td />
+          <td v-if="event.task">
+            <span>{{ event.task }}</span>
+          </td>
           <td />
           <td>
             <span>Completed {{ displayTimeHuman(event.completed) }}</span>
