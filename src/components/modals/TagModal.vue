@@ -6,8 +6,11 @@
     size="lg"
     scrollable
     ok-only
+    @shown="isModalShown = true"
+    @hidden="isModalShown = false"
   >
     <draggable
+      v-if="isModalShown"
       v-model="tagOrder"
       animation="200"
     >
@@ -47,6 +50,10 @@ export default {
     TagSettingsButton,
     draggable
   },
+  
+  data: () => ({
+    isModalShown: false
+  }),
   
   computed: {
     ...mapState([

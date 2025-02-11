@@ -277,10 +277,10 @@ const actions = {
       const tag = state.tags[tagId]
       if (tag.order !== i) {
         tag.order = i
-        await dexieDb.tags.put(tag)
       }
       reorderedTags.push(tag)
     }
+    await dexieDb.tags.bulkPut(reorderedTags)
     commit('updateTagOrder', { reorderedTags })
   },
   
