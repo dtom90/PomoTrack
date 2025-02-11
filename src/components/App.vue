@@ -44,7 +44,7 @@
             Done
           </b-button>
         </div>
-        <div id="selected-task-container">
+        <div id="main-task-container">
           <ActiveTask
             v-if="showActive"
             :task="activeTask"
@@ -134,7 +134,7 @@ export default {
     ]),
     
     showActive () {
-      return this.selectedTask && this.activeTask && this.selectedTask.id !== this.activeTask.id
+      return !this.selectedTask || (this.activeTask && this.selectedTask.id !== this.activeTask.id)
     },
     
     heightClass () {
@@ -199,7 +199,7 @@ h3, h4, h5, h6 {
   min-width: 0;
 }
 
-#selected-task-container {
+#main-task-container {
   display: flex;
   flex-direction: column;
   height: 100%;

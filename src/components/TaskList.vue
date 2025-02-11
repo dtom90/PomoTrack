@@ -343,6 +343,8 @@ export default {
         }
         if (tasksWithTag) {
           await this.selectTask({ taskId: tasksWithTag.id })
+        } else if (this.tempState.activeTaskID) {
+          await this.selectTask({ taskId: this.tempState.activeTaskID })
         } else {
           await this.selectTask({ taskId: null })
         }
