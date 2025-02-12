@@ -189,13 +189,7 @@
     </div>
     
     <!-- Countdown Timer -->
-    <keep-alive>
-      <Countdown
-        v-if="!task.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === task.id)"
-        :task-id="task.id"
-        class="top-margin"
-      />
-    </keep-alive>
+    <slot />
     <div
       v-if="!task.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== task.id)"
       class="d-flex flex-column align-items-center"
@@ -229,7 +223,6 @@
 <script>
 import Checkbox from './Checkbox'
 import TagList from './TagList'
-import Countdown from './Countdown'
 import ActivityView from './ActivityView'
 import { mapActions, mapState } from 'vuex'
 import { marked } from 'marked'
@@ -253,7 +246,6 @@ export default {
   components: {
     Checkbox,
     TagList,
-    Countdown,
     ActivityView
   },
   

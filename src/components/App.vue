@@ -52,7 +52,15 @@
           <SelectedTask
             :task="selectedTask"
             :height-class="heightClass"
-          />
+          >
+            <keep-alive>
+              <Countdown
+                v-if="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)"
+                :task-id="selectedTask.id"
+                class="top-margin"
+              />
+            </keep-alive>
+          </SelectedTask>
         </div>
       </div>
       
@@ -94,8 +102,9 @@ import ActiveTask from './ActiveTask'
 import SelectedTask from './SelectedTask'
 import { TagActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModal, DataModal } from './modals'
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import $ from 'jquery'
+import Countdown from './Countdown.vue'
 
 $(document).on('click', '.dropdown-menu', function (e) {
   e.stopPropagation()
@@ -110,6 +119,7 @@ export default {
     Navbar,
     TaskList,
     SelectedTask,
+    Countdown,
     TagActivityModal,
     AllActivityModal,
     StandupModal,
@@ -126,6 +136,10 @@ export default {
   
   computed: {
     
+    ...mapState([
+      'tempState'
+    ]),
+    
     ...mapGetters([
       'selectedTask',
       'activeTask',
@@ -134,7 +148,7 @@ export default {
     ]),
     
     showActive () {
-      return !this.selectedTask || (this.activeTask && this.selectedTask.id !== this.activeTask.id)
+      return this.selectedTask && (this.activeTask && this.selectedTask.id !== this.activeTask.id)
     },
     
     heightClass () {
@@ -235,5 +249,9 @@ h3, h4, h5, h6 {
 
 #sidebar-done {
   right: 0;
+}
+
+.top-margin {
+  margin-top: 20px;
 }
 </style>
