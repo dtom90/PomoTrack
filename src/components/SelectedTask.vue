@@ -1,221 +1,234 @@
 <template>
   <div
-    v-if="task"
+    v-show="selectedTask"
     id="selected-task-container"
     class="border"
   >
-    <!--  Title Section  -->
-    <div
-      id="title-section"
-      class="d-flex justify-content-between"
-    >
+    <template v-if="selectedTask">
+      <!--  Title Section  -->
       <div
-        id="checkbox-name-container"
-        class="d-flex align-items-center justify-content-center flex-grow-1"
+        id="title-section"
+        class="d-flex justify-content-between"
       >
         <div
-          v-if="!editingName"
-          id="menu-counterbalance"
-          style="width: 28px;"
-        />
-        
-        <!--  Checkbox  -->
-        <div>
-          <Checkbox
-            :checked="checked"
-            :task-id="task.id"
-            style="margin-left: 20px"
+          id="checkbox-name-container"
+          class="d-flex align-items-center justify-content-center flex-grow-1"
+        >
+          <div
+            v-if="!editingName"
+            id="menu-counterbalance"
+            style="width: 28px;"
+          />
+          
+          <!--  Checkbox  -->
+          <div>
+            <Checkbox
+              :checked="checked"
+              :task-id="selectedTask.id"
+              style="margin-left: 20px"
+            />
+          </div>
+          
+          <!--  Task Name & Field (when editing)  -->
+          <div
+            v-if="!editingName"
+            id="task-name"
+            @mousedown="possibleEdit = true"
+            @mousemove="possibleEdit = false"
+            @mouseup="editName"
+          >
+            <b-badge
+              v-if="selectedTask.archived"
+              class="archive-badge"
+            >
+              Archived
+            </b-badge>&nbsp;
+            <span>{{ selectedTask.name }}</span>
+          </div>
+          <div
+            v-if="editingName"
+            class="input-group flex-grow-1"
+          >
+            <input
+              id="task-name-input"
+              ref="taskNameInput"
+              v-model="selectedTask.name"
+              class="form-control"
+              @keyup.enter="editingName = false"
+            >
+            <div class="input-group-append">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="editingName = false"
+              >
+                <font-awesome-icon icon="save" />
+              </button>
+            </div>
+          </div>
+          
+          <div
+            v-if="!editingName"
+            id="checkbox-counterbalance"
+            style="width: 55.19px;"
           />
         </div>
         
-        <!--  Task Name & Field (when editing)  -->
+        <!-- Menu Options -->
         <div
-          v-if="!editingName"
-          id="task-name"
-          @mousedown="possibleEdit = true"
-          @mousemove="possibleEdit = false"
-          @mouseup="editName"
+          ref="taskMenu"
+          class="dropdown"
         >
-          <b-badge
-            v-if="task.archived"
-            class="archive-badge"
+          <button
+            class="btn btn-light"
+            title="Task options"
+            data-toggle="dropdown"
           >
-            Archived
-          </b-badge>&nbsp;
-          <span>{{ task.name }}</span>
+            <font-awesome-icon icon="ellipsis-v" />
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <div
+              id="selected-task-menu"
+            >
+              <b-button
+                block
+                variant="warning"
+                title="Edit task name"
+                @click="editName"
+              >
+                <font-awesome-icon icon="pencil-alt" />
+                <span>&nbsp;&nbsp;Edit</span>
+              </b-button>
+              
+              <b-button
+                block
+                variant="archive-color"
+                title="Archive task"
+                @click="archiveTask({taskId: selectedTask.id})"
+              >
+                <span v-if="!selectedTask.archived">
+                  <font-awesome-icon icon="download" />
+                  <span>&nbsp;&nbsp;Archive</span>
+                </span>
+                <span v-if="selectedTask.archived">
+                  <font-awesome-icon icon="upload" />
+                  <span>&nbsp;&nbsp;Unarchive</span>
+                </span>
+              </b-button>
+              
+              <!--            <b-button-->
+              <!--              block-->
+              <!--              variant="danger"-->
+              <!--              title="Delete task"-->
+              <!--              @click="deleteTask({id: task.id})"-->
+              <!--            >-->
+              <!--              <font-awesome-icon icon="trash-alt" />-->
+              <!--              <span>&nbsp;&nbsp;Delete</span>-->
+              <!--            </b-button>-->
+            </div>
+          </div>
         </div>
-        <div
-          v-if="editingName"
-          class="input-group flex-grow-1"
+      </div>
+      
+      <!-- Tags Section -->
+      <TagList
+        :tag-list="taskTags"
+        :task-id="selectedTask.id"
+        :is-modal="true"
+        :remove-tag-filter="removeTag"
+      />
+      
+      <!-- Notes Section -->
+      <div
+        id="notes-section"
+        class="d-flex align-items-center"
+        style="max-width: 100%"
+      >
+        <span id="notes-label">Notes: </span>
+        
+        <!-- Display Mode -->
+        <!-- eslint-disable vue/no-v-html -->
+        <span
+          v-if="selectedTask.notes && !editingNotes"
+          id="display-notes"
+          v-html="displayNotes"
+        />
+        <!-- eslint-enable vue/no-v-html -->
+        <button
+          v-if="!editingNotes"
+          type="button"
+          class="btn btn-light"
+          title="Edit notes"
+          @click="editNotes"
         >
-          <input
-            id="task-name-input"
-            ref="taskNameInput"
-            v-model="task.name"
+          <font-awesome-icon icon="pencil-alt" />
+        </button>
+        
+        <!-- Editing Mode -->
+        <div
+          v-if="editingNotes"
+          class="input-group"
+        >
+          <textarea
+            ref="notesInput"
+            v-model="selectedTask.notes"
             class="form-control"
-            @keyup.enter="editingName = false"
-          >
+            :rows="selectedTask.notes.split('\n').length"
+          />
           <div class="input-group-append">
             <button
+              v-if="editingNotes"
               type="button"
               class="btn btn-primary"
-              @click="editingName = false"
+              title="Save notes"
+              @click="editingNotes = false"
             >
               <font-awesome-icon icon="save" />
             </button>
           </div>
         </div>
-        
-        <div
-          v-if="!editingName"
-          id="checkbox-counterbalance"
-          style="width: 55.19px;"
-        />
       </div>
-      
-      <!-- Menu Options -->
-      <div
-        ref="taskMenu"
-        class="dropdown"
-      >
-        <button
-          class="btn btn-light"
-          title="Task options"
-          data-toggle="dropdown"
-        >
-          <font-awesome-icon icon="ellipsis-v" />
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <div
-            id="selected-task-menu"
-          >
-            <b-button
-              block
-              variant="warning"
-              title="Edit task name"
-              @click="editName"
-            >
-              <font-awesome-icon icon="pencil-alt" />
-              <span>&nbsp;&nbsp;Edit</span>
-            </b-button>
-            
-            <b-button
-              block
-              variant="archive-color"
-              title="Archive task"
-              @click="archiveTask({taskId: task.id})"
-            >
-              <span v-if="!task.archived">
-                <font-awesome-icon icon="download" />
-                <span>&nbsp;&nbsp;Archive</span>
-              </span>
-              <span v-if="task.archived">
-                <font-awesome-icon icon="upload" />
-                <span>&nbsp;&nbsp;Unarchive</span>
-              </span>
-            </b-button>
-            
-            <!--            <b-button-->
-            <!--              block-->
-            <!--              variant="danger"-->
-            <!--              title="Delete task"-->
-            <!--              @click="deleteTask({id: task.id})"-->
-            <!--            >-->
-            <!--              <font-awesome-icon icon="trash-alt" />-->
-            <!--              <span>&nbsp;&nbsp;Delete</span>-->
-            <!--            </b-button>-->
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Tags Section -->
-    <TagList
-      :tag-list="taskTags"
-      :task-id="task.id"
-      :is-modal="true"
-      :remove-tag-filter="removeTag"
-    />
-    
-    <!-- Notes Section -->
-    <div
-      id="notes-section"
-      class="d-flex align-items-center"
-      style="max-width: 100%"
-    >
-      <span id="notes-label">Notes: </span>
-      
-      <!-- Display Mode -->
-      <!-- eslint-disable vue/no-v-html -->
-      <span
-        v-if="task.notes && !editingNotes"
-        id="display-notes"
-        v-html="displayNotes"
-      />
-      <!-- eslint-enable vue/no-v-html -->
-      <button
-        v-if="!editingNotes"
-        type="button"
-        class="btn btn-light"
-        title="Edit notes"
-        @click="editNotes"
-      >
-        <font-awesome-icon icon="pencil-alt" />
-      </button>
-      
-      <!-- Editing Mode -->
-      <div
-        v-if="editingNotes"
-        class="input-group"
-      >
-        <textarea
-          ref="notesInput"
-          v-model="task.notes"
-          class="form-control"
-          :rows="task.notes.split('\n').length"
-        />
-        <div class="input-group-append">
-          <button
-            v-if="editingNotes"
-            type="button"
-            class="btn btn-primary"
-            title="Save notes"
-            @click="editingNotes = false"
-          >
-            <font-awesome-icon icon="save" />
-          </button>
-        </div>
-      </div>
-    </div>
+    </template>
     
     <!-- Countdown Timer -->
-    <slot />
-    <div
-      v-if="!task.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== task.id)"
-      class="d-flex flex-column align-items-center"
-      style="color: darkred"
-    >
-      <div>Continue Here</div>
-      <button
-        id="continue-here-btn"
-        type="button"
-        class="btn btn-light btn-lg"
-        style="color: darkred"
-        title="Continue Timer Here"
-        @click="continueTimerHere"
-      >
-        <font-awesome-icon icon="play" />
-      </button>
+    <div>
+      <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
+        <Countdown
+          :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
+          class="top-margin"
+        />
+      </div>
     </div>
     
-    <!-- Activity View -->
-    <ActivityView
-      id="taskActivity"
-      class="border-top top-margin"
-      :task-id="task.id"
-      :label="task.name"
-      :log="task.log"
-    />
+    <template v-if="selectedTask">
+      <!-- Continue Timer Here -->
+      <div
+        v-if="!selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
+        class="d-flex flex-column align-items-center"
+        style="color: darkred"
+      >
+        <div>Continue Here</div>
+        <button
+          id="continue-here-btn"
+          type="button"
+          class="btn btn-light btn-lg"
+          style="color: darkred"
+          title="Continue Timer Here"
+          @click="continueTimerHere"
+        >
+          <font-awesome-icon icon="play" />
+        </button>
+      </div>
+      
+      <!-- Activity View -->
+      <ActivityView
+        id="taskActivity"
+        class="border-top top-margin"
+        :task-id="selectedTask.id"
+        :label="selectedTask.name"
+        :log="selectedTask.log"
+      />
+    </template>
     <br>
   </div>
 </template>
@@ -224,9 +237,10 @@
 import Checkbox from './Checkbox'
 import TagList from './TagList'
 import ActivityView from './ActivityView'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
+import Countdown from './Countdown.vue'
 
 marked.setOptions({
   breaks: true
@@ -244,16 +258,13 @@ export default {
   name: 'SelectedTask',
   
   components: {
+    Countdown,
     Checkbox,
     TagList,
     ActivityView
   },
   
   props: {
-    task: {
-      type: Object,
-      default: () => null
-    },
     heightClass: {
       type: String,
       default: 'full-height'
@@ -276,16 +287,20 @@ export default {
       'tagOrder'
     ]),
     
+    ...mapGetters([
+      'selectedTask'
+    ]),
+    
     checked () {
-      return this.task.completed !== null
+      return this.selectedTask.completed !== null
     },
     
     taskTags () {
-      return this.task.tags
+      return this.selectedTask.tags
     },
     
     displayNotes () {
-      return marked(DOMPurify.sanitize(this.task.notes), { renderer })
+      return marked(DOMPurify.sanitize(this.selectedTask.notes), { renderer })
     }
     
   },
@@ -319,7 +334,7 @@ export default {
     },
     
     removeTag ({ tagId }) {
-      this.removeTaskTag({ taskId: this.task.id, tagId })
+      this.removeTaskTag({ taskId: this.selectedTask.id, tagId })
       this.$forceUpdate()
     },
     
@@ -331,7 +346,7 @@ export default {
     },
     
     async continueTimerHere () {
-      await this.startTask({ taskId: this.task.id })
+      await this.startTask({ taskId: this.selectedTask.id })
     }
   }
 }

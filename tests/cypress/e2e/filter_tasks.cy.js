@@ -93,7 +93,7 @@ describe('filter tasks', () => {
     // Assert
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 0)
     cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 0)
-    cy.get('#selected-task-container').should('not.exist')
+    cy.get('#selected-task-container').should('not.be.visible')
   })
   
   it('should continue timer even if selected task is cleared', () => {
@@ -108,6 +108,7 @@ describe('filter tasks', () => {
     })
     
     // Assert
+    cy.get('#active-task-container').should('be.visible')
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
       cy.get('button > svg.fa-times').click()
     })

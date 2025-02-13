@@ -67,7 +67,7 @@ export default {
           dayjs(log.started).year() === this.lastDay.year()
       })
       return Object.entries(yesterTasks.reduce((sum, task) => {
-        sum[task.task] = task.task in sum ? sum[task.task] + task.timeSpent : task.timeSpent
+        sum[task.selectedTask] = task.selectedTask in sum ? sum[task.selectedTask] + task.timeSpent : task.timeSpent
         return sum
       }, {})).sort((a, b) => b[1] - a[1])
     }

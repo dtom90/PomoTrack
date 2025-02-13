@@ -50,17 +50,8 @@
             :task="activeTask"
           />
           <SelectedTask
-            :task="selectedTask"
             :height-class="heightClass"
-          >
-            <keep-alive>
-              <Countdown
-                v-if="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)"
-                :task-id="selectedTask.id"
-                class="top-margin"
-              />
-            </keep-alive>
-          </SelectedTask>
+          />
         </div>
       </div>
       
@@ -104,7 +95,6 @@ import { TagActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModa
 
 import { mapGetters, mapState } from 'vuex'
 import $ from 'jquery'
-import Countdown from './Countdown.vue'
 
 $(document).on('click', '.dropdown-menu', function (e) {
   e.stopPropagation()
@@ -119,7 +109,6 @@ export default {
     Navbar,
     TaskList,
     SelectedTask,
-    Countdown,
     TagActivityModal,
     AllActivityModal,
     StandupModal,
@@ -137,18 +126,18 @@ export default {
   computed: {
     
     ...mapState([
-      'tempState'
+      'tempState',
+      'settings'
     ]),
     
     ...mapGetters([
-      'selectedTask',
       'activeTask',
       'incompleteTasks',
       'completedTasks'
     ]),
     
     showActive () {
-      return this.selectedTask && (this.activeTask && this.selectedTask.id !== this.activeTask.id)
+      return this.tempState.activeTaskID && (this.settings.selectedTaskID !== this.tempState.activeTaskID)
     },
     
     heightClass () {
