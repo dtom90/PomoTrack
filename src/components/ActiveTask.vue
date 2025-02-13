@@ -1,30 +1,31 @@
-<template>
+<template v-if="activeTask">
   <button
     id="active-task-container"
     class="btn btn-light border d-flex justify-content-center align-items-center"
-    @click="selectTask({ taskId: task.id })"
+    @click="selectTask({ taskId: activeTask.id })"
   >
     <font-awesome-icon
       id="active-indicator-icon"
       icon="clock"
     />
     <div id="active-task-name">
-      <span>{{ task.name }}</span>
+      <span>{{ activeTask.name }}</span>
     </div>
   </button>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ActiveTask',
-  props: {
-    task: {
-      type: Object,
-      default: () => null
-    }
+  
+  computed: {
+    ...mapGetters([
+      'activeTask'
+    ])
   },
+  
   methods: {
     ...mapActions(['selectTask'])
   }

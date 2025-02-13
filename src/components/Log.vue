@@ -19,8 +19,8 @@
         :key="index"
       >
         <template v-if="!event.completed">
-          <td v-if="event.selectedTask">
-            <span>{{ event.selectedTask }}</span>
+          <td v-if="event.task">
+            <span>{{ event.task }}</span>
           </td>
           
           <td v-if="event.started">
@@ -36,7 +36,7 @@
             <span>Time Spent: {{ displayDuration(event.timeSpent) }}</span>
           </td>
           <td
-            v-if="!event.selectedTask && !event.completed"
+            v-if="!event.task && !event.completed"
             class="btn-container"
           >
             <div
@@ -67,8 +67,8 @@
         </template>
         
         <template v-if="event.completed">
-          <td v-if="event.selectedTask">
-            <span>{{ event.selectedTask }}</span>
+          <td v-if="event.task">
+            <span>{{ event.task }}</span>
           </td>
           <td />
           <td>

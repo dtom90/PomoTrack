@@ -47,7 +47,6 @@
         <div id="main-task-container">
           <ActiveTask
             v-if="showActive"
-            :task="activeTask"
           />
           <SelectedTask
             :height-class="heightClass"
@@ -93,7 +92,7 @@ import ActiveTask from './ActiveTask'
 import SelectedTask from './SelectedTask'
 import { TagActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModal, DataModal } from './modals'
 
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import $ from 'jquery'
 
 $(document).on('click', '.dropdown-menu', function (e) {
@@ -128,12 +127,6 @@ export default {
     ...mapState([
       'tempState',
       'settings'
-    ]),
-    
-    ...mapGetters([
-      'activeTask',
-      'incompleteTasks',
-      'completedTasks'
     ]),
     
     showActive () {
