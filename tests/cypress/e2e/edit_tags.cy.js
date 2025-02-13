@@ -122,4 +122,25 @@ describe('edit tags', () => {
       cy.get('.tag').last().contains(thirdTagName)
     })
   })
+  
+  it('should reorder 3 tags after closing and re-opening', () => {
+    // Arrange
+    const thirdTagName = 'my third tag'
+    cy.get('input[placeholder="add new tag"]').should('have.focus').type(secondTagName + '{enter}')
+    cy.get('input[placeholder="add new tag"]').should('have.focus').type(thirdTagName + '{enter}')
+    cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
+    cy.contains('.modal-dialog', 'Tags').get('button').contains('OK').click()
+    cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
+    
+    // Act
+    cy.contains('.modal-dialog', 'Tags').within(() => {
+      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.move-btn')
+        .drag('.move-btn', { destination: '.tag' })
+      
+      // Assert
+      cy.get('.tag').should('have.length', 3)
+      cy.get('.tag').first().contains(secondTagName)
+      cy.get('.tag').last().contains(thirdTagName)
+    })
+  })
 })

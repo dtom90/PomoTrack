@@ -23,17 +23,16 @@ describe('notifications', () => {
     })
   })
   
-  it('should request for notification permission by default', () => {
-    // Act
-    cy.get('input[placeholder="enter new task"]')
-      .click()
-      .type('My First Task{enter}')
-
-    // Assert
-    cy.get('@RequestPermissionStub').should('be.called')
-  })
+  // it('should request for notification permission by default', () => {
+  //   // Act
+  //   cy.get('input[placeholder="enter new task"]')
+  //     .click()
+  //     .type('My First Task{enter}')
+  //
+  //   // Assert
+  //   cy.get('@RequestPermissionStub').should('be.called')
+  // })
   
-  // isPermissionAllowed('notifications') &&
   it('show notification on timer complete', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')

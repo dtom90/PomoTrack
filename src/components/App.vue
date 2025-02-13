@@ -44,13 +44,11 @@
             Done
           </b-button>
         </div>
-        <div id="selected-task-container">
+        <div id="main-task-container">
           <ActiveTask
             v-if="showActive"
-            :task="activeTask"
           />
           <SelectedTask
-            :task="selectedTask"
             :height-class="heightClass"
           />
         </div>
@@ -94,7 +92,7 @@ import ActiveTask from './ActiveTask'
 import SelectedTask from './SelectedTask'
 import { TagActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModal, DataModal } from './modals'
 
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import $ from 'jquery'
 
 $(document).on('click', '.dropdown-menu', function (e) {
@@ -126,15 +124,13 @@ export default {
   
   computed: {
     
-    ...mapGetters([
-      'selectedTask',
-      'activeTask',
-      'incompleteTasks',
-      'completedTasks'
+    ...mapState([
+      'tempState',
+      'settings'
     ]),
     
     showActive () {
-      return this.selectedTask && this.activeTask && this.selectedTask.id !== this.activeTask.id
+      return this.tempState.activeTaskID && (this.settings.selectedTaskID !== this.tempState.activeTaskID)
     },
     
     heightClass () {
@@ -199,7 +195,7 @@ h3, h4, h5, h6 {
   min-width: 0;
 }
 
-#selected-task-container {
+#main-task-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -235,5 +231,9 @@ h3, h4, h5, h6 {
 
 #sidebar-done {
   right: 0;
+}
+
+.top-margin {
+  margin-top: 20px;
 }
 </style>
