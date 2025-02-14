@@ -33,6 +33,7 @@
             :tag-list="settings.selectedTagIds"
             :is-modal="true"
             :remove-tag="removeTag"
+            :update-filter-operator="updateSelectedTask"
             remove-text="Clear Filter"
           />
           <div

@@ -168,6 +168,10 @@ export default {
     removeTag: {
       type: Function,
       default: null
+    },
+    updateFilterOperator: {
+      type: Function,
+      default: null
     }
   },
   
@@ -202,8 +206,11 @@ export default {
       get () {
         return this.$store.state.settings.filterOperator
       },
-      set (value) {
-        this.updateSetting({ key: 'filterOperator', value })
+      async set (value) {
+        await this.updateSetting({ key: 'filterOperator', value })
+        if (this.updateFilterOperator) {
+          this.updateFilterOperator()
+        }
       }
     }
   },

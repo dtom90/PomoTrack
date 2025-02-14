@@ -112,6 +112,28 @@ describe('filter tasks', () => {
     cy.get('#selected-task-container').should('not.be.visible')
   })
   
+  it('should update selected task if filter operator changed', () => {
+    // Arrange
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
+      cy.contains('button', secondTagName).click()
+    })
+    
+    // Act
+    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
+      cy.contains('label', 'Any').first().click()
+    })
+    
+    // Assert
+    cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 1)
+    cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 1)
+    cy.get('#title-section').scrollIntoView()
+    cy.get('#selected-task-container').contains('My First Task').should('exist')
+  })
+  
   it('should update selected task on tag filter remove', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
