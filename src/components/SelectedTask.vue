@@ -135,7 +135,7 @@
         :tag-list="taskTags"
         :task-id="selectedTask.id"
         :is-modal="true"
-        :remove-tag-filter="removeTag"
+        :remove-tag="removeTag"
       />
       
       <!-- Notes Section -->

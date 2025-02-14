@@ -32,12 +32,12 @@
           {{ tags[tagId].tagName }}
         </button>
         <button
-          v-if="removeTagFilter"
+          v-if="removeTag"
           class="tag-close btn"
           :style="`backgroundColor: ${tags[tagId].color}`"
           :title="removeText"
           aria-label="Close"
-          @click.stop="removeTagFilter({tagId})"
+          @click.stop="removeTag({tagId})"
         >
           <font-awesome-icon icon="times" />
         </button>
@@ -165,7 +165,7 @@ export default {
       type: String,
       default: 'Remove tag from task'
     },
-    removeTagFilter: {
+    removeTag: {
       type: Function,
       default: null
     }
