@@ -134,7 +134,6 @@
       <TagList
         :tag-list="taskTags"
         :task-id="selectedTask.id"
-        :is-modal="true"
         :remove-tag="removeTag"
       />
       

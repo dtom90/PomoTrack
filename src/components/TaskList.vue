@@ -31,7 +31,6 @@
             v-if="settings.selectedTagIds.length > 0"
             label="Filtering on tasks with"
             :tag-list="settings.selectedTagIds"
-            :is-modal="true"
             :remove-tag="removeTag"
             :update-filter-operator="updateSelectedTask"
             remove-text="Clear Filter"

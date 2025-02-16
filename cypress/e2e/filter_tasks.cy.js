@@ -178,4 +178,20 @@ describe('filter tasks', () => {
     cy.get('#countdown-container').contains('24:58')
     cy.get('#countdown-container').contains('24:57')
   })
+  
+  it('should show activitiy modal for tag when selected', () => {
+    // Arrange
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    
+    // Act
+    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    
+    // Assert
+    cy.get('#activityModal').contains(firstTagName).should('be.visible')
+  })
 })

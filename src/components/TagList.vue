@@ -27,7 +27,7 @@
           class="tag-name btn"
           :style="`backgroundColor: ${tags[tagId].color}`"
           :title="selectText"
-          @click="isModal ? viewActivityModal(tagId) : selectTag(tagId, $event)"
+          @click="selectTag ? selectTag(tagId, $event) : viewActivityModal(tagId)"
         >
           {{ tags[tagId].tagName }}
         </button>
@@ -155,11 +155,7 @@ export default {
     },
     selectTag: {
       type: Function,
-      default: () => null
-    },
-    isModal: {
-      type: Boolean,
-      default: false
+      default: null
     },
     removeText: {
       type: String,
