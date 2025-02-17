@@ -6,7 +6,16 @@
     scrollable
     ok-only
   >
-    <table class="table">
+    <div
+      v-if="!archivedTasks.length"
+      class="text-center"
+    >
+      (No archived tasks)
+    </div>
+    <table
+      v-if="archivedTasks.length"
+      class="table"
+    >
       <tr
         v-for="task of archivedTasks"
         :key="task.id"
