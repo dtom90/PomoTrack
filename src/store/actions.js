@@ -9,7 +9,6 @@ const actions = {
     const taskTagMaps = await dexieDb.taskTagMap.toArray()
     const settings = await dexieDb.settings.toArray()
     const logs = await dexieDb.logs.toArray()
-    const rewards = await dexieDb.rewards.toArray()
     // If any logs were running but not stopped, stop them.
     for (const log of logs) {
       if (!log.stopped) {
@@ -17,7 +16,7 @@ const actions = {
         await dexieDb.logs.put(log)
       }
     }
-    commit('setState', { tasks, tags, taskTagMaps, logs, rewards, settings })
+    commit('setState', { tasks, tags, taskTagMaps, logs, settings })
   },
 
   async addTask ({ state, commit, dispatch }, { name }) {
@@ -140,22 +139,6 @@ const actions = {
       const taskUpdates = { completed: completedValue }
       await dexieDb.tasks.update(taskId, taskUpdates)
       commit('updateTask', { taskId, taskUpdates })
-
-      if (taskUpdates.completed) {
-        const reward = {
-          id: 'reward-' + nanoid(),
-          taskId,
-          isCashedIn: false
-        }
-        await dexieDb.rewards.add(reward)
-        commit('addReward', { reward })
-      } else {
-        const reward = state.rewards.find(r => r.taskId === taskId)
-        if (reward) {
-          await dexieDb.rewards.delete(reward.id)
-          commit('deleteReward', { rewardId: reward.id })
-        }
-      }
     }
   },
   
@@ -302,11 +285,6 @@ const actions = {
       await dexieDb.tags.where('id').equals(tagId).delete()
       commit('deleteTag', { tagId })
     }
-  },
-  
-  async cashInReward ({ state, commit }, { rewardId, isCashedIn }) {
-    await dexieDb.rewards.update(rewardId, { isCashedIn })
-    commit('updateReward', { rewardId, isCashedIn })
   },
   
   async selectTask ({ state, dispatch }, { taskId }) {

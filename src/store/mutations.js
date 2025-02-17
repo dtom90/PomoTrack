@@ -4,9 +4,8 @@ import initialState from './initialState'
 
 const mutations = {
   
-  setState (state, { tasks, tags, taskTagMaps, logs, rewards, settings }) {
+  setState (state, { tasks, tags, taskTagMaps, logs, settings }) {
     state.tasks = tasks
-    state.rewards = rewards
     state.tasks.forEach(task => {
       task.tags = []
       task.log = []
@@ -175,23 +174,6 @@ const mutations = {
   //     state.tasks = state.tasks.filter(t => !t.completed)
   //   }
   // },
-  
-  /** Rewards **/
-  
-  addReward (state, { reward }) {
-    state.rewards.push(reward)
-  },
-  
-  updateReward (state, { rewardId, ...rewardUpdates }) {
-    const index = state.rewards.findIndex(r => r.id === rewardId)
-    if (index !== -1) {
-      Vue.set(state.rewards, index, { ...state.rewards[index], ...rewardUpdates })
-    }
-  },
-  
-  deleteReward (state, { rewardId }) {
-    state.rewards = state.rewards.filter(r => r.id !== rewardId)
-  },
   
   overwriteState (state, newState) {
     const r = confirm('WARNING: Loading state from this file will COMPLETELY OVERWRITE your current data with the data provided in this file. Are you ABSOLUTELY sure that you want to do this?')
