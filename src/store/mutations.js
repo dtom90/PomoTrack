@@ -153,28 +153,6 @@ const mutations = {
     $('#activityModal').modal('hide')
   },
   
-  // deleteTask (state, payload) {
-  //   const index = state.tasks.findIndex(t => t.id === payload.id)
-  //   const task = state.tasks[index]
-  //   if (task.completed || confirm(`Are you sure you want to delete task ${task.name}? the task is not yet complete!`)) {
-  //     state.tasks.splice(index, 1)
-  //     if (state.tempState.activeTaskID === payload.id) { // If we are deleting the active task, clear activeTaskID
-  //       state.tempState.activeTaskID = null
-  //       state.tempState.running = false
-  //     }
-  //     // else if (state.selectedTaskID === task.id && state.tempState.activeTaskID) { // If another task is active while we delete this, switch to it
-  //     //   state.selectedTaskID = state.tempState.activeTaskID
-  //     // }
-  //   }
-  // },
-  //
-  // deleteTasks (state) {
-  //   const completedTasks = state.tasks.filter(t => t.completed)
-  //   if (completedTasks.length === 1 || confirm(`Are you sure that you want to delete all ${completedTasks.length} completed tasks?`)) {
-  //     state.tasks = state.tasks.filter(t => !t.completed)
-  //   }
-  // },
-  
   overwriteState (state, newState) {
     const r = confirm('WARNING: Loading state from this file will COMPLETELY OVERWRITE your current data with the data provided in this file. Are you ABSOLUTELY sure that you want to do this?')
     if (r === true) {

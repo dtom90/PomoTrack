@@ -21,6 +21,9 @@
           <b-nav-item v-b-modal.tagModal>
             Tags
           </b-nav-item>
+          <b-nav-item v-b-modal.archiveModal>
+            Archive
+          </b-nav-item>
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>

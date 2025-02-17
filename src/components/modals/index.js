@@ -1,9 +1,11 @@
-import TagActivityModal from './TagActivityModal.vue'
 import AllActivityModal from './AllActivityModal'
+import TagActivityModal from './TagActivityModal'
 import TagModal from './TagModal'
+import ArchiveModal from './ArchiveModal'
 
 export {
-  TagActivityModal,
   AllActivityModal,
-  TagModal
+  TagActivityModal,
+  TagModal,
+  ArchiveModal
 }

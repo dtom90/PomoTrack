@@ -9,12 +9,12 @@ $archive-color: #654321;
 }
 
 .btn-archive-color {
-  background-color: $archive-color; /* Your custom color */
-  color: white; /* Adjust text color */
-  border-color: $archive-color; /* Optional: Match border */
+  background-color: $archive-color !important;
+  color: white !important;
+  border-color: $archive-color !important;
 }
 .btn-archive-color:hover {
-  background-color: #7B5544; /* Darker shade for hover */
-  color: white; /* Adjust text color */
-  border-color: #7B5544;
+  background-color: #7B5544 !important;
+  color: white !important;
+  border-color: #7B5544 !important;
 }

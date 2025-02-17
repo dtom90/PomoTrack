@@ -102,20 +102,6 @@
             </div>
           </div>
           <div class="dropdown-divider" />
-          <div
-            class="form-check form-check-inline"
-          >
-            <input
-              id="showArchived"
-              v-model="tempState.showArchived"
-              class="form-check-input"
-              type="checkbox"
-            >
-            <label
-              class="form-check-label"
-              for="showArchived"
-            >Show archived</label>
-          </div>
           <button
             id="archive-btn"
             class="btn btn-danger"
@@ -124,14 +110,6 @@
           >
             Archive All
           </button>
-          <!--          <button-->
-          <!--            id="delete-btn"-->
-          <!--            class="btn btn-danger"-->
-          <!--            title="Delete all list tasks"-->
-          <!--            @click="deleteTasks"-->
-          <!--          >-->
-          <!--            Delete All-->
-          <!--          </button>-->
         </div>
       </div>
     </div>
@@ -266,14 +244,6 @@ export default {
         this.updateSetting({ key: 'addSelectedTags', value })
       }
     },
-    showArchived: {
-      get () {
-        return this.tempState.showArchived
-      },
-      set (value) {
-        this.updateTempState({ key: 'showArchived', value })
-      }
-    },
     insertAtTop: {
       get () {
         return this.settings.insertAtTop
@@ -291,7 +261,7 @@ export default {
               : this.incompleteTasks.filter(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
           )
           : this.incompleteTasks
-        incompleteTasks = this.tempState.showArchived ? incompleteTasks : incompleteTasks.filter(t => !t.archived)
+        incompleteTasks = incompleteTasks.filter(t => !t.archived)
         return incompleteTasks
       },
       set (newIncompleteTaskOrder) {
@@ -300,7 +270,7 @@ export default {
     },
     completedTaskList () {
       let completedTasks = this.completedTasksFiltered
-      completedTasks = this.tempState.showArchived ? completedTasks : completedTasks.filter(t => !t.archived)
+      completedTasks = completedTasks.filter(t => !t.archived)
       return completedTasks && this.sortOrder !== 'Oldest'
         ? completedTasks.slice().reverse()
         : completedTasks
@@ -352,7 +322,7 @@ export default {
           : this.incompleteTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
         if (!tasksWithTag) {
           let completedTasks = this.completedTasksFiltered
-          completedTasks = this.tempState.showArchived ? completedTasks : completedTasks.filter(t => !t.archived)
+          completedTasks = completedTasks.filter(t => !t.archived)
           tasksWithTag = this.settings.filterOperator === 'or'
             ? completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
             : completedTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))

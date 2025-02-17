@@ -115,16 +115,6 @@
                   <span>&nbsp;&nbsp;Unarchive</span>
                 </span>
               </b-button>
-              
-              <!--            <b-button-->
-              <!--              block-->
-              <!--              variant="danger"-->
-              <!--              title="Delete task"-->
-              <!--              @click="deleteTask({id: task.id})"-->
-              <!--            >-->
-              <!--              <font-awesome-icon icon="trash-alt" />-->
-              <!--              <span>&nbsp;&nbsp;Delete</span>-->
-              <!--            </b-button>-->
             </div>
           </div>
         </div>
