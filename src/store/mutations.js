@@ -106,19 +106,6 @@ const mutations = {
     Vue.set(state.tasks, taskIndex, { ...task, log: newLog })
   },
   
-  resetRunning (state) {
-    if (state.tempState.activeTaskID) {
-      const activeTask = state.tasks.find(t => t.id === state.tempState.activeTaskID)
-      if (activeTask && activeTask.log.length > 0) {
-        const lastInterval = activeTask.log[activeTask.log.length - 1]
-        if ('running' in lastInterval) {
-          Vue.delete(lastInterval, 'running')
-        }
-      }
-    }
-    state.tempState.running = false
-  },
-  
   addTaskTag (state, { taskId, tag, isNewTag }) {
     if (isNewTag) {
       Vue.set(state.tags, tag.id, tag)

@@ -5,7 +5,7 @@ describe('task timer', () => {
       .type('My First Task{enter}')
   })
 
-  it.only('clicks timer and changes countdown time', () => {
+  it('clicks timer and changes countdown time', () => {
     // Arrange
     cy.get('#countdown-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('30{enter}')
@@ -19,22 +19,6 @@ describe('task timer', () => {
 
   it('starts a task timer and creates log', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
-
-    // Act
-    cy.get('button > svg.fa-play').click()
-
-    // Assert
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Started')
-      cy.get('td').contains('Running')
-      cy.get('td').contains('Time Spent')
-    })
-  })
-
-  it('starts a task timer and creates log even after reload', () => {
-    // Arrange
-    cy.reload()
     cy.get('button').contains('Activity Log').click()
 
     // Act

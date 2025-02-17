@@ -262,7 +262,6 @@ export default {
   mounted: function () {
     this.secondsRemaining = this.totalSeconds
     this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
-    this.resetRunning()
     if (this.notificationsEnabled) {
       notifications.requestPermission()
     }
@@ -278,8 +277,7 @@ export default {
     ]),
 
     ...mapMutations([
-      'updateTempState',
-      'resetRunning'
+      'updateTempState'
     ]),
     
     onTimerClick () {

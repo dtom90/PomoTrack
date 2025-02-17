@@ -37,7 +37,7 @@ describe('reorder tasks', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')
       .click()
-      .type('My Archvied Task{enter}')
+      .type('My Archived Task{enter}')
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
     cy.get('button > svg.fa-ellipsis-v').click()
     cy.get('button').contains('Archive').click()
@@ -47,16 +47,15 @@ describe('reorder tasks', () => {
       .drag('.task', { destination: '#incomplete-task-list .task', position: 'top' })
 
     // Assert
-    cy.get('button > svg.fa-caret-down').click()
-    cy.contains('label', 'Show archived').click()
-    cy.get('#completed-task-list').contains('My Archvied Task').should('exist')
+    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
+    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
   })
 
   it('keeps incomplete archived task even after dragging', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')
       .click()
-      .type('My Archvied Task{enter}')
+      .type('My Archived Task{enter}')
     cy.get('button > svg.fa-ellipsis-v').click()
     cy.get('button').contains('Archive').click()
 
@@ -65,9 +64,8 @@ describe('reorder tasks', () => {
       .drag('.task', { destination: '#incomplete-task-list .task', position: 'top' })
 
     // Assert
-    cy.get('button > svg.fa-caret-down').click()
-    cy.contains('label', 'Show archived').click()
-    cy.get('#incomplete-task-list').contains('My Archvied Task').should('exist')
+    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
+    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
   })
   
   it('inserts new task at bottom of list by default', () => {
