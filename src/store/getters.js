@@ -37,6 +37,10 @@ const getters = {
       : completedTasks
   },
   
+  archivedTasks (state) {
+    return state.tasks.filter(t => t.archived)
+  },
+  
   unselectedTags: state => Object.keys(state.tags).filter(tag => !state.settings.selectedTagIds.includes(tag)),
   
   availableTags: state => (taskId, newTagName) => {

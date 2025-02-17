@@ -13,10 +13,6 @@
         Use 24-hour Clock
       </b-form-checkbox>
     </b-dropdown-item-button>
-    <div class="dropdown-divider" />
-    <b-dropdown-item-button v-b-modal.dataModal>
-      Data
-    </b-dropdown-item-button>
   </b-nav-item-dropdown>
 </template>
 

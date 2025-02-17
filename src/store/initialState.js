@@ -2,14 +2,12 @@ const initialState = {
   tasks: [],
   tags: {},
   tagOrder: [],
-  rewards: [],
   totalTarget: {},
   
   tempState: {
     activeTaskID: null,
     running: false,
-    modalTagId: null,
-    showArchived: false
+    modalTagId: null
   },
   
   settings: {

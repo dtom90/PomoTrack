@@ -138,7 +138,6 @@ export default {
   margin-bottom: 0;
   font-size: 16px;
   text-align: center;
-  border-bottom: rgb(222, 226, 230) 1px solid;
 }
 
 .btn-container {

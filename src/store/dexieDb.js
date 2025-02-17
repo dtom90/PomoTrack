@@ -7,7 +7,6 @@ dexieDb.version(1).stores({
   tags: 'id, &tagName, color, order',
   taskTagMap: 'id, taskId, tagId',
   logs: 'id, taskId, started, stopped, timeSpent',
-  rewards: 'id, taskId, isCashedIn',
   settings: 'key'
 })
 

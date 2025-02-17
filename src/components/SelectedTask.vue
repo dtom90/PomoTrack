@@ -52,15 +52,15 @@
             <input
               id="task-name-input"
               ref="taskNameInput"
-              v-model="selectedTask.name"
+              v-model="newTaskName"
               class="form-control"
-              @keyup.enter="editingName = false"
+              @keyup.enter="saveName()"
             >
             <div class="input-group-append">
               <button
                 type="button"
                 class="btn btn-primary"
-                @click="editingName = false"
+                @click="saveName()"
               >
                 <font-awesome-icon icon="save" />
               </button>
@@ -115,16 +115,6 @@
                   <span>&nbsp;&nbsp;Unarchive</span>
                 </span>
               </b-button>
-              
-              <!--            <b-button-->
-              <!--              block-->
-              <!--              variant="danger"-->
-              <!--              title="Delete task"-->
-              <!--              @click="deleteTask({id: task.id})"-->
-              <!--            >-->
-              <!--              <font-awesome-icon icon="trash-alt" />-->
-              <!--              <span>&nbsp;&nbsp;Delete</span>-->
-              <!--            </b-button>-->
             </div>
           </div>
         </div>
@@ -180,7 +170,7 @@
               type="button"
               class="btn btn-primary"
               title="Save notes"
-              @click="editingNotes = false"
+              @click="saveNotes()"
             >
               <font-awesome-icon icon="save" />
             </button>
@@ -274,6 +264,7 @@ export default {
     possibleEdit: true,
     editingName: false,
     editingNotes: false,
+    newTaskName: null,
     newTag: '',
     tagOptions: [],
     showTagInput: false
@@ -307,6 +298,8 @@ export default {
   methods: {
     
     ...mapActions([
+      'updateTaskName',
+      'updateTaskNotes',
       'startTask',
       'archiveTask',
       'removeTaskTag'
@@ -314,6 +307,7 @@ export default {
     
     editName () {
       if (this.possibleEdit) {
+        this.newTaskName = this.selectedTask.name
         this.editingName = true
         this.$refs.taskMenu.classList.remove('show')
         this.$refs.taskMenu.querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
@@ -321,6 +315,11 @@ export default {
         this.$nextTick(() => this.$refs.taskNameInput.focus())
       }
       this.possibleEdit = true
+    },
+    
+    async saveName () {
+      await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
+      this.editingName = false
     },
     
     addTagButton () {
@@ -342,6 +341,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.notesInput.focus()
       })
+    },
+    
+    async saveNotes () {
+      await this.updateTaskNotes({ taskId: this.selectedTask.id, notes: this.selectedTask.notes })
+      this.editingNotes = false
     },
     
     async continueTimerHere () {

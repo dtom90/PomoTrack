@@ -1,15 +1,11 @@
-import TagActivityModal from './TagActivityModal.vue'
 import AllActivityModal from './AllActivityModal'
-import StandupModal from './StandupModal'
-import DataModal from './DataModal'
+import TagActivityModal from './TagActivityModal'
 import TagModal from './TagModal'
-import RewardsModal from './RewardsModal'
+import ArchiveModal from './ArchiveModal'
 
 export {
-  TagActivityModal,
   AllActivityModal,
-  StandupModal,
-  DataModal,
+  TagActivityModal,
   TagModal,
-  RewardsModal
+  ArchiveModal
 }

@@ -75,13 +75,9 @@
     
     <TagActivityModal />
     
-    <StandupModal />
-    
     <TagModal />
-    
-    <RewardsModal />
-    
-    <DataModal />
+
+    <ArchiveModal />
   </div>
 </template>
 
@@ -90,7 +86,7 @@ import Navbar from './Navbar'
 import TaskList from './TaskList'
 import ActiveTask from './ActiveTask'
 import SelectedTask from './SelectedTask'
-import { TagActivityModal, AllActivityModal, StandupModal, TagModal, RewardsModal, DataModal } from './modals'
+import { AllActivityModal, TagActivityModal, TagModal, ArchiveModal } from './modals'
 
 import { mapState } from 'vuex'
 import $ from 'jquery'
@@ -104,16 +100,14 @@ export default {
   name: 'App',
   
   components: {
+    ArchiveModal,
     ActiveTask,
     Navbar,
     TaskList,
     SelectedTask,
     TagActivityModal,
     AllActivityModal,
-    StandupModal,
-    TagModal,
-    RewardsModal,
-    DataModal
+    TagModal
   },
   
   data () {

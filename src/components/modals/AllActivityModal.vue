@@ -7,6 +7,7 @@
     @shown="isModalShown = true"
     @hidden="isModalShown = false"
   >
+    <DailyActivitySummary />
     <ActivityView
       v-if="isModalShown"
       id="allActivity"
@@ -19,11 +20,13 @@
 <script>
 import ActivityView from '../ActivityView'
 import { mapGetters } from 'vuex'
+import DailyActivitySummary from './DailyActivitySummary.vue'
 
 export default {
   name: 'AllActivityModal',
   
   components: {
+    DailyActivitySummary,
     ActivityView
   },
   
