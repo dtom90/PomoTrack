@@ -13,6 +13,7 @@ describe('create tasks', () => {
     cy.get('#task-name-input').type(' edited{enter}')
 
     // Assert
+    cy.reload()
     cy.get('#main-section').contains('My First Task edited')
   })
 
@@ -25,6 +26,7 @@ describe('create tasks', () => {
     cy.get('#task-name-input').type(' edited{enter}')
 
     // Assert
+    cy.reload()
     cy.get('#main-section').contains('My First Task edited')
   })
 
@@ -36,6 +38,7 @@ describe('create tasks', () => {
     cy.get('#notes-section').find('button > svg.fa-save').click()
 
     // Assert
+    cy.reload()
     cy.get('#notes-section').contains('My notes')
   })
   
@@ -45,6 +48,7 @@ describe('create tasks', () => {
     cy.get('#countdown-container input[type="number"]:visible').clear().type('30{enter}')
     
     // Assert
+    cy.reload()
     cy.get('#selected-task-container').contains('30:00')
   })
 })

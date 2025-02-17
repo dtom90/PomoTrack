@@ -52,6 +52,24 @@ const actions = {
     }
   },
   
+  async updateTaskName ({ state, commit }, { taskId, name }) {
+    const task = state.tasks.find(t => t.id === taskId)
+    if (task) {
+      const taskUpdates = { name }
+      await dexieDb.tasks.update(taskId, taskUpdates)
+      commit('updateTask', { taskId, taskUpdates })
+    }
+  },
+  
+  async updateTaskNotes ({ state, commit }, { taskId, notes }) {
+    const task = state.tasks.find(t => t.id === taskId)
+    if (task) {
+      const taskUpdates = { notes }
+      await dexieDb.tasks.update(taskId, taskUpdates)
+      commit('updateTask', { taskId, taskUpdates })
+    }
+  },
+  
   async reorderIncompleteTasks ({ state, commit }, { newIncompleteTaskOrder }) {
     const incompleteTasks = state.tasks.filter(t => !t.completed)
     const completedTasks = state.tasks.filter(t => t.completed)
