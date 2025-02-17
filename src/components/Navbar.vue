@@ -21,9 +21,6 @@
           <b-nav-item v-b-modal.tagModal>
             Tags
           </b-nav-item>
-          <b-nav-item v-b-modal.standupModal>
-            Standup
-          </b-nav-item>
           <b-nav-item v-b-modal.rewardsModal>
             Rewards
           </b-nav-item>

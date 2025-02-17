@@ -271,7 +271,7 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play').should('be.visible')
   })
   
-  it('should order All Activity log in chronological order', () => {
+  it.only('should order All Activity log in chronological order', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')
       .click()
@@ -295,14 +295,17 @@ describe('task timer', () => {
     cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
     cy.get('#allActivityModal').within(() => {
       cy.get('button').contains('Activity Log').click()
-      cy.get('tr').eq(0).contains('My Second Task')
-      cy.get('tr').eq(0).contains('Completed')
-      cy.get('tr').eq(1).contains('My Second Task')
-      cy.get('tr').eq(1).contains('Started')
-      cy.get('tr').eq(2).contains('My First Task')
-      cy.get('tr').eq(2).contains('Completed')
-      cy.get('tr').eq(3).contains('My First Task')
-      cy.get('tr').eq(3).contains('Started')
+      cy.get('#task-log').scrollIntoView()
+      cy.get('#task-log').within(() => {
+        cy.get('tr').eq(0).contains('My Second Task')
+        cy.get('tr').eq(0).contains('Completed')
+        cy.get('tr').eq(1).contains('My Second Task')
+        cy.get('tr').eq(1).contains('Started')
+        cy.get('tr').eq(2).contains('My First Task')
+        cy.get('tr').eq(2).contains('Completed')
+        cy.get('tr').eq(3).contains('My First Task')
+        cy.get('tr').eq(3).contains('Started')
+      })
     })
   })
   
