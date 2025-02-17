@@ -212,7 +212,7 @@ export default {
     
     continueOnComplete: {
       get () {
-        return this.$store.state.settings.continueOnComplete
+        return this.settings.continueOnComplete
       },
       async set (value) {
         await this.updateSetting({
@@ -224,7 +224,7 @@ export default {
     
     secondReminderEnabled: {
       get () {
-        return this.$store.state.settings.secondReminderEnabled
+        return this.settings.secondReminderEnabled
       },
       async set (value) {
         await this.updateSetting({
@@ -236,7 +236,7 @@ export default {
     
     secondReminderMinutes: {
       get () {
-        return this.$store.state.settings.secondReminderMinutes
+        return this.settings.secondReminderMinutes
       },
       async set (value) {
         await this.updateSetting({
@@ -248,6 +248,14 @@ export default {
     
     secondReminderSeconds () {
       return -(this.secondReminderMinutes * 60)
+    }
+  },
+  
+  watch: {
+    'settings.activeMinutes': function (newVal) {
+      if (this.active) {
+        this.secondsRemaining = newVal * 60
+      }
     }
   },
   
