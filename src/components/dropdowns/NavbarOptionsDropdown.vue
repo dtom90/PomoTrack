@@ -1,8 +1,11 @@
 <template>
   <b-nav-item-dropdown
-    text="Options"
     boundary="viewport"
   >
+    <template #text>
+      <font-awesome-icon icon="cog" />
+      Options
+    </template>
     <b-dropdown-item-button>
       <b-form-checkbox v-model="globalNotificationsEnabled">
         Enable Notifications
