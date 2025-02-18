@@ -255,6 +255,7 @@ export default {
     'settings.activeMinutes': function (newVal) {
       if (this.active) {
         this.secondsRemaining = newVal * 60
+        this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
       }
     }
   },

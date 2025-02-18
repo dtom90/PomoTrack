@@ -17,6 +17,21 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('30:00')
   })
 
+  it('changes timer, countdown should match', () => {
+    // Arrange
+    cy.get('#countdown-container').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.reload()
+    cy.get('#countdown-container').contains('0:03')
+    
+    // Act
+    cy.get('button > svg.fa-play').click()
+    
+    // Assert
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('#countdown-container').contains('0:01')
+  })
+
   it('starts a task timer and creates log', () => {
     // Arrange
     cy.get('button').contains('Activity Log').click()
