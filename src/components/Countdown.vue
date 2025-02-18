@@ -143,13 +143,15 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import CountdownTimer from '../lib/CountdownTimer'
 import notifications from '../lib/notifications'
 
 export default {
   
   name: 'Countdown',
+  
+  mixins: [notifications],
   
   props: {
     taskId: {
@@ -176,10 +178,6 @@ export default {
     ...mapState([
       'tempState',
       'settings'
-    ]),
-    
-    ...mapGetters([
-      'notificationsEnabled'
     ]),
     
     totalSeconds () {
@@ -263,9 +261,6 @@ export default {
   mounted: function () {
     this.secondsRemaining = this.totalSeconds
     this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
-    if (this.notificationsEnabled) {
-      notifications.requestPermission()
-    }
   },
   
   methods: {
@@ -304,6 +299,8 @@ export default {
     },
     
     toggleTimer () {
+      this.requestPermission()
+
       // close any open notification
       while (this.notificationList.length > 0) {
         this.notificationList.pop().close()
@@ -333,8 +330,8 @@ export default {
         this.secondsRemaining = secondsRemaining
         if (this.active) {
           this.updateTaskTimer({ taskId: this.taskId })
-          if (this.notificationsEnabled && this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
-            const notification = notifications.notify('Finished Working, Take a Break!')
+          if (this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
+            const notification = this.notify('Finished Working, Take a Break!')
             this.secondReminderDisplayed = true
             // add to notificationList for later closure
             if (notification && notification instanceof Notification) {
@@ -375,12 +372,12 @@ export default {
       }
       
       // Notify interval finish
-      if (this.notificationsEnabled && notify) {
+      if (notify) {
         let notification
         if (this.active) {
-          notification = notifications.notify('Finished Working, Take a Break!')
+          notification = this.notify('Finished Working, Take a Break!')
         } else {
-          notification = notifications.notify('Finished Break, Time to Work!')
+          notification = this.notify('Finished Break, Time to Work!')
         }
         
         // add to notificationList for later closure

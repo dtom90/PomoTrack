@@ -273,6 +273,7 @@ export default {
   computed: {
     
     ...mapState([
+      'tasks',
       'tempState',
       'tagOrder'
     ]),

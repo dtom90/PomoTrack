@@ -11,10 +11,6 @@ const getters = {
     return state.tasks.find(t => t.id === state.tempState.activeTaskID)
   },
   
-  notificationsEnabled (state) {
-    return state.settings.globalNotificationsEnabled
-  },
-  
   incompleteTasks: (state) => {
     return state.tasks.filter(t => !t.completed)
   },
