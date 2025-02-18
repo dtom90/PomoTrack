@@ -18,18 +18,18 @@ describe('notifications', () => {
   beforeEach(() => {
     cy.window().then((win) => {
       win.Notification = class MockNotification {
-        constructor(title, options) {
+        constructor (title, options) {
           this.title = title
           this.options = options
         }
-        static requestPermission = cy.stub()
-          .callsFake(async () => {
-            win.Notification.permission = 'granted'
-            return 'granted'
-          })
-          .as('requestPermissionStub')
       }
       win.Notification.permission = 'default'
+      win.Notification.requestPermission = cy.stub()
+        .callsFake(async () => {
+          win.Notification.permission = 'granted'
+          return 'granted'
+        })
+        .as('requestPermissionStub')
       
       // Create spy on the constructor
       cy.spy(win, 'Notification').as('NotificationSpy')
