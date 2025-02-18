@@ -85,7 +85,7 @@ describe('create tasks', () => {
     // Assert
     cy.get('button > svg.fa-filter').click()
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-times').click()
+      cy.get('button > svg.fa-xmark').click()
     })
     cy.get('#completed-task-list .task').should('have.length', 1)
   })

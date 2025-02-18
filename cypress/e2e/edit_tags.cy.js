@@ -27,7 +27,7 @@ describe('edit tags', () => {
 
   it('should show tag in Tags menu even if removed from task', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
@@ -40,7 +40,7 @@ describe('edit tags', () => {
 
   it('should show tag in Tags menu even if removed from task after refresh', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.reload()

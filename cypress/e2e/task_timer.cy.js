@@ -148,7 +148,7 @@ describe('task timer', () => {
 
   it('break timer to 3 seconds then starts timer, should count all the way down', () => {
     // Arrange
-    cy.get('button > svg.fa-times').click()
+    cy.get('button > svg.fa-xmark').click()
     cy.get('div').contains('5:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
 
@@ -325,7 +325,7 @@ describe('task timer', () => {
     cy.get('#timer-display').contains('25:00')
     
     // Act
-    cy.get('button[title="Skip current interval"] > svg.fa-times').click()
+    cy.get('button[title="Skip current interval"] > svg.fa-xmark').click()
     
     // Assert
     cy.get('#timer-display').contains('5:00')
@@ -336,8 +336,8 @@ describe('task timer', () => {
     cy.get('#timer-display').contains('25:00')
     
     // Act
-    cy.get('button[title="Skip current interval"] > svg.fa-times').click()
-    cy.get('button[title="Skip current interval"] > svg.fa-times').click()
+    cy.get('button[title="Skip current interval"] > svg.fa-xmark').click()
+    cy.get('button[title="Skip current interval"] > svg.fa-xmark').click()
     
     // Assert
     cy.get('#timer-display').contains('25:00')
@@ -354,7 +354,7 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('0:03')
     
     // Act
-    cy.get('button[title="Skip current interval"] > svg.fa-times').click()
+    cy.get('button[title="Skip current interval"] > svg.fa-xmark').click()
     
     // Assert
     cy.get('#timer-display').contains('5:00')
