@@ -48,7 +48,7 @@
                 data-toggle="dropdown"
                 data-boundary="viewport"
               >
-                <font-awesome-icon icon="ellipsis-v" />
+                <font-awesome-icon icon="ellipsis-vertical" />
               </button>
               <div
                 class="dropdown-menu"

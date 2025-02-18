@@ -24,7 +24,7 @@
           class="btn btn-light"
           data-toggle="dropdown"
         >
-          <font-awesome-icon icon="cog" />
+          <font-awesome-icon icon="gear" />
         </button>
         <div
           id="countdown-menu"

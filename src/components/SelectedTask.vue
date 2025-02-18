@@ -84,7 +84,7 @@
             title="Task options"
             data-toggle="dropdown"
           >
-            <font-awesome-icon icon="ellipsis-v" />
+            <font-awesome-icon icon="ellipsis-vertical" />
           </button>
           <div class="dropdown-menu dropdown-menu-right">
             <div
@@ -96,7 +96,7 @@
                 title="Edit task name"
                 @click="editName"
               >
-                <font-awesome-icon icon="pencil-alt" />
+                <font-awesome-icon icon="pencil" />
                 <span>&nbsp;&nbsp;Edit</span>
               </b-button>
               
@@ -150,7 +150,7 @@
           title="Edit notes"
           @click="editNotes"
         >
-          <font-awesome-icon icon="pencil-alt" />
+          <font-awesome-icon icon="pencil" />
         </button>
         
         <!-- Editing Mode -->

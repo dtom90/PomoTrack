@@ -8,7 +8,7 @@
     <template v-slot:modal-title>
       <ModalTitle
         title="Archived Tasks"
-        icon="trash-alt"
+        icon="trash-can"
       />
     </template>
     <div

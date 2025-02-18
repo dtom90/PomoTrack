@@ -19,7 +19,7 @@ describe('create tasks', () => {
 
   it('edits the task name from the task menu', () => {
     // Arrange
-    cy.get('button > svg.fa-ellipsis-v').click()
+    cy.get('button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Edit').click()
 
     // Act
@@ -33,9 +33,9 @@ describe('create tasks', () => {
   it('edits the task notes', () => {
     // Act
     cy.get('#selected-task-container').contains('Notes:')
-      .closest('div').find('button > svg.fa-pencil-alt').click()
+      .closest('div').find('button > svg.fa-pencil').click()
     cy.get('textarea').type('My notes{enter}')
-    cy.get('#notes-section').find('button > svg.fa-save').click()
+    cy.get('#notes-section').find('button > svg.fa-floppy-disk').click()
 
     // Assert
     cy.reload()

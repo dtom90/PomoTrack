@@ -4,7 +4,7 @@
     @show="refreshNotificationsEnabled"
   >
     <template #text>
-      <font-awesome-icon icon="cog" />
+      <font-awesome-icon icon="gear" />
       Options
     </template>
     <b-dropdown-item-button

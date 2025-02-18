@@ -47,7 +47,7 @@
         title="Delete tag"
         @click="deleteTag({ tagId })"
       >
-        <font-awesome-icon icon="trash-alt" />
+        <font-awesome-icon icon="trash-can" />
       </button>
     </div>
   </div>

@@ -24,7 +24,7 @@
             Tags
           </b-nav-item>
           <b-nav-item v-b-modal.archiveModal>
-            <font-awesome-icon icon="trash-alt" />
+            <font-awesome-icon icon="trash-can" />
             Archive
           </b-nav-item>
           <NavbarOptionsDropdown />

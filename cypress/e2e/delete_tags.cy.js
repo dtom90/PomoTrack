@@ -53,7 +53,7 @@ describe('delete tags', () => {
       cy.get('.tag-button').contains(firstTagName).click()
       
       // Act
-      cy.get('button > svg.fa-trash-alt').click()
+      cy.get('button > svg.fa-trash-can').click()
       
       // Assert
       cy.get('.tag-button').should('not.exist')
