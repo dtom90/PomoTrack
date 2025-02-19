@@ -158,7 +158,7 @@ describe('create tags', () => {
       .type('My Second Task{enter}')
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
     cy.get('button > svg.fa-plus').click()
     cy.get('#tagDropdownMenu > button').contains(firstTagName).click()
     cy.reload()
@@ -174,7 +174,7 @@ describe('create tags', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
     cy.get('.dropdown-menu').contains(firstTagName).click()
-    cy.get('.dropdown-menu div.tag.btn-group button > svg.fa-times').click()
+    cy.get('.dropdown-menu div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.get('input[placeholder="enter new task"]')

@@ -1,6 +1,6 @@
 {
   "name": "devtrack",
-  "version": "0.14.5",
+  "version": "0.14.6",
   "private": true,
   "description": "An app for productive developers",
   "author": {
@@ -32,7 +32,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.26.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
-    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^0.1.6",
     "babel-loader": "^9.2.1",
     "bootstrap": "^4.6.2",

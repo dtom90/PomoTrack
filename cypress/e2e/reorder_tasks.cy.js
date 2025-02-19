@@ -39,7 +39,7 @@ describe('reorder tasks', () => {
       .click()
       .type('My Archived Task{enter}')
     cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-    cy.get('button > svg.fa-ellipsis-v').click()
+    cy.get('button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
 
     // Act
@@ -56,7 +56,7 @@ describe('reorder tasks', () => {
     cy.get('input[placeholder="enter new task"]')
       .click()
       .type('My Archived Task{enter}')
-    cy.get('button > svg.fa-ellipsis-v').click()
+    cy.get('button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
 
     // Act

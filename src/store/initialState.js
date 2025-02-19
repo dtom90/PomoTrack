@@ -27,7 +27,6 @@ const initialState = {
     insertAtTop: false,
     
     // Navbar settings
-    globalNotificationsEnabled: true,
     timeFormat24: false,
     DailyTarget: null,
     WeeklyTarget: null,

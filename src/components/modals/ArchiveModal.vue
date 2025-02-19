@@ -1,11 +1,16 @@
 <template>
   <b-modal
     id="archiveModal"
-    title="Archived Tasks"
     size="lg"
     scrollable
     ok-only
   >
+    <template v-slot:modal-title>
+      <ModalTitle
+        title="Archived Tasks"
+        icon="trash-can"
+      />
+    </template>
     <div
       v-if="!archivedTasks.length"
       class="text-center"
@@ -50,11 +55,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Checkbox from '../Checkbox.vue'
+import ModalTitle from './ModalTitle.vue'
 
 export default {
   name: 'ArchiveModal',
   
   components: {
+    ModalTitle,
     Checkbox
   },
   

@@ -16,12 +16,15 @@
       >
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-b-modal.allActivityModal>
+            <font-awesome-icon icon="chart-simple" />
             All Activity
           </b-nav-item>
           <b-nav-item v-b-modal.tagModal>
+            <font-awesome-icon icon="tag" />
             Tags
           </b-nav-item>
           <b-nav-item v-b-modal.archiveModal>
+            <font-awesome-icon icon="trash-can" />
             Archive
           </b-nav-item>
           <NavbarOptionsDropdown />

@@ -1,12 +1,22 @@
 <template>
   <b-nav-item-dropdown
-    text="Options"
     boundary="viewport"
+    @show="refreshNotificationsEnabled"
   >
-    <b-dropdown-item-button>
-      <b-form-checkbox v-model="globalNotificationsEnabled">
-        Enable Notifications
-      </b-form-checkbox>
+    <template #text>
+      <font-awesome-icon icon="gear" />
+      Options
+    </template>
+    <b-dropdown-item-button
+      :title="notificationsEnabled ? 'Notifications are enabled (to disable, revoke in URL settings)' : 'Enable notifications'"
+      :disabled="notificationsEnabled"
+      @click.stop="toggleEnableNotifications"
+    >
+      <input
+        type="checkbox"
+        :checked="notificationsEnabled"
+        :disabled="notificationsEnabled"
+      > Enable Notifications
     </b-dropdown-item-button>
     <b-dropdown-item-button>
       <b-form-checkbox v-model="timeFormat24">
@@ -18,22 +28,14 @@
 
 <script>
 import { mapActions } from 'vuex'
+import notifications from '../../lib/notifications'
 
 export default {
   name: 'NavbarOptionsDropdown',
   
+  mixins: [notifications],
+  
   computed: {
-    globalNotificationsEnabled: {
-      get () {
-        return this.$store.state.settings.globalNotificationsEnabled
-      },
-      set (value) {
-        this.updateSetting(
-          { key: 'globalNotificationsEnabled', value }
-        )
-      }
-    },
-    
     timeFormat24: {
       get () {
         return this.$store.state.settings.timeFormat24

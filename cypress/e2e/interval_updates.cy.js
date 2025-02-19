@@ -72,7 +72,7 @@ describe('interval updates', () => {
 
     // Act
     cy.get('tr').last().within(() => {
-      cy.get('button > svg.fa-ellipsis-v').click()
+      cy.get('button > svg.fa-ellipsis-vertical').click()
       cy.get('button').contains('Delete Interval').click()
     })
 
@@ -90,7 +90,7 @@ describe('interval updates', () => {
 
     // Act
     cy.get('tr').last().within(() => {
-      cy.get('button > svg.fa-ellipsis-v').click()
+      cy.get('button > svg.fa-ellipsis-vertical').click()
       cy.get('button').contains('Delete Interval').click()
     })
 

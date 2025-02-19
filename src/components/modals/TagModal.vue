@@ -2,13 +2,18 @@
   <b-modal
     id="tagModal"
     content-class="tag-modal-content"
-    title="Tags"
     size="lg"
     scrollable
     ok-only
     @shown="isModalShown = true"
     @hidden="isModalShown = false"
   >
+    <template v-slot:modal-title>
+      <ModalTitle
+        title="Tags"
+        icon="tag"
+      />
+    </template>
     <draggable
       v-if="isModalShown"
       v-model="tagOrder"
@@ -42,11 +47,13 @@
 import TagSettingsButton from '../TagSettingsButton'
 import { mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
+import ModalTitle from './ModalTitle.vue'
 
 export default {
   name: 'TagModal',
   
   components: {
+    ModalTitle,
     TagSettingsButton,
     draggable
   },

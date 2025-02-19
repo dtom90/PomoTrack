@@ -16,7 +16,7 @@ describe('delete tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
 
     // Assert
     cy.get('#taskTags').contains(firstTagName).should('not.exist')
@@ -28,7 +28,7 @@ describe('delete tags', () => {
       .should('have.focus').type(secondTagName + '{enter}')
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').first().click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').first().click()
 
     // Assert
     cy.get('#taskTags').contains(firstTagName).should('not.exist')
@@ -37,7 +37,7 @@ describe('delete tags', () => {
 
   it('should keep tag removed on page reload', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-times').click()
+    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.reload()
@@ -53,7 +53,7 @@ describe('delete tags', () => {
       cy.get('.tag-button').contains(firstTagName).click()
       
       // Act
-      cy.get('button > svg.fa-trash-alt').click()
+      cy.get('button > svg.fa-trash-can').click()
       
       // Assert
       cy.get('.tag-button').should('not.exist')

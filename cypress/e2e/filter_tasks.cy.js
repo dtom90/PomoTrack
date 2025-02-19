@@ -56,7 +56,7 @@ describe('filter tasks', () => {
 
     // Act
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-times').click()
+      cy.get('button > svg.fa-xmark').click()
     })
 
     // Assert
@@ -82,7 +82,7 @@ describe('filter tasks', () => {
   
   it('should clear selected task if no task matches tag being filtered', () => {
     // Arrange
-    cy.get('#selected-task-container button.tag-close > svg.fa-times').click()
+    cy.get('#selected-task-container button.tag-close > svg.fa-xmark').click()
 
     // Act
     cy.get('button > svg.fa-filter').click()
@@ -146,7 +146,7 @@ describe('filter tasks', () => {
     
     // Act
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-times').first().click()
+      cy.get('button > svg.fa-xmark').first().click()
     })
     
     // Assert
@@ -158,7 +158,7 @@ describe('filter tasks', () => {
   
   it('should continue timer even if selected task is cleared', () => {
     // Arrange
-    cy.get('#selected-task-container button.tag-close > svg.fa-times').click()
+    cy.get('#selected-task-container button.tag-close > svg.fa-xmark').click()
     cy.get('button > svg.fa-play').click()
     
     // Act
@@ -170,7 +170,7 @@ describe('filter tasks', () => {
     // Assert
     cy.get('#active-task-container').should('be.visible')
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-times').click()
+      cy.get('button > svg.fa-xmark').click()
     })
     cy.contains('#incomplete-task-list .task', 'My Second Task').click()
     cy.get('#timer-display').scrollIntoView()

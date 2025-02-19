@@ -7,7 +7,7 @@ describe('delete tasks', () => {
   
   it('does not contain a delete button', () => {
     // Act
-    cy.get('button > svg.fa-ellipsis-v').click()
+    cy.get('button > svg.fa-ellipsis-vertical').click()
     
     // Assert
     cy.get('button').contains('Delete').should('not.exist')
@@ -23,7 +23,7 @@ describe('delete tasks', () => {
   //   })
   //
   //   // Act
-  //   cy.get('button > svg.fa-ellipsis-v').click()
+  //   cy.get('button > svg.fa-ellipsis-vertical').click()
   //   await Cypress.Promise.resolve(cy.get('button').contains('Delete').click())
   //
   //   // Assert
@@ -40,7 +40,7 @@ describe('delete tasks', () => {
   //   cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
   //
   //   // Act
-  //   cy.get('button > svg.fa-ellipsis-v').click()
+  //   cy.get('button > svg.fa-ellipsis-vertical').click()
   //   await Cypress.Promise.resolve(cy.get('button').contains('Delete').click())
   //
   //   // Assert
