@@ -43,7 +43,7 @@ const actions = {
           tagId
         }))
         await dexieDb.taskTagMap.bulkAdd(taskTagMaps)
-        newTask.tags = state.settings.selectedTagIds
+        newTask.tags = taskTagMaps.map(taskTagMap => taskTagMap.tagId)
       } else {
         newTask.tags = []
       }

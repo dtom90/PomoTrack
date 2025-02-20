@@ -194,4 +194,61 @@ describe('filter tasks', () => {
     // Assert
     cy.get('#activityModal').contains(firstTagName).should('be.visible')
   })
+  
+  it('should not add tag to new task when checkbox un-selected in filter menu', () => {
+    // Arrange
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    
+    // Act
+    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
+      cy.get('input[type="checkbox"]').click()
+    })
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Third Task{enter}')
+    
+    // Assert
+    cy.contains('#incomplete-task-list .task', 'My Third Task').should('have.length', 0)
+  })
+  
+  it('should add tag to new task when checkbox selected (default) in filter menu', () => {
+    // Arrange
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    
+    // Act
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Third Task{enter}')
+    
+    // Assert
+    cy.contains('#incomplete-task-list .task', 'My Third Task').should('have.length', 1)
+    cy.get('#selected-task-container').contains('My Third Task').should('exist')
+    cy.get('#selected-task-container').contains(firstTagName).should('exist')
+  })
+  
+  it('should not add new tag to already-created task when new filter selected', () => {
+    // Arrange
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
+      cy.contains('button', firstTagName).click()
+    })
+    cy.get('input[placeholder="enter new task"]')
+      .click()
+      .type('My Third Task{enter}')
+    
+    // Act
+    cy.get('button > svg.fa-filter').click()
+    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
+      cy.contains('button', secondTagName).click()
+    })
+    
+    // Assert
+    cy.contains('#incomplete-task-list .task', 'My Third Task').should('have.length', 0)
+  })
 })
