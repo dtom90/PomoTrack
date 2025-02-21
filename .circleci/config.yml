@@ -39,7 +39,7 @@ jobs:
           docker_layer_caching: true
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:/LoPSzj7Kvn+OYACQ5FIBUzs50HNMACBBIfoiE36EPU"
+            - "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
       - checkout
       - run:
           name: Build GitHub Pages
