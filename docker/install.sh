@@ -2,7 +2,7 @@
 
 # Installs node modules to host directory
 
-IMAGE_NAME=devtrack-base
+IMAGE_NAME=pomotrack-base
 
 THIS_DIR=$(dirname "$0")
 cd "${THIS_DIR}/.." || exit

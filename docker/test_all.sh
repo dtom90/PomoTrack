@@ -6,8 +6,8 @@ echo "Running Packages Audit and Lint..."
 echo
 ./test_basic.sh
 
-IMAGE_NAME=devtrack-prod
-CONTAINER_NAME=devtrack-prod
+IMAGE_NAME=pomotrack-prod
+CONTAINER_NAME=pomotrack-prod
 echo
 echo "Deploying production container..."
 echo

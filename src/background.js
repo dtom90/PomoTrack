@@ -81,7 +81,7 @@ autoUpdater.on('update-available', (info) => {
     defaultId: 0,
     cancelId: 1,
     title: 'Update Available',
-    message: 'Update for DevTrack is available. Would you like to download it now?',
+    message: 'Update for PomoTrack is available. Would you like to download it now?',
     detail: 'Version ' + info.version
   })
   if (result === 0) {
@@ -156,7 +156,7 @@ app.on('ready', async () => {
 async function handleSaveStateDialog (_event, state) {
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Save Data',
-    defaultPath: path.join(app.getPath('desktop'), '/DevTrack.json')
+    defaultPath: path.join(app.getPath('desktop'), '/PomoTrack.json')
   })
   if (!canceled) {
     fs.writeFile(filePath, JSON.stringify(state, null, 2), err => {
@@ -171,7 +171,7 @@ async function handleSaveStateDialog (_event, state) {
 async function handleLoadStateDialog () {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Load Data',
-    defaultPath: path.join(app.getPath('desktop'), '/DevTrack.json'),
+    defaultPath: path.join(app.getPath('desktop'), '/PomoTrack.json'),
     properties: ['openFile'],
     filters: [
       { name: 'JSON', extensions: ['json'] }

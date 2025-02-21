@@ -2,8 +2,8 @@
 
 # Runs production container
 
-IMAGE_NAME=devtrack-prod
-CONTAINER_NAME=devtrack-prod
+IMAGE_NAME=pomotrack-prod
+CONTAINER_NAME=pomotrack-prod
 
 THIS_DIR=$(dirname "$0")
 cd "${THIS_DIR}/.." || exit

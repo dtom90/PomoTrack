@@ -1,5 +1,5 @@
-appId: app.devtrack
-productName: DevTrack
+appId: app.pomotrack
+productName: pomotrack
 publish: github
 mac:
   category: public.app-category.productivity

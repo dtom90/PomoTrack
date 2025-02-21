@@ -2,8 +2,8 @@
 
 # Runs cypress tests
 
-IMAGE_NAME=devtrack-cypress
-CONTAINER_NAME=devtrack-cypress
+IMAGE_NAME=pomotrack-cypress
+CONTAINER_NAME=pomotrack-cypress
 
 THIS_DIR=$(dirname "$0")
 cd "${THIS_DIR}/.." || exit
@@ -16,6 +16,6 @@ docker run -it --rm \
            --net=bridge \
            --name ${CONTAINER_NAME} \
            --add-host=host.docker.internal:host-gateway \
-           --env CYPRESS_DEVTRACK_HOSTNAME='host.docker.internal' \
+           --env CYPRESS_POMOTRACK_HOSTNAME='host.docker.internal' \
            ${IMAGE_NAME} \
            --browser chrome

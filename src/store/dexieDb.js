@@ -1,7 +1,7 @@
 import Dexie from 'dexie'
 // import {Task} from "../types/Task";
 
-const dexieDb = new Dexie('DevTrackDatabase')
+const dexieDb = new Dexie('PomoTrackDatabase')
 dexieDb.version(1).stores({
   tasks: 'id, name, notes, order, created_at, completed, archived',
   tags: 'id, &tagName, color, order',

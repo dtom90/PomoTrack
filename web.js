@@ -9,4 +9,4 @@ const staticDir = 'dist_web'
 app.use(baseUrl, express.static(path.join(__dirname, staticDir)))
 
 // eslint-disable-next-line no-console
-app.listen(port, () => console.log(`Serving DevTrack at http://localhost:${port}${baseUrl}`))
+app.listen(port, () => console.log(`Serving PomoTrack at http://localhost:${port}${baseUrl}`))

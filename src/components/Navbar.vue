@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-light bg-light">
     <b-navbar-brand href="#">
-      DevTrack
+      PomoTrack
     </b-navbar-brand>
     
     <div id="time-container">

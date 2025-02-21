@@ -5,8 +5,8 @@
 # - Source code is mapped from host
 # - Run with additional command to replace default command
 
-IMAGE_NAME=devtrack-base
-CONTAINER_NAME=devtrack-dev
+IMAGE_NAME=pomotrack-base
+CONTAINER_NAME=pomotrack-dev
 
 # shellcheck disable=SC2124
 CMD="$@"
