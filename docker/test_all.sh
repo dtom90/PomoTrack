@@ -1,5 +1,8 @@
 #!/bin/bash
-set -e 
+set -e
+set -x
+THIS_DIR=$(dirname "$0")
+cd "${THIS_DIR}" || exit
 
 echo
 echo "Running Packages Audit and Lint..."
@@ -19,7 +22,7 @@ echo
 echo "Testing against production container..."
 echo
 set +e
-./test_e2e.sh
+./test_cypress.sh
 test_exit_code=$?
 echo
 echo "Stopping production container..."
