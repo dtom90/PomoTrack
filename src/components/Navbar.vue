@@ -16,16 +16,22 @@
       >
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-b-modal.allActivityModal>
-            <font-awesome-icon icon="chart-simple" />
-            All Activity
+            <span class="text-nowrap">
+              <font-awesome-icon icon="chart-simple" />
+              All Activity
+            </span>
           </b-nav-item>
           <b-nav-item v-b-modal.tagModal>
-            <font-awesome-icon icon="tag" />
-            Tags
+            <span class="text-nowrap">
+              <font-awesome-icon icon="tag" />
+              Tags
+            </span>
           </b-nav-item>
           <b-nav-item v-b-modal.archiveModal>
-            <font-awesome-icon icon="trash-can" />
-            Archive
+            <span class="text-nowrap">
+              <font-awesome-icon icon="trash-can" />
+              Archive
+            </span>
           </b-nav-item>
           <NavbarOptionsDropdown />
         </b-navbar-nav>
