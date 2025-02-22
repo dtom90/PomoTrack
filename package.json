@@ -1,5 +1,8 @@
 {
-  "name": "devtrack",
+  "name": "pomotrack",
+  "displayName": "PomoTrack",
+  "homepage": "https://github.com/dtom90/PomoTrack",
+  "repository": "https://github.com/dtom90/PomoTrack",
   "version": "0.14.7",
   "private": true,
   "description": "An app for productive developers",
@@ -111,8 +114,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ],
-  "displayName": "DevTrack",
-  "homepage": "https://github.com/dtom90/DevTrack",
-  "repository": "https://github.com/dtom90/DevTrack"
+  ]
 }

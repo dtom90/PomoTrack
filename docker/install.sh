@@ -1,11 +1,12 @@
 #!/bin/bash
+set -e
+set -x
+THIS_DIR=$(dirname "$0")
+cd "${THIS_DIR}/.." || exit
 
 # Installs node modules to host directory
 
-IMAGE_NAME=devtrack-base
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
+IMAGE_NAME=pomotrack-base
 
 CMD="$@"
 if [[ -z "$CMD" ]]; then CMD="yarn install"; fi

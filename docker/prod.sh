@@ -1,12 +1,13 @@
 #!/bin/bash
+set -e
+set -x
+THIS_DIR=$(dirname "$0")
+cd "${THIS_DIR}/.." || exit
 
 # Runs production container
 
-IMAGE_NAME=devtrack-prod
-CONTAINER_NAME=devtrack-prod
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
+IMAGE_NAME=pomotrack-prod
+CONTAINER_NAME=pomotrack-prod
 
 if [ "$1" == "-d" ]; then
   RUN_OPTION="-d"

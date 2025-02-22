@@ -1,5 +1,5 @@
-# DevTrack
-[![CircleCI](https://circleci.com/gh/dtom90/DevTrack.svg?style=svg)](https://circleci.com/gh/dtom90/DevTrack)
+# PomoTrack
+[![CircleCI](https://circleci.com/gh/dtom90/PomoTrack.svg?style=svg)](https://circleci.com/gh/dtom90/PomoTrack)
 
 An app for productive developers
 
