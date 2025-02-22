@@ -31,7 +31,7 @@ yarn run lint
 ```
 #### Run basic tests (lint, audit)
 ```
-yarn run test
+yarn run test:basic
 ```
 #### Run all tests in Docker containers
 ```

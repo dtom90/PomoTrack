@@ -52,7 +52,7 @@ jobs:
             git config user.name "David Thomason"
             npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages"
 
-  build-electron:
+  build-electron-mac:
     macos:
       xcode: 16.1.0
     steps:
@@ -82,8 +82,8 @@ jobs:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
-          name: Build and release publish Electron app
-          command: yarn run electron:release
+          name: Build, package and publish Electron app for macOS
+          command: yarn run electron:release:mac
 
 
 workflows:
@@ -109,7 +109,7 @@ workflows:
             branches:
               only:
                 - master
-      - build-electron:
+      - build-electron-mac:
           filters:
             branches:
               only:
