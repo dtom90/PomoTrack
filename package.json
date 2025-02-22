@@ -3,7 +3,7 @@
   "displayName": "PomoTrack",
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "private": true,
   "description": "An app for productive developers",
   "author": {
@@ -30,8 +30,8 @@
     "electron:dev": "vue-cli-service electron:serve",
     "electron:build:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false vue-cli-service electron:build --dir --mac",
     "electron:build:win": "vue-cli-service electron:build --dir --windows",
-    "electron:release:win": "vue-cli-service electron:build --windows",
     "electron:release:mac": "vue-cli-service electron:build --mac",
+    "electron:release:win": "vue-cli-service electron:build --windows",
     "electron:serve": "electron dist_electron/bundled",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
