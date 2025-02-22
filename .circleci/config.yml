@@ -106,10 +106,14 @@ jobs:
             nvm alias default v18.20.5
       - run:
           name: Install dependencies
-          command: yarn install
+          command: |
+            . ~/.nvm/nvm.sh
+            yarn install
       - run:
           name: Build Windows app
-          command: yarn run electron:release:win
+          command: |
+            . ~/.nvm/nvm.sh
+            yarn run electron:release:win
 
 workflows:
   version: 2
