@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   macos: circleci/macos@2.5.2
   windows: circleci/windows@5
-  node: circleci/node@5
 
 jobs:
   test-basic:
@@ -69,7 +68,7 @@ jobs:
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
       - checkout
       - run:
-          name: Set Node Version
+          name: Install Node
           command: |
             set +e
             nvm install v18.20.5
@@ -84,7 +83,7 @@ jobs:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
-          name: Build, package and publish Electron app for macOS
+          name: Build macOS app
           command: yarn run electron:release:mac
 
   build-windows:
@@ -93,17 +92,24 @@ jobs:
       size: medium
     steps:
       - checkout
-      - node/install:
-          node-version: '18.20.5'
+      - run:
+          name: Install NVM
+          command: |
+            $webClient = New-Object System.Net.WebClient
+            $webClient.DownloadFile("https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh", "$env:TEMP\install.sh")
+            bash $env:TEMP\install.sh
+      - run:
+          name: Install Node
+          command: |
+            . ~/.nvm/nvm.sh
+            nvm install v18.20.5
+            nvm alias default v18.20.5
       - run:
           name: Install dependencies
           command: yarn install
       - run:
           name: Build Windows app
           command: yarn run electron:release:win
-      - store_artifacts:
-          path: dist_electron
-          destination: electron-builds
 
 workflows:
   version: 2
