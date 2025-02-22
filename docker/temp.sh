@@ -2,7 +2,7 @@
 set -e
 set -x
 THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}" || exit
+cd "${THIS_DIR}/.." || exit
 
 # Runs temporary container in development mode
 # - Node modules installed in Docker image
@@ -11,9 +11,6 @@ cd "${THIS_DIR}" || exit
 
 IMAGE_NAME=pomotrack-temp
 CONTAINER_NAME=pomotrack-temp
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
 
 docker build \
        -f docker/temp.dockerfile \

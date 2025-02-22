@@ -2,7 +2,7 @@
 set -e
 set -x
 THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}" || exit
+cd "${THIS_DIR}/.." || exit
 
 # Runs development container with source mapping
 # - PREREQUISITE: run install.sh to install dependencies
@@ -16,10 +16,7 @@ CONTAINER_NAME=pomotrack-dev
 CMD="$@"
 if [[ -z "$CMD" ]]; then CMD="yarn run web:dev"; fi
 
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
-
-./install.sh && \
+./docker/install.sh && \
 docker run -it --rm \
        -p 8080:8080 \
        -v "$(pwd)":/app \

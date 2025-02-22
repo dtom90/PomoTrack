@@ -2,15 +2,12 @@
 set -e
 set -x
 THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}" || exit
+cd "${THIS_DIR}/.." || exit
 
 # Runs production container
 
 IMAGE_NAME=pomotrack-prod
 CONTAINER_NAME=pomotrack-prod
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
 
 if [ "$1" == "-d" ]; then
   RUN_OPTION="-d"

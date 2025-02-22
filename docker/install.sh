@@ -2,14 +2,11 @@
 set -e
 set -x
 THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}" || exit
+cd "${THIS_DIR}/.." || exit
 
 # Installs node modules to host directory
 
 IMAGE_NAME=pomotrack-base
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
 
 CMD="$@"
 if [[ -z "$CMD" ]]; then CMD="yarn install"; fi

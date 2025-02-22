@@ -2,15 +2,12 @@
 set -e
 set -x
 THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}" || exit
+cd "${THIS_DIR}/.." || exit
 
 # Runs cypress tests
 
 IMAGE_NAME=pomotrack-cypress
 CONTAINER_NAME=pomotrack-cypress
-
-THIS_DIR=$(dirname "$0")
-cd "${THIS_DIR}/.." || exit
 
 docker build \
        -f docker/cypress.dockerfile \
