@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   macos: circleci/macos@2.5.2
+  windows: circleci/windows@5
+  node: circleci/node@5
 
 jobs:
   test-basic:
@@ -52,7 +54,7 @@ jobs:
             git config user.name "David Thomason"
             npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages"
 
-  build-electron:
+  build-mac:
     macos:
       xcode: 16.1.0
     steps:
@@ -82,9 +84,26 @@ jobs:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
-          name: Build and release publish Electron app
-          command: yarn run electron:release
+          name: Build, package and publish Electron app for macOS
+          command: yarn run electron:release:mac
 
+  build-windows:
+    executor:
+      name: windows/default
+      size: medium
+    steps:
+      - checkout
+      - node/install:
+          node-version: '18.20.5'
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Build Windows app
+          command: yarn run electron:release:win
+      - store_artifacts:
+          path: dist_electron
+          destination: electron-builds
 
 workflows:
   version: 2
@@ -109,7 +128,12 @@ workflows:
             branches:
               only:
                 - master
-      - build-electron:
+      - build-mac:
+          filters:
+            branches:
+              only:
+                - master
+      - build-windows:
           filters:
             branches:
               only:

@@ -2,7 +2,7 @@ const path = require('path')
 const express = require('express')
 const app = express()
 
-const port = 5000
+const port = 8000
 const baseUrl = process.env.BASE_URL || '/'
 const staticDir = 'dist_web'
 

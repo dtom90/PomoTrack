@@ -12,4 +12,12 @@ mac:
     arch:
       - x64
       - arm64
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
 afterSign: scripts/notarize.js

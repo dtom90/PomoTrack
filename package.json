@@ -3,7 +3,7 @@
   "displayName": "PomoTrack",
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "private": true,
   "description": "An app for productive developers",
   "author": {
@@ -11,25 +11,30 @@
     "url": "https://davidthomason.com/"
   },
   "scripts": {
-    "lint": "vue-cli-service lint src/ cypress/ --no-fix",
-    "lint:fix": "vue-cli-service lint src/ cypress/ --fix",
     "packages:audit": "/bin/bash -c 'yarn audit --groups dependencies; [[ $? -ge 8 ]] && exit 1 || exit 0'",
     "packages:fix": "npm_config_yes=true npx yarn-audit-fix",
-    "electron:dev": "vue-cli-service electron:serve",
-    "electron:build": "vue-cli-service electron:build --dir",
-    "electron:release": "vue-cli-service electron:build",
-    "electron:serve": "electron dist_electron/bundled",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
-    "test": "yarn packages:audit && yarn run lint",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run -b chrome",
-    "test:prod:build:e2e": "yarn run web:build && yarn run test:e2e:prod",
+    "lint": "vue-cli-service lint src/ cypress/ --no-fix",
+    "lint:fix": "vue-cli-service lint src/ cypress/ --fix",
+    "test:basic": "yarn packages:audit && yarn run lint",
+    
+    "web:dev": "vue-cli-service serve",
     "web:build": "vue-cli-service build --dest dist_web",
     "web:build:analyze": "ANALYZE_WEBPACK=true vue-cli-service build --dest dist_web",
-    "web:dev": "vue-cli-service serve",
+    "web:serve": "node web.js",
     "web:prod": "yarn run web:build && yarn run web:serve",
-    "web:serve": "node web.js"
+    
+    "cy:open": "cypress open",
+    "cy:run": "cypress run -b chrome",
+    "test:prod:build:e2e": "yarn run web:dev && yarn run cy:run",
+    
+    "electron:dev": "vue-cli-service electron:serve",
+    "electron:build:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false vue-cli-service electron:build --dir --mac",
+    "electron:build:win": "vue-cli-service electron:build --dir --windows",
+    "electron:release:mac": "vue-cli-service electron:build --mac",
+    "electron:release:win": "vue-cli-service electron:build --windows",
+    "electron:serve": "electron dist_electron/bundled",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
@@ -81,6 +86,7 @@
     "dotenv": "^8.2.0",
     "electron": "^33.2.0",
     "electron-builder": "^23.0.2",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.4.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-chai-friendly": "^1.0.1",
@@ -96,7 +102,7 @@
     "fake-indexeddb": "^4.0.1",
     "moment": "^2.29.4",
     "sinon": "^19.0.2",
-    "vue-cli-plugin-electron-builder": "^2.1.1",
+    "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-template-compiler": "^2.7.16",
     "webpack": "^5.97.1",
     "webpack-bundle-analyzer": "^3.6.0"

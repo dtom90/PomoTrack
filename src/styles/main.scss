@@ -48,6 +48,10 @@
   cursor: grabbing !important;
 }
 
+.draggable-ghost {
+  opacity: 0.5;
+}
+
 .flex-1 {
   flex: 1;
 }
