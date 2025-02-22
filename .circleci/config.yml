@@ -52,38 +52,38 @@ jobs:
             git config user.name "David Thomason"
             npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages"
 
-#  build-electron:
-#    macos:
-#      xcode: 16.1.0
-#    steps:
-#      - macos/install-rosetta
-#      - run:
-#          name: Install NVM
-#          command: |
-#            set +e
-#            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-#            export NVM_DIR="$HOME/.nvm"
-#            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-#            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-#      - checkout
-#      - run:
-#          name: Set Node Version
-#          command: |
-#            set +e
-#            nvm install v18.20.5
-#            nvm alias default v18.20.5
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            set +e
-#            pip install setuptools
-#            yarn
-#      - run:
-#          name: Reset xcode selection
-#          command: sudo xcode-select -r
-#      - run:
-#          name: Build and release publish Electron app
-#          command: yarn run electron:release
+  build-electron:
+    macos:
+      xcode: 16.1.0
+    steps:
+      - macos/install-rosetta
+      - run:
+          name: Install NVM
+          command: |
+            set +e
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      - checkout
+      - run:
+          name: Set Node Version
+          command: |
+            set +e
+            nvm install v18.20.5
+            nvm alias default v18.20.5
+      - run:
+          name: Install dependencies
+          command: |
+            set +e
+            pip install setuptools
+            yarn
+      - run:
+          name: Reset xcode selection
+          command: sudo xcode-select -r
+      - run:
+          name: Build and release publish Electron app
+          command: yarn run electron:release
 
 
 workflows:
@@ -109,8 +109,8 @@ workflows:
             branches:
               only:
                 - master
-#      - build-electron:
-#          filters:
-#            branches:
-#              only:
-#                - master
+      - build-electron:
+          filters:
+            branches:
+              only:
+                - master

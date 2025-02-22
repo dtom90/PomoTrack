@@ -1,7 +1,7 @@
 # PomoTrack
 [![CircleCI](https://circleci.com/gh/dtom90/PomoTrack.svg?style=svg)](https://circleci.com/gh/dtom90/PomoTrack)
 
-An app for productive developers
+A pomodoro timer app with task tracking
 
 Written in [Vue.js](https://vuejs.org/)
 
