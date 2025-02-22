@@ -6,7 +6,7 @@
       type="checkbox"
       :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
       :disabled="disabled"
-      @change="completeTask({taskId})"
+      @change="onCheckboxClick"
     >
     <span class="check-custom" />
   </div>
@@ -14,9 +14,12 @@
 
 <script>
 import { mapActions } from 'vuex'
+import notifications from '../lib/notifications'
 
 export default {
   name: 'Checkbox',
+  
+  mixins: [notifications],
   
   props: {
     checked: {
@@ -36,7 +39,12 @@ export default {
   methods: {
     ...mapActions([
       'completeTask'
-    ])
+    ]),
+    
+    onCheckboxClick () {
+      this.clearNotifications()
+      this.completeTask({ taskId: this.taskId })
+    }
   }
 }
 </script>

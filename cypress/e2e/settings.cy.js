@@ -22,6 +22,8 @@ describe('notifications', () => {
           this.title = title
           this.options = options
         }
+        
+        close () {}
       }
       win.Notification.permission = 'default'
       win.Notification.requestPermission = cy.stub()
@@ -33,6 +35,7 @@ describe('notifications', () => {
       
       // Create spy on the constructor
       cy.spy(win, 'Notification').as('NotificationSpy')
+      cy.spy(win.Notification.prototype, 'close').as('NotificationCloseSpy')
       cy.stub(win, 'alert').as('AlertStub')
     })
     
@@ -202,6 +205,7 @@ describe('notifications', () => {
       .should('have.been.calledTwice')
       .and('have.been.calledWith', 'Permissions to notify you have been granted!')
       .and('have.been.calledWith', 'Finished Working, Take a Break!')
+    cy.get('@NotificationCloseSpy').should('have.been.called')
   })
   
   it('when denying permission, checkbox should remain unchecked', () => {

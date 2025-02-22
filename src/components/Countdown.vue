@@ -10,7 +10,7 @@
         class="btn btn-light"
         title="Skip current interval"
         :disabled="editing"
-        @click="finishTimer"
+        @click="onSkipTimerClick"
       >
         <font-awesome-icon icon="times" />
       </button>
@@ -169,7 +169,6 @@ export default {
     overtime: false,
     secondReminderDisplayed: false,
     secondsRemaining: 0,
-    notificationList: [],
     timer: null
   }),
   
@@ -288,6 +287,11 @@ export default {
       }
     },
     
+    onSkipTimerClick () {
+      this.clearNotifications()
+      this.finishTimer()
+    },
+    
     async changeMinutes () {
       await this.updateSetting({
         key: this.active ? 'activeMinutes' : 'restMinutes',
@@ -301,10 +305,7 @@ export default {
     toggleTimer () {
       this.requestPermission()
 
-      // close any open notification
-      while (this.notificationList.length > 0) {
-        this.notificationList.pop().close()
-      }
+      this.clearNotifications()
       
       if (this.overtime) {
         this.overtime = false
@@ -331,12 +332,8 @@ export default {
         if (this.active) {
           this.updateTaskTimer({ taskId: this.taskId })
           if (this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
-            const notification = this.notify('Finished Working, Take a Break!')
+            this.notify('Finished Working, Take a Break!')
             this.secondReminderDisplayed = true
-            // add to notificationList for later closure
-            if (notification && notification instanceof Notification) {
-              this.notificationList.push(notification)
-            }
           }
         }
       } else {
@@ -373,16 +370,10 @@ export default {
       
       // Notify interval finish
       if (notify) {
-        let notification
         if (this.active) {
-          notification = this.notify('Finished Working, Take a Break!')
+          this.notify('Finished Working, Take a Break!')
         } else {
-          notification = this.notify('Finished Break, Time to Work!')
-        }
-        
-        // add to notificationList for later closure
-        if (notification && notification instanceof Notification) {
-          this.notificationList.push(notification)
+          this.notify('Finished Break, Time to Work!')
         }
       }
       

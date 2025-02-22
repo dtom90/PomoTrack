@@ -7,7 +7,8 @@ const initialState = {
   tempState: {
     activeTaskID: null,
     running: false,
-    modalTagId: null
+    modalTagId: null,
+    notificationList: []
   },
   
   settings: {

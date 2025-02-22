@@ -155,6 +155,17 @@ const mutations = {
   
   updateSetting (state, { key, value }) {
     state.settings[key] = value
+  },
+  
+  saveNotification (state, { notification }) {
+    state.tempState.notificationList.push(notification)
+  },
+  
+  clearNotifications (state) {
+    // close all open notification
+    while (state.tempState.notificationList.length > 0) {
+      state.tempState.notificationList.pop().close()
+    }
   }
 }
 

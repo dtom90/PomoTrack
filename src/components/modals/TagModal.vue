@@ -17,27 +17,35 @@
     <draggable
       v-if="isModalShown"
       v-model="tagOrder"
-      animation="200"
+      ghost-class="draggable-ghost"
+      :animation="200"
+      @start="isDragging = true"
+      @end="isDragging = false"
     >
-      <div
-        v-for="tagId in tagOrder"
-        :key="tagId"
-        class="tag btn-toolbar"
+      <transition-group
+        type="transition"
+        :name="!isDragging ? 'flip-list' : ''"
       >
         <div
-          class="btn-group"
-          role="group"
+          v-for="tagId in tagOrder"
+          :key="tagId"
+          class="tag"
         >
-          <button
-            type="button"
-            class="btn move-btn draggable-item"
-            :style="`backgroundColor: ${tags[tagId].color}`"
+          <div
+            class="btn-group"
+            role="group"
           >
-            <font-awesome-icon icon="bars" />
-          </button>
-          <TagSettingsButton :tag-id="tagId" />
+            <div
+              type="button"
+              class="btn move-btn draggable-item"
+              :style="`backgroundColor: ${tags[tagId].color}`"
+            >
+              <font-awesome-icon icon="bars" />
+            </div>
+            <TagSettingsButton :tag-id="tagId" />
+          </div>
         </div>
-      </div>
+      </transition-group>
     </draggable>
     <div id="menu-padding" />
   </b-modal>
@@ -59,7 +67,8 @@ export default {
   },
   
   data: () => ({
-    isModalShown: false
+    isModalShown: false,
+    isDragging: false
   }),
   
   computed: {

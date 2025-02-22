@@ -86,8 +86,8 @@ describe('create tags', () => {
     // Assert
     cy.get('div.modal-dialog').contains('Tags')
     cy.get('div.modal-dialog').within(() => {
-      cy.get('div.tag.btn-toolbar').eq(0).contains(firstTagName)
-      cy.get('div.tag.btn-toolbar').eq(1).contains(secondTagName)
+      cy.get('div.tag').eq(0).contains(firstTagName)
+      cy.get('div.tag').eq(1).contains(secondTagName)
     })
   })
 
@@ -108,13 +108,13 @@ describe('create tags', () => {
 
     // Act
     cy.get('div.modal-dialog').within(() => {
-      cy.get('div.tag.btn-toolbar').contains(secondTagName)
-        .closest('.btn-toolbar').drag('button.move-btn')
+      cy.get('div.tag').contains(secondTagName)
+        .closest('div.tag').drag('.move-btn')
     })
 
     // Assert
-    cy.get('div.tag.btn-toolbar').eq(0).contains(secondTagName)
-    cy.get('div.tag.btn-toolbar').eq(1).contains(firstTagName)
+    cy.get('div.tag').eq(0).contains(secondTagName)
+    cy.get('div.tag').eq(1).contains(firstTagName)
   })
 
   it('creates a second task then filters on tag', () => {

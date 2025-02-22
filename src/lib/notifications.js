@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 
 // Handle Electron notifications
 const userAgent = navigator.userAgent.toLowerCase()
@@ -18,8 +18,6 @@ export default {
   },
 
   computed: {
-    ...mapState(['tempState']),
-    
     notificationsEnabled () {
       // eslint-disable-next-line no-unused-expressions
       this.updateTrigger // Trigger recomputation
@@ -28,7 +26,10 @@ export default {
   },
   
   methods: {
-    ...mapMutations(['updateTempState']),
+    ...mapMutations([
+      'saveNotification',
+      'clearNotifications'
+    ]),
     
     refreshNotificationsEnabled () {
       this.updateTrigger++
@@ -49,7 +50,7 @@ export default {
           const newPermission = await Notification.requestPermission()
           this.refreshNotificationsEnabled()
           if (newPermission === 'granted') {
-            new Notification('Permissions to notify you have been granted!')
+            this.notify('Permissions to notify you have been granted!')
           } else if (newPermission === 'denied') {
             alert('Warning! Permissions to notify you have been denied! You may not tell when your Pomodoro timer ends.')
           }
@@ -63,7 +64,8 @@ export default {
       if (!('Notification' in window && Notification)) {
         alert(message)
       } else if (Notification.permission === 'granted') {
-        return new Notification(message)
+        const notification = new Notification(message)
+        this.saveNotification({ notification }) // save notification for later closure
       } else {
         alert(message)
       }
