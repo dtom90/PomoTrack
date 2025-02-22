@@ -102,19 +102,20 @@ jobs:
           name: Install Node
           command: |
             . ~/.nvm/nvm.sh
-            nvm use
+            nvm install v18.20.5
+            nvm alias default v18.20.5
             npm install -g yarn
       - run:
           name: Install dependencies
           command: |
             . ~/.nvm/nvm.sh
-            nvm use
+            nvm use default
             yarn install
       - run:
           name: Build Windows app
           command: |
             . ~/.nvm/nvm.sh
-            nvm use
+            nvm use default
             yarn run electron:release:win
 
 workflows:
