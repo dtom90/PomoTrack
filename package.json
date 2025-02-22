@@ -81,6 +81,7 @@
     "dotenv": "^8.2.0",
     "electron": "^33.2.0",
     "electron-builder": "^23.0.2",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.4.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-chai-friendly": "^1.0.1",
@@ -96,7 +97,7 @@
     "fake-indexeddb": "^4.0.1",
     "moment": "^2.29.4",
     "sinon": "^19.0.2",
-    "vue-cli-plugin-electron-builder": "^2.1.1",
+    "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-template-compiler": "^2.7.16",
     "webpack": "^5.97.1",
     "webpack-bundle-analyzer": "^3.6.0"
