@@ -104,6 +104,7 @@ jobs:
             . ~/.nvm/nvm.sh
             nvm install v18.20.5
             nvm alias default v18.20.5
+            npm install -g yarn
       - run:
           name: Install dependencies
           command: |
