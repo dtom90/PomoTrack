@@ -157,13 +157,21 @@
       id="incomplete-task-list"
       v-model="incompleteTaskList"
       class="list-group"
-      animation="200"
+      ghost-class="draggable-ghost"
+      :animation="200"
+      @start="isDragging = true"
+      @end="isDragging = false"
     >
-      <Task
-        v-for="task in incompleteTaskList"
-        :key="task.id"
-        :task="task"
-      />
+      <transition-group
+        type="transition"
+        :name="!isDragging ? 'flip-list' : ''"
+      >
+        <Task
+          v-for="task in incompleteTaskList"
+          :key="task.id"
+          :task="task"
+        />
+      </transition-group>
     </draggable>
     
     <!-- Completed Tasks -->
@@ -207,7 +215,8 @@ export default {
   data: () => ({
     newTaskName: '',
     sortingOptions: ['Recent', 'Oldest'],
-    sortOrder: 'Recent'
+    sortOrder: 'Recent',
+    isDragging: false
   }),
   
   computed: {
