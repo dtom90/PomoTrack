@@ -18,6 +18,19 @@ describe('create tasks', () => {
     cy.get('#selected-task-section').contains('My First Task edited')
   })
 
+  it('should keep name field in edit mode even while timer is running', () => {
+    // Arrange
+    cy.get('button > svg.fa-play').click()
+
+    // Act
+    cy.get('#selected-task-container').contains('My First Task').click()
+
+    // Assert
+    cy.get('#countdown-container').contains('24:59')
+    cy.get('#countdown-container').contains('24:58')
+    cy.get('#task-name-input').should('be.visible')
+  })
+
   it('edits the task name by clicking the name then switches to another task', () => {
     // Arrange
     cy.get('input[placeholder="enter new task"]')

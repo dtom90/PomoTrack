@@ -247,7 +247,8 @@ export default {
     ...mapState([
       'tasks',
       'tempState',
-      'tagOrder'
+      'tagOrder',
+      'selectedTaskID'
     ]),
     
     ...mapGetters([
@@ -269,7 +270,7 @@ export default {
   },
   
   watch: {
-    selectedTask () {
+    selectedTaskID () {
       this.editingName = false
       this.editingNotes = false
       this.newTaskName = this.selectedTask ? this.selectedTask.name : null
