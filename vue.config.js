@@ -11,6 +11,10 @@ const webpackConfig = {
     ]
   },
   publicPath: process.env.BASE_URL ? process.env.BASE_URL : '/',
+  transpileDependencies: [
+    'chart.js',
+    'vue-chartjs'
+  ],
   configureWebpack: {
     plugins: [],
     resolve: {
@@ -29,21 +33,33 @@ const webpackConfig = {
     }
   },
   chainWebpack: (config) => {
+    // Remove the existing babel rule for node_modules
+    config.module.rules.delete('babel-modules');
+    
+    // Add new rule for chart.js and vue-chartjs
     config.module
-      .rule('babel')
+      .rule('babel-chart')
       .test(/\.js$/)
-      .include.add(/node_modules\/chart\.js/) // Add Chart.js to transpile
-      .add(/node_modules\/vue-chartjs/) // Add vue-chartjs to transpile
+      .include
+      .add(/node_modules[\\/]chart\.js/)
+      .add(/node_modules[\\/]vue-chartjs/)
       .end()
-      .use('babel-loader')
+      .use('babel')
       .loader('babel-loader')
-      .tap((options) => {
-        // Merge with existing options
-        return {
-          ...options,
-          presets: ['@babel/preset-env']
-        }
-      })
+      .options({
+        presets: [
+          ['@vue/app', {
+            useBuiltIns: 'entry',
+            modules: false
+          }]
+        ],
+        plugins: [
+          '@babel/plugin-proposal-class-properties',
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-private-methods',
+          '@babel/plugin-proposal-private-property-in-object'
+        ]
+      });
   },
   pluginOptions: {
     electronBuilder: {
