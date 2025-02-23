@@ -59,7 +59,7 @@ describe('edit tags', () => {
     // Act
     cy.contains('.modal-dialog', 'Tags').within(() => {
       cy.get('.tag-button').contains(firstTagName).click()
-      cy.get('#tag-menu input[title="Rename tag"]').type(' updated' + '{enter}')
+      cy.get('.dropdown-menu input[title="Rename tag"]').type(' updated' + '{enter}')
     })
 
     // Assert

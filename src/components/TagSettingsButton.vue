@@ -1,56 +1,47 @@
 <template>
-  <div
+  <b-dropdown
     v-if="tag"
-    ref="tagSettingsButton"
-    class="btn-group dropright"
-    role="group"
+    ref="dropdown"
+    toggle-class="tag-button"
+    :text="tag.tagName"
+    dropright
+    @show="handleDropdownShow"
   >
-    <button
-      type="button"
-      class="btn tag-button dropdown-toggle"
-      :style="`backgroundColor: ${tag.color}`"
-      data-toggle="dropdown"
-      data-boundary="viewport"
-    >
-      {{ tag.tagName }}
-    </button>
-    <div
-      id="tag-menu"
-      class="dropdown-menu"
-    >
-      <div
-        class="d-flex align-items-center"
-      >
-        <input
+    <b-dropdown-form @submit.prevent="updateTagSubmit">
+      <b-input-group>
+        <b-form-input
+          id="tag-name-input"
+          ref="tagNameInput"
           v-model="newTagName"
           title="Rename tag"
-          @keyup.enter="updateTagSubmit"
-        >
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="updateTagSubmit"
-        >
-          <font-awesome-icon icon="save" />
-        </button>
-      </div>
-      <div class="dropdown-divider" />
-      <sketch-picker
-        v-model="newTagColor"
-        @input="newTagColor = $event.hex"
-      />
-      <div class="dropdown-divider" />
-      <button
-        id="delete-tag-btn"
-        type="button"
-        class="btn btn-danger"
-        title="Delete tag"
-        @click="deleteTag({ tagId })"
-      >
-        <font-awesome-icon icon="trash-can" />
-      </button>
-    </div>
-  </div>
+          :style="`backgroundColor: ${newTagColor}`"
+        />
+        <b-input-group-append>
+          <b-button
+            variant="primary"
+            @click="updateTagSubmit"
+          >
+            <font-awesome-icon icon="save" />
+          </b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </b-dropdown-form>
+    <div class="dropdown-divider" />
+    <sketch-picker
+      v-model="newTagColor"
+      @input="newTagColor = $event.hex"
+    />
+    <div class="dropdown-divider" />
+    <button
+      id="delete-tag-btn"
+      type="button"
+      class="btn btn-danger"
+      title="Delete tag"
+      @click="deleteTag({ tagId })"
+    >
+      <font-awesome-icon icon="trash-can" />&nbsp;&nbsp;Delete Tag
+    </button>
+  </b-dropdown>
 </template>
 
 <script>
@@ -86,11 +77,18 @@ export default {
   },
   
   mounted () {
-    if (!this.tag) {
-      return
+    if (this.tag) {
+      this.$el.querySelector('.dropdown-toggle').style.setProperty('background-color', this.tag.color)
     }
-    this.newTagName = this.tag.tagName
-    this.newTagColor = this.tag.color
+    // Prevent clicking within the dropdown from dragging the tag button
+    this.$el.querySelector('.dropdown-menu').addEventListener('mousedown', (event) => {
+      event.preventDefault()
+    })
+    // override the above event listener for the tag name input
+    this.$refs.tagNameInput.$el.addEventListener('mousedown', (event) => {
+      event.stopPropagation()
+    })
+    // NOTE: the input element, due to being withing draggable, cannot be highlighted in firefox for some reason (chrome works)
   },
   
   methods: {
@@ -99,15 +97,22 @@ export default {
       'deleteTag'
     ]),
     
+    handleDropdownShow () {
+      if (!this.tag) {
+        return
+      }
+      this.newTagName = this.tag.tagName
+      this.newTagColor = this.tag.color
+    },
+    
     async updateTagSubmit () {
       await this.updateTag({
         tagId: this.tagId,
         tagName: this.newTagName,
         color: this.newTagColor
       })
-      this.$refs.tagSettingsButton.classList.remove('show')
-      this.$refs.tagSettingsButton.querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
-      this.$refs.tagSettingsButton.querySelector('.dropdown-menu').classList.remove('show')
+      this.$el.querySelector('.dropdown-toggle').style.setProperty('background-color', this.tag.color)
+      this.$refs.dropdown.hide()
     }
   }
 }
@@ -115,24 +120,18 @@ export default {
 
 <style scoped>
 
-.tag-button {
+#tag-name-input {
   color: white;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
-  0 0 13px rgba(0, 0, 0, 0.1),
-  0 0 23px rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+<style lang="scss">
+.tag-button {
+  border: 1px solid transparent !important;
 }
 
 .tag-button:hover {
-  color: lightgrey;
+  color: lightgrey !important;
 }
-
-.dropdown-menu {
-  min-width: 40px;
-  position: absolute;
-}
-
-#delete-tag-btn {
-  margin-left: 8px;
-}
-
 </style>

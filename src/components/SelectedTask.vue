@@ -29,10 +29,11 @@
             />
           </div>
           
-          <!--  Task Name & Field (when editing)  -->
+          <!--  Task Name  -->
           <div
             v-if="!editingName"
             id="task-name"
+            class="task-name"
             @mousedown="possibleEdit = true"
             @mousemove="possibleEdit = false"
             @mouseup="editName"
@@ -45,27 +46,22 @@
             </b-badge>&nbsp;
             <span>{{ selectedTask.name }}</span>
           </div>
-          <div
+          
+          <!--  Task Field (when editing)  -->
+          <b-input-group
             v-if="editingName"
             class="input-group flex-grow-1"
+            @submit.prevent="saveName()"
           >
-            <input
+            <b-form-input
               id="task-name-input"
               ref="taskNameInput"
               v-model="newTaskName"
-              class="form-control"
+              class="task-name"
               @keyup.enter="saveName()"
-            >
-            <div class="input-group-append">
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click="saveName()"
-              >
-                <font-awesome-icon icon="save" />
-              </button>
-            </div>
-          </div>
+              @blur="saveName()"
+            />
+          </b-input-group>
           
           <div
             v-if="!editingName"
@@ -90,16 +86,6 @@
             <div
               id="selected-task-menu"
             >
-              <b-button
-                block
-                variant="warning"
-                title="Edit task name"
-                @click="editName"
-              >
-                <font-awesome-icon icon="pencil" />
-                <span>&nbsp;&nbsp;Edit</span>
-              </b-button>
-              
               <b-button
                 block
                 variant="archive-color"
@@ -138,20 +124,12 @@
         <!-- Display Mode -->
         <!-- eslint-disable vue/no-v-html -->
         <span
-          v-if="selectedTask.notes && !editingNotes"
+          v-if="!editingNotes"
           id="display-notes"
+          @click="editNotes"
           v-html="displayNotes"
         />
         <!-- eslint-enable vue/no-v-html -->
-        <button
-          v-if="!editingNotes"
-          type="button"
-          class="btn btn-light"
-          title="Edit notes"
-          @click="editNotes"
-        >
-          <font-awesome-icon icon="pencil" />
-        </button>
         
         <!-- Editing Mode -->
         <div
@@ -163,18 +141,8 @@
             v-model="selectedTask.notes"
             class="form-control"
             :rows="selectedTask.notes.split('\n').length"
+            @blur="saveNotes()"
           />
-          <div class="input-group-append">
-            <button
-              v-if="editingNotes"
-              type="button"
-              class="btn btn-primary"
-              title="Save notes"
-              @click="saveNotes()"
-            >
-              <font-awesome-icon icon="save" />
-            </button>
-          </div>
         </div>
       </div>
     </template>
@@ -241,6 +209,10 @@ renderer.link = (href, title, text) => {
   const html = linkRenderer.call(renderer, href, title, text)
   return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
+// add class to span tags
+renderer.paragraph = (text) => {
+  return `<p class="custom-p">${text}</p>`
+}
 
 export default {
   
@@ -294,6 +266,14 @@ export default {
       return marked(DOMPurify.sanitize(this.selectedTask.notes), { renderer })
     }
     
+  },
+  
+  watch: {
+    selectedTask () {
+      this.editingName = false
+      this.editingNotes = false
+      this.newTaskName = this.selectedTask ? this.selectedTask.name : null
+    }
   },
   
   methods: {
@@ -378,7 +358,7 @@ export default {
   margin: 8px;
 }
 
-#task-name {
+.task-name {
   font-weight: 600;
   font-size: xx-large;
   text-align: center;
@@ -400,9 +380,10 @@ export default {
   padding: 10px;
   border: #e2e6ea 1px solid;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 16px;
   flex: 1;
   min-width: 0;
+  min-height: 38px;
   overflow: visible;
   overflow-wrap: break-word;
 }
@@ -429,5 +410,11 @@ $play-btn-size: 75px;
 
 .top-margin {
   margin-top: 20px;
+}
+</style>
+
+<style>
+.custom-p {
+  margin-bottom: 0 !important;
 }
 </style>
