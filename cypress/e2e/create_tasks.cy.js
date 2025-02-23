@@ -14,10 +14,10 @@ describe('create tasks', () => {
 
     // Assert
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 1)
-    cy.get('#main-section').contains('My First Task')
-    cy.get('#main-section').contains('Tags:')
-    cy.get('#main-section').contains('Notes:')
-    cy.get('#main-section').contains('25:00')
+    cy.get('#selected-task-section').contains('My First Task')
+    cy.get('#selected-task-section').contains('Tags:')
+    cy.get('#selected-task-section').contains('Notes:')
+    cy.get('#selected-task-section').contains('25:00')
   })
 
   it('completes the task by checking middle section', () => {
