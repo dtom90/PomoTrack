@@ -13,6 +13,7 @@ describe('create tasks', () => {
     cy.get('#task-name-input').type(' edited{enter}')
 
     // Assert
+    cy.get('#selected-task-section').contains('My First Task edited')
     cy.reload()
     cy.get('#selected-task-section').contains('My First Task edited')
   })

@@ -48,19 +48,20 @@
           </div>
           
           <!--  Task Field (when editing)  -->
-          <div
+          <b-input-group
             v-if="editingName"
             class="input-group flex-grow-1"
+            @submit.prevent="saveName()"
           >
-            <input
+            <b-form-input
               id="task-name-input"
               ref="taskNameInput"
               v-model="newTaskName"
-              class="task-name form-control"
+              class="task-name"
               @keyup.enter="saveName()"
               @blur="saveName()"
-            >
-          </div>
+            />
+          </b-input-group>
           
           <div
             v-if="!editingName"
@@ -271,7 +272,7 @@ export default {
     selectedTask () {
       this.editingName = false
       this.editingNotes = false
-      this.newTaskName = null
+      this.newTaskName = this.selectedTask ? this.selectedTask.name : null
     }
   },
   
