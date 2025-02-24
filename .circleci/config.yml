@@ -57,6 +57,22 @@ jobs:
             
               $COMMIT_MSG"
   
+  publish-release:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - github-cli/setup:
+          token: GH_TOKEN
+      - run:
+          name: Publish latest draft release
+          command: |
+            # Get the version from package.json
+            VERSION=$(node -p "require('./package.json').version")
+            
+            # Find and publish the draft release
+            gh release edit "v$VERSION" --draft=false
+  
   build-web:
     docker:
       - image: cimg/node:18.20.5
@@ -184,3 +200,10 @@ workflows:
             branches:
               only:
                 - master
+      - publish-release:
+          requires:
+            - build-mac
+            - build-windows
+          filters:
+            branches:
+              only: master

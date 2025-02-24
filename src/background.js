@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, shell, dialog } from 'electron'
+import { app, protocol, BrowserWindow, shell, ipcMain, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -59,6 +59,18 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+}
+
+async function checkForUpdates () {
+  try {
+    const result = await autoUpdater.checkForUpdates()
+    if (!result || result.updateInfo.version !== app.getVersion()) {
+      sendStatusToWindow('Update not available.')
+    }
+  } catch (error) {
+    sendStatusToWindow('An error occurred while checking for updates.')
+    log.error(error)
+  }
 }
 
 autoUpdater.on('checking-for-update', () => {
@@ -145,6 +157,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+  ipcMain.handle('checkForUpdates', checkForUpdates)
   createWindow()
 })
 

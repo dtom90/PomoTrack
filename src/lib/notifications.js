@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
 import { mapMutations } from 'vuex'
+import isElectron from './isElectron'
 
 // Handle Electron notifications
-const userAgent = navigator.userAgent.toLowerCase()
-const isElectron = userAgent.indexOf(' electron/') > -1
-if (isElectron) {
+
+if (isElectron()) {
   window.electronAPI.onMessage((data) => {
     alert(data)
   })

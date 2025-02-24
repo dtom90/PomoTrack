@@ -1,4 +1,5 @@
 const webpackConfig = {
+  lintOnSave: 'warning',
   devServer: {
     overlay: {
       warnings: false,
@@ -34,7 +35,7 @@ const webpackConfig = {
   },
   chainWebpack: (config) => {
     // Remove the existing babel rule for node_modules
-    config.module.rules.delete('babel-modules');
+    config.module.rules.delete('babel-modules')
     
     // Add new rule for chart.js and vue-chartjs
     config.module
@@ -59,7 +60,7 @@ const webpackConfig = {
           '@babel/plugin-proposal-private-methods',
           '@babel/plugin-proposal-private-property-in-object'
         ]
-      });
+      })
   },
   pluginOptions: {
     electronBuilder: {
