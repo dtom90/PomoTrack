@@ -95,21 +95,6 @@ $(document).on('click', '.dropdown-menu', function (e) {
   e.stopPropagation()
 })
 
-function persistStorage () {
-  // Request persistent storage
-  if (navigator.storage && navigator.storage.persist) {
-    navigator.storage.persist().then(persistent => {
-      if (persistent) {
-        // eslint-disable-next-line no-console
-        console.info('Storage will not be evicted under normal circumstances.')
-      } else {
-        // eslint-disable-next-line no-console
-        console.info('Storage may be evicted under storage pressure.')
-      }
-    })
-  }
-}
-
 export default {
   
   name: 'App',
@@ -152,11 +137,6 @@ export default {
   },
   mounted () {
     window.addEventListener('resize', this.handleResize)
-    const userAgent = navigator.userAgent.toLowerCase()
-    const isElectron = userAgent.indexOf(' electron/') > -1
-    if (isElectron) {
-      persistStorage()
-    }
   },
   
   beforeDestroy () {

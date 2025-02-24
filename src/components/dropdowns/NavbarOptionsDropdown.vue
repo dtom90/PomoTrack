@@ -23,17 +23,34 @@
         Use 24-hour Clock
       </b-form-checkbox>
     </b-dropdown-item-button>
+    <b-dropdown-divider />
+    <b-dropdown-text>
+      App version: {{ $appVersion }}
+    </b-dropdown-text>
+    <b-dropdown-item-button
+      v-if="isInElectron"
+      @click="checkForUpdates"
+    >
+      Check for Updates
+    </b-dropdown-item-button>
   </b-nav-item-dropdown>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import notifications from '../../lib/notifications'
+import isElectron from '../../lib/isElectron'
 
 export default {
   name: 'NavbarOptionsDropdown',
   
   mixins: [notifications],
+  
+  data () {
+    return {
+      isInElectron: isElectron()
+    }
+  },
   
   computed: {
     timeFormat24: {
@@ -51,7 +68,11 @@ export default {
   methods: {
     ...mapActions([
       'updateSetting'
-    ])
+    ]),
+    
+    checkForUpdates () {
+      window.electronAPI.checkForUpdates()
+    }
   }
 }
 </script>
