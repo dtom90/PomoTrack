@@ -64,8 +64,8 @@ function createWindow () {
 async function checkForUpdates () {
   try {
     const result = await autoUpdater.checkForUpdates()
-    if (!result || result.updateInfo.version !== app.getVersion()) {
-      sendStatusToWindow('Update not available.')
+    if (result && result.updateInfo.version === app.getVersion()) {
+      sendStatusToWindow('You are using the latest version of PomoTrack! (' + app.getVersion() + ')')
     }
   } catch (error) {
     sendStatusToWindow('An error occurred while checking for updates.')
