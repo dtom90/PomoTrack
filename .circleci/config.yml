@@ -71,7 +71,22 @@ jobs:
             VERSION=$(node -p "require('./package.json').version")
             
             # Find and publish the draft release
-            gh release edit "v$VERSION" --draft=false
+            echo "Publishing draft release v$VERSION"
+            
+            # The syntax varies by gh CLI version, try the standard version first
+            if gh release edit "v$VERSION" --draft=false 2>/dev/null; then
+              echo "Successfully published release using --draft=false"
+            # If that fails, try alternate syntax
+            elif gh api \
+                --method PATCH \
+                -H "Accept: application/vnd.github+json" \
+                "/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases/tags/v$VERSION" \
+                -f draft=false; then
+              echo "Successfully published release using API call"
+            else
+              echo "Failed to publish release. Please check GitHub CLI version and permissions."
+              exit 1
+            fi
   
   build-web:
     docker:
