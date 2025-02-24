@@ -38,7 +38,8 @@ jobs:
       - image: cimg/node:20.11
     steps:
       - checkout
-      - github-cli/setup
+      - github-cli/setup:
+          token: GH_TOKEN
       - run:
           name: Extract version and create release
           command: |
