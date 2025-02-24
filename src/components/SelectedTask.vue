@@ -133,18 +133,18 @@
         <!-- eslint-enable vue/no-v-html -->
         
         <!-- Editing Mode -->
-        <div
+        <b-input-group
           v-if="editingNotes"
-          class="input-group"
         >
-          <textarea
+          <b-form-textarea
             ref="notesInput"
             v-model="selectedTask.notes"
-            class="form-control"
+            placeholder="enter notes"
             :rows="selectedTask.notes.split('\n').length"
-            @blur="saveNotes()"
+            @blur="saveNotes"
+            @keydown.enter="handleNotesEnter"
           />
-        </div>
+        </b-input-group>
       </div>
     </template>
     
@@ -326,6 +326,13 @@ export default {
       this.$nextTick(() => {
         this.$refs.notesInput.focus()
       })
+    },
+    
+    handleNotesEnter (event) {
+      if (event.shiftKey) {
+        return // Allow the newline to occur
+      }
+      this.saveNotes()
     },
     
     async saveNotes () {

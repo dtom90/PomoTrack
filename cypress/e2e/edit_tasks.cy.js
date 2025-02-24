@@ -60,17 +60,42 @@ describe('create tasks', () => {
     cy.get('#incomplete-task-list').contains('My Second Task edited')
   })
 
-  it('edits the task notes by clicking the field', () => {
+  it('edits the task notes by clicking the field and saves by hitting {enter}', () => {
     // Arrange
     cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
 
     // Act
     cy.get('#notes-section textarea').type('My notes{enter}')
+
+    // Assert
+    cy.reload()
+    cy.get('#notes-section #display-notes').contains('My notes')
+  })
+  
+  it('edits the task notes and saves by clicking outside', () => {
+    // Arrange
+    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+
+    // Act
+    cy.get('#notes-section textarea').type('My notes')
     cy.get('#notes-section').contains('Notes:').click()
 
     // Assert
     cy.reload()
     cy.get('#notes-section #display-notes').contains('My notes')
+  })
+  
+  it('creates a newline in notes by hitting {shift}+{enter}', () => {
+    // Arrange
+    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+
+    // Act
+    cy.get('#notes-section textarea').type('My notes{shift}{enter}More notes on a new line')
+    cy.get('#notes-section').contains('Notes:').click()
+
+    // Assert
+    cy.get('#notes-section #display-notes').contains('My notes')
+    cy.get('#notes-section #display-notes').contains('More notes on a new line')
   })
   
   it('edits the task notes then switches to another task', () => {
