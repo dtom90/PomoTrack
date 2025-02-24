@@ -73,18 +73,21 @@ jobs:
             # Find and publish the draft release
             echo "Publishing draft release v$VERSION"
             
-            # The syntax varies by gh CLI version, try the standard version first
-            if gh release edit "v$VERSION" --draft=false 2>/dev/null; then
-              echo "Successfully published release using --draft=false"
-            # If that fails, try alternate syntax
-            elif gh api \
+            # First, get the release ID by listing releases and finding the draft
+            RELEASE_ID=$(gh api repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases --jq '.[] | select(.draft==true and .tag_name=="v'$VERSION'") | .id')
+            
+            if [ -n "$RELEASE_ID" ]; then
+              echo "Found draft release with ID: $RELEASE_ID"
+              # Use the release ID to update the draft status
+              gh api \
                 --method PATCH \
-                -H "Accept: application/vnd.github+json" \
-                "/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases/tags/v$VERSION" \
-                -f draft=false; then
-              echo "Successfully published release using API call"
+                repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases/$RELEASE_ID \
+                -f draft=false
+              echo "Successfully published release v$VERSION"
             else
-              echo "Failed to publish release. Please check GitHub CLI version and permissions."
+              echo "No draft release found for v$VERSION"
+              echo "Available releases:"
+              gh release list
               exit 1
             fi
   
