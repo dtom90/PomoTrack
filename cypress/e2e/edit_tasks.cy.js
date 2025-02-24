@@ -18,6 +18,19 @@ describe('create tasks', () => {
     cy.get('#selected-task-section').contains('My First Task edited')
   })
 
+  it('prevents saving a task with a blank title', () => {
+    // Arrange
+    cy.get('#selected-task-container').contains('My First Task').click()
+
+    // Act
+    cy.get('#task-name-input').clear().type('{enter}')
+
+    // Assert
+    cy.get('#selected-task-section').contains('My First Task')
+    cy.reload()
+    cy.get('#selected-task-section').contains('My First Task')
+  })
+
   it('should keep name field in edit mode even while timer is running', () => {
     // Arrange
     cy.get('button > svg.fa-play').click()

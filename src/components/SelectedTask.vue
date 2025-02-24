@@ -57,6 +57,7 @@
               id="task-name-input"
               ref="taskNameInput"
               v-model="newTaskName"
+              placeholder="enter task name"
               class="task-name"
               @keyup.enter="saveName()"
               @blur="saveName()"
@@ -300,7 +301,9 @@ export default {
     },
     
     async saveName () {
-      await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
+      if (this.newTaskName.trim().length) {
+        await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
+      }
       this.editingName = false
     },
     
