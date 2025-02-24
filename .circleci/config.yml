@@ -1,6 +1,7 @@
 version: 2.1
 
 orbs:
+  github-cli: circleci/github-cli@2.0
   macos: circleci/macos@2.5.2
   windows: circleci/windows@5
 
@@ -32,6 +33,29 @@ jobs:
           name: Stop production Docker contianer
           command: docker stop pomotrack-prod
 
+  create-release:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - github-cli/setup
+      - run:
+          name: Extract version and create release
+          command: |
+            # Get the version from package.json
+            VERSION=$(node -p "require('./package.json').version")
+            
+            # Get the latest commit message
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            
+            # Create a draft release using gh cli
+            gh release create "$VERSION" \
+              --draft \
+              --title "v$VERSION" \
+              --notes "## What's Changed
+            
+              $COMMIT_MSG"
+  
   build-web:
     docker:
       - image: cimg/node:18.20.5
@@ -134,19 +158,27 @@ workflows:
               ignore:
                 - master
                 - gh-pages
-  build-deploy:
+  release-workflow:
     jobs:
+      - create-release:
+          filters:
+            branches:
+              only: master
       - build-web:
           filters:
             branches:
               only:
                 - master
       - build-mac:
+          requires:
+            - create-release
           filters:
             branches:
               only:
                 - master
       - build-windows:
+          requires:
+            - create-release
           filters:
             branches:
               only:
