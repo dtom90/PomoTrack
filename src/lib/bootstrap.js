@@ -19,7 +19,8 @@ import {
   FormCheckboxPlugin,
   DropdownPlugin,
   ModalPlugin,
-  SidebarPlugin
+  SidebarPlugin,
+  TooltipPlugin
 } from 'bootstrap-vue'
 import Vue from 'vue'
 
@@ -38,3 +39,4 @@ Vue.use(FormCheckboxPlugin)
 Vue.use(DropdownPlugin)
 Vue.use(ModalPlugin)
 Vue.use(SidebarPlugin)
+Vue.use(TooltipPlugin)
