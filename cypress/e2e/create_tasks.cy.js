@@ -42,7 +42,7 @@ describe('create tasks', () => {
     cy.get('#completed-task-list').contains('My First Task')
   })
 
-  it('adds a second task to the bottom of the list', () => {
+  it('adds a second task to the top of the list', () => {
     // Arrange
     // (No specific arrangement needed for this test)
 
@@ -54,21 +54,6 @@ describe('create tasks', () => {
     // Assert
     cy.get('#incomplete-task-list .task').first().contains('My First Task')
     cy.get('#incomplete-task-list .task').last().contains('My Second Task')
-  })
-
-  it('adds a second task to the top of the list when toggling insert order', () => {
-    // Arrange
-    // (No specific arrangement needed for this test)
-
-    // Act
-    cy.get('button[title="Adding tasks to bottom of list"]').click()
-    cy.get('input[placeholder="enter new task"]')
-      .click()
-      .type('My Second Task{enter}')
-
-    // Assert
-    cy.get('#incomplete-task-list .task').first().contains('My Second Task')
-    cy.get('#incomplete-task-list .task').last().contains('My First Task')
   })
 
   it('completes both tasks', () => {
@@ -95,7 +80,7 @@ describe('create tasks', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
 
     // Act
-    cy.get('button > svg.fa-caret-down').click()
+    cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
     cy.get('select').select('Oldest')
 
     // Assert

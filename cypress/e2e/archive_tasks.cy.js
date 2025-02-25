@@ -8,7 +8,7 @@ describe('create tasks', () => {
 
   it('archives an incomplete task', () => {
     // Act
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
 
     // Assert
@@ -22,7 +22,7 @@ describe('create tasks', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
 
     // Act
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
 
     // Assert
@@ -33,7 +33,7 @@ describe('create tasks', () => {
 
   it('unarchives a single task', () => {
     // Act
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
     cy.get('button').contains('Unarchive').click()
 
@@ -51,7 +51,7 @@ describe('create tasks', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
     
     // Act
-    cy.get('button > svg.fa-caret-down').click()
+    cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive All').click()
     cy.on('window:confirm', (str) => {
       expect(str).to.equal('Are you sure that you want to archive all 2 completed tasks?')
@@ -79,7 +79,7 @@ describe('create tasks', () => {
     })
     
     // Act
-    cy.get('button > svg.fa-caret-down').click()
+    cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive All').click()
     
     // Assert
@@ -93,12 +93,12 @@ describe('create tasks', () => {
   it('shows archived tasks in archive modal', () => {
     // Arrange
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
     cy.get('input[placeholder="enter new task"]')
       .click()
       .type('My Second Task{enter}')
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
     
     // Act
@@ -112,7 +112,7 @@ describe('create tasks', () => {
 
   it('allows unarchiving from archive modal', () => {
     // Arrange
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
     cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
     
