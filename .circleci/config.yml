@@ -50,9 +50,9 @@ jobs:
             COMMIT_MSG=$(git log -1 --pretty=%B)
             
             # Create a draft release using gh cli
-            gh release create "$VERSION" \
+            gh release create "v$VERSION" \
               --draft \
-              --title "v$VERSION" \
+              --title "$VERSION" \
               --notes "## What's Changed
             
               $COMMIT_MSG"
@@ -71,25 +71,7 @@ jobs:
             VERSION=$(node -p "require('./package.json').version")
             
             # Find and publish the draft release
-            echo "Publishing draft release v$VERSION"
-            
-            # First, get the release ID by listing releases and finding the draft
-            RELEASE_ID=$(gh api repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases --jq '.[] | select(.draft==true and .tag_name=="v'$VERSION'") | .id')
-            
-            if [ -n "$RELEASE_ID" ]; then
-              echo "Found draft release with ID: $RELEASE_ID"
-              # Use the release ID to update the draft status
-              gh api \
-                --method PATCH \
-                repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases/$RELEASE_ID \
-                -f draft=false
-              echo "Successfully published release v$VERSION"
-            else
-              echo "No draft release found for v$VERSION"
-              echo "Available releases:"
-              gh release list
-              exit 1
-            fi
+            gh release edit "v$VERSION" --draft=false
   
   build-web:
     docker:
