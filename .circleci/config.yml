@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  github-cli: circleci/github-cli@2.0
+  github-cli: circleci/github-cli@2.6.3
   macos: circleci/macos@2.5.2
   windows: circleci/windows@5
 

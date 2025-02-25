@@ -8,60 +8,55 @@
       </h3>
       
       <!-- To Do List Filter Menu -->
-      <div
+      <b-dropdown
         v-if="!isCompletedList"
-        class="dropright d-flex justify-content-end"
+        id="filter-menu-button"
+        v-b-tooltip.hover.right="filterButtonTooltip"
+        :disabled="Object.keys(tags).length === 0"
+        dropright
+        variant="light"
+        :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-active' : ''"
+        :style="filterBtnStyle"
+        no-caret
       >
-        <button
-          id="filter-menu-button"
-          :class="'btn btn-light' + (settings.selectedTagIds.length > 0 ? ' filter-active' : '')"
-          :style="filterBtnStyle"
-          title="Filter on tags"
-          data-toggle="dropdown"
-          :disabled="Object.keys(tags).length === 0"
-        >
+        <template #button-content>
           <font-awesome-icon icon="filter" />
-        </button>
-  
+        </template>
+
+        <TagList
+          v-if="settings.selectedTagIds.length > 0"
+          label="Filtering on tasks with"
+          :tag-list="settings.selectedTagIds"
+          :remove-tag="removeTag"
+          :update-filter-operator="updateSelectedTask"
+          remove-text="Clear Filter"
+        />
         <div
-          id="filter-menu"
-          class="dropdown-menu"
+          v-if="settings.selectedTagIds.length > 0"
+          class="form-check form-check-inline"
         >
-          <TagList
-            v-if="settings.selectedTagIds.length > 0"
-            label="Filtering on tasks with"
-            :tag-list="settings.selectedTagIds"
-            :remove-tag="removeTag"
-            :update-filter-operator="updateSelectedTask"
-            remove-text="Clear Filter"
-          />
-          <div
-            v-if="settings.selectedTagIds.length > 0"
-            class="form-check form-check-inline"
+          <input
+            id="addTagsSelect"
+            v-model="addSelectedTags"
+            class="form-check-input"
+            type="checkbox"
           >
-            <input
-              id="addTagsSelect"
-              v-model="addSelectedTags"
-              class="form-check-input"
-              type="checkbox"
-            >
-            <label
-              class="form-check-label"
-              for="addTagsSelect"
-            >Include in new tasks</label>
-          </div>
-          <div
-            v-if="settings.selectedTagIds.length > 0 && unselectedTags.length > 0"
-            class="dropdown-divider"
-          />
-          <TagList
-            v-if="unselectedTags.length > 0"
-            :label="settings.selectedTagIds.length > 0 ? 'Add to filter' : 'Filter on'"
-            :tag-list="unselectedTags"
-            :select-tag="selectTag"
-          />
+          <label
+            class="form-check-label"
+            for="addTagsSelect"
+          >Include in new tasks</label>
         </div>
-      </div>
+        <div
+          v-if="settings.selectedTagIds.length > 0 && unselectedTags.length > 0"
+          class="dropdown-divider"
+        />
+        <TagList
+          v-if="unselectedTags.length > 0"
+          :label="settings.selectedTagIds.length > 0 ? 'Add to filter' : 'Filter on'"
+          :tag-list="unselectedTags"
+          :select-tag="selectTag"
+        />
+      </b-dropdown>
       
       <!-- Done List Menu -->
       <div
@@ -193,6 +188,7 @@ export default {
   
   data: () => ({
     newTaskName: '',
+    isFilterMenuOpen: false,
     sortingOptions: ['Recent', 'Oldest'],
     sortOrder: 'Recent',
     isDragging: false
@@ -202,7 +198,8 @@ export default {
     ...mapState([
       'tempState',
       'settings',
-      'tags'
+      'tags',
+      'tasks'
     ]),
     ...mapGetters([
       'incompleteTasks',
@@ -223,6 +220,14 @@ export default {
       return this.settings.selectedTagIds.length > 0 ? {
         backgroundColor: this.tags[this.settings.selectedTagIds[0]].color
       } : {}
+    },
+    filterButtonTooltip () {
+      if (this.tasks.length === 0) {
+        return 'Add a task enable filtering'
+      } else if (Object.keys(this.tags).length === 0) {
+        return 'Add a tag to a task to enable filtering'
+      }
+      return 'Filter tasks'
     },
     addSelectedTags: {
       get () {
