@@ -73,7 +73,7 @@
           title="List options"
           data-toggle="dropdown"
         >
-          <font-awesome-icon :icon="sortOrder === 'Oldest' ? 'caret-up' : 'caret-down'" />
+          <font-awesome-icon icon="ellipsis-vertical" />
         </button>
         
         <div
