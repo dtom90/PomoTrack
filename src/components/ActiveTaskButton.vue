@@ -8,9 +8,7 @@
       id="active-indicator-icon"
       icon="clock"
     />
-    <div id="active-task-name">
-      <span>{{ activeTask.name }}</span>
-    </div>
+    <span id="active-task-name">{{ activeTask.name }}</span>
   </button>
 </template>
 
@@ -18,7 +16,7 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'ActiveTask',
+  name: 'ActiveTaskButton',
   
   computed: {
     ...mapGetters([

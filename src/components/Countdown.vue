@@ -165,7 +165,6 @@ export default {
     newActiveMinutes: 0,
     newRestMinutes: 0,
     active: true,
-    activeIntervalStarted: false,
     overtime: false,
     secondReminderDisplayed: false,
     secondsRemaining: 0,
@@ -313,11 +312,9 @@ export default {
       } else if (this.tempState.running) {
         this.timer.pause()
         this.endInterval()
+        this.updateTempState({ key: 'running', value: false })
       } else {
-        if (!this.activeIntervalStarted && this.active) { // Mark when we started the timer if we're starting an active interval
-          this.startTask({ taskId: this.taskId })
-          this.activeIntervalStarted = true
-        } else if (this.active) {
+        if (this.active) { // start an active interval
           this.startTask({ taskId: this.taskId })
         } else { // this is a rest interval, simply toggle running
           this.updateTempState({ key: 'running', value: !this.tempState.running })
@@ -390,9 +387,6 @@ export default {
       this.endInterval()
       this.updateTempState({ key: 'activeTaskID', value: null })
       this.updateTempState({ key: 'running', value: false })
-      if (this.active) {
-        this.activeIntervalStarted = false
-      }
       this.active = !this.active
       this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
       this.secondsRemaining = this.totalSeconds
