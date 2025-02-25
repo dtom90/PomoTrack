@@ -15,7 +15,7 @@
         :disabled="Object.keys(tags).length === 0"
         dropright
         variant="light"
-        :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-active' : ''"
+        :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
         :style="filterBtnStyle"
         no-caret
       >
@@ -217,9 +217,9 @@ export default {
       return (this.completed ? 'completed' : 'toDo') + 'OrderGroupSelect'
     },
     filterBtnStyle () {
-      return this.settings.selectedTagIds.length > 0 ? {
-        backgroundColor: this.tags[this.settings.selectedTagIds[0]].color
-      } : {}
+      return {
+        '--filter-btn-background-color': this.settings.selectedTagIds.length > 0 ? this.tags[this.settings.selectedTagIds[0]].color : 'white'
+      }
     },
     filterButtonTooltip () {
       if (this.tasks.length === 0) {
@@ -359,13 +359,13 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.filter-active > svg {
+.filter-btn-active > svg {
   color: white;
   -webkit-filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .7));
   filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .7));
 }
 
-.filter-active:hover > svg {
+.filter-btn-active:hover > svg {
   color: lightgrey;
 }
 
@@ -400,4 +400,12 @@ export default {
   overflow-y: auto;
 }
 
+</style>
+
+<style>
+/*noinspection CssUnusedSymbol*/
+.filter-btn-active {
+  /*noinspection CssUnresolvedCustomProperty*/
+  background-color: var(--filter-btn-background-color) !important;
+}
 </style>
