@@ -22,9 +22,8 @@ const actions = {
   async addTask ({ state, commit, dispatch }, { name }) {
     const taskName = name.trim()
     if (taskName) {
-      const order = state.settings.insertAtTop
-        ? state.tasks.reduce((min, t) => t.order < min ? t.order : min, 0) - 1
-        : state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
+      // insert at top by default
+      const order = state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
       const newTask = {
         id: 'task-' + nanoid(),
         name: taskName,

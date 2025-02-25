@@ -40,11 +40,7 @@ const mutations = {
   
   addTask (state, { task }) {
     task.log = []
-    if (state.settings.insertAtTop) {
-      state.tasks.unshift(task)
-    } else {
-      state.tasks.push(task)
-    }
+    state.tasks.push(task)
   },
   
   updateTask (state, { taskId, taskUpdates }) {

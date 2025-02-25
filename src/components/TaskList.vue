@@ -73,7 +73,7 @@
           title="List options"
           data-toggle="dropdown"
         >
-          <font-awesome-icon :icon="sortOrder === 'Oldest' ? 'caret-up' : 'caret-down'" />
+          <font-awesome-icon icon="ellipsis-vertical" />
         </button>
         
         <div
@@ -128,27 +128,6 @@
         placeholder="enter new task"
         @keyup.enter="addNewTask"
       >
-  
-      <!-- To Do List Add Position Button -->
-      <div class="input-group-append">
-        <button
-          id="add-position-button"
-          class="btn btn-light custom-icons"
-          :title="`Adding tasks to ${insertAtTop === true ? 'top' : 'bottom'} of list`"
-          @click="insertAtTop = !insertAtTop"
-        >
-          <img
-            v-if="insertAtTop"
-            src="add_to_top.svg"
-            alt="Add to Top"
-          >
-          <img
-            v-if="!insertAtTop"
-            src="add_to_bottom.svg"
-            alt="Add to Bottom"
-          >
-        </button>
-      </div>
     </div>
     
     <!-- Incomplete Tasks -->
@@ -251,14 +230,6 @@ export default {
       },
       set (value) {
         this.updateSetting({ key: 'addSelectedTags', value })
-      }
-    },
-    insertAtTop: {
-      get () {
-        return this.settings.insertAtTop
-      },
-      set (value) {
-        this.updateSetting({ key: 'insertAtTop', value })
       }
     },
     incompleteTaskList: {

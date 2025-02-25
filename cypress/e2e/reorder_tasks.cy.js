@@ -38,9 +38,11 @@ describe('reorder tasks', () => {
     cy.get('input[placeholder="enter new task"]')
       .click()
       .type('My Archived Task{enter}')
-    cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-    cy.get('button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container').within(() => {
+      cy.get('input[type="checkbox"][title="Mark task complete"]').click()
+      cy.get('button > svg.fa-ellipsis-vertical').click()
+      cy.get('button').contains('Archive').click()
+    })
 
     // Act
     cy.get('#incomplete-task-list .task').contains('My Second Task')
@@ -56,7 +58,7 @@ describe('reorder tasks', () => {
     cy.get('input[placeholder="enter new task"]')
       .click()
       .type('My Archived Task{enter}')
-    cy.get('button > svg.fa-ellipsis-vertical').click()
+    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
 
     // Act
@@ -78,33 +80,5 @@ describe('reorder tasks', () => {
 
     // Assert
     cy.get('#incomplete-task-list .task').last().contains('My Third Task')
-  })
-
-  it('toggles insertion and inserts new task at bottom of list', () => {
-    // Arrange
-    cy.get('button[title="Adding tasks to bottom of list"]').click()
-    cy.get('button[title="Adding tasks to top of list"]').should('exist')
-
-    // Act
-    cy.get('input[placeholder="enter new task"]')
-      .click()
-      .type('My Third Task{enter}')
-
-    // Assert
-    cy.get('#incomplete-task-list .task').first().contains('My Third Task')
-  })
-  
-  it('preserves tasks inserted at the top of the list on page reload', () => {
-    // Arrange
-    cy.get('button[title="Adding tasks to bottom of list"]').click()
-    cy.get('input[placeholder="enter new task"]')
-      .click()
-      .type('My Third Task{enter}')
-    
-    // Act
-    cy.reload()
-
-    // Assert
-    cy.get('#incomplete-task-list .task').first().contains('My Third Task')
   })
 })

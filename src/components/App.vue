@@ -45,7 +45,7 @@
           </b-button>
         </div>
         <div id="main-task-container">
-          <ActiveTask
+          <ActiveTaskButton
             v-if="showActive"
           />
           <SelectedTask
@@ -84,7 +84,7 @@
 <script>
 import Navbar from './Navbar'
 import TaskList from './TaskList'
-import ActiveTask from './ActiveTask'
+import ActiveTaskButtonButton from './ActiveTaskButton.vue'
 import SelectedTask from './SelectedTask'
 import { AllActivityModal, TagActivityModal, TagModal, ArchiveModal } from './modals'
 
@@ -101,7 +101,7 @@ export default {
   
   components: {
     ArchiveModal,
-    ActiveTask,
+    ActiveTaskButton: ActiveTaskButtonButton,
     Navbar,
     TaskList,
     SelectedTask,

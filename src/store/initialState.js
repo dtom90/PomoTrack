@@ -25,7 +25,6 @@ const initialState = {
     selectedTagIds: [],
     filterOperator: 'and',
     addSelectedTags: true,
-    insertAtTop: false,
     
     // Navbar settings
     timeFormat24: false,

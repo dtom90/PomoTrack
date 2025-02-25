@@ -165,6 +165,25 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play')
   })
 
+  it('pausing break timer should stop it', () => {
+    // Arrange
+    cy.get('button > svg.fa-xmark').click()
+    cy.get('div').contains('5:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.get('button > svg.fa-play').click()
+    cy.get('#timer-display').scrollIntoView()
+
+    // Act
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('button > svg.fa-pause').click()
+
+    // Assert
+    cy.wait(2000)
+    cy.get('#countdown-container').contains('0:02')
+    cy.get('button > svg.fa-play').should('be.visible')
+  })
+
   it('should continue timer when selected', () => {
     // Arrange
     cy.get('#countdown-container').contains('25:00').click()
