@@ -230,7 +230,7 @@ workflows:
     jobs:
       - build-web:
           name: deploy-to-devtrack
-          target_repo: "git@github.com:username/DevTrack.git"
+          target_repo: "git@github.com:dtom90/DevTrack.git"
           ssh_fingerprint: "SHA256:yU3fmPL2vH/VjtNkLb6dgI/JKV7MDY5Dppc71sJMouE"
           filters:
             branches:
