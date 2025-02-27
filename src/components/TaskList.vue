@@ -8,54 +8,18 @@
       </span>
       
       <!-- To Do List Filter Menu -->
-      <b-dropdown
+      <TaskFilterDropdown
         v-if="!isCompletedList"
-        v-b-tooltip.hover.right="filterButtonTooltip"
-        :disabled="Object.keys(tags).length === 0"
-        dropright
-        variant="light"
-        :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
-        :style="filterBtnStyle"
-        no-caret
-      >
-        <template #button-content>
-          <font-awesome-icon icon="filter" />
-        </template>
-
-        <TagList
-          v-if="settings.selectedTagIds.length > 0"
-          label="Filtering on tasks with"
-          :tag-list="settings.selectedTagIds"
-          :remove-tag="removeTag"
-          :update-filter-operator="updateSelectedTask"
-          remove-text="Clear Filter"
-        />
-        <div
-          v-if="settings.selectedTagIds.length > 0"
-          class="form-check form-check-inline"
-        >
-          <input
-            id="addTagsSelect"
-            v-model="addSelectedTags"
-            class="form-check-input"
-            type="checkbox"
-          >
-          <label
-            class="form-check-label"
-            for="addTagsSelect"
-          >Include in new tasks</label>
-        </div>
-        <div
-          v-if="settings.selectedTagIds.length > 0 && unselectedTags.length > 0"
-          class="dropdown-divider"
-        />
-        <TagList
-          v-if="unselectedTags.length > 0"
-          :label="settings.selectedTagIds.length > 0 ? 'Add to filter' : 'Filter on'"
-          :tag-list="unselectedTags"
-          :select-tag="selectTag"
-        />
-      </b-dropdown>
+        :tags="tags"
+        :selected-tag-ids="settings.selectedTagIds"
+        :unselected-tags="unselectedTags"
+        :add-selected-tags="addSelectedTags"
+        :tasks="tasks"
+        @select-tag="selectTag"
+        @remove-tag="removeTag"
+        @update-selected-task="updateSelectedTask"
+        @update-add-selected-tags="updateAddSelectedTagsValue"
+      />
       
       <!-- Done List Menu -->
       <div
@@ -162,7 +126,7 @@
 
 <script>
 import Task from './Task.vue'
-import TagList from './TagList.vue'
+import TaskFilterDropdown from './TaskFilterDropdown.vue'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
 
@@ -172,8 +136,8 @@ export default {
   
   components: {
     Task,
-    TagList,
-    draggable
+    draggable,
+    TaskFilterDropdown
   },
   
   props: {
@@ -315,6 +279,10 @@ export default {
           await this.selectTask({ taskId: null })
         }
       }
+    },
+
+    updateAddSelectedTagsValue(value) {
+      this.updateSetting({ key: 'addSelectedTags', value })
     }
   }
 }

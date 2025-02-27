@@ -14,14 +14,11 @@
           {{ task.name }}
         </div>
         <div class="d-flex flex-wrap">
-          <div
-            v-for="tagId in taskTags"
-            :key="tagId"
-            class="badge mini-tag"
-            :style="{backgroundColor: tags[tagId].color}"
-          >
-&nbsp;&nbsp;
-          </div>
+          <TagList
+            :tag-list="taskTags"
+            :task-id="task.id"
+            mini
+          />
         </div>
       </div>
       <font-awesome-icon
@@ -36,11 +33,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Checkbox from './Checkbox'
+import TagList from './TagList.vue'
 
 export default {
   
   name: 'Task',
-  components: { Checkbox },
+  components: { TagList, Checkbox },
   props: {
     task: {
       type: Object,

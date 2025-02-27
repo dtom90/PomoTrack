@@ -95,11 +95,77 @@
       </div>
       
       <!-- Tags Section -->
-      <TagList
-        :tag-list="taskTags"
-        :task-id="selectedTask.id"
-        :remove-tag="removeTag"
-      />
+      <div class="d-flex">
+        <label
+          v-if="taskTags"
+          class="tag-label"
+        >
+          <span>Tags:</span>
+        </label>
+        <TagList
+          id="taskTags"
+          :tag-list="taskTags"
+          :task-id="selectedTask.id"
+          :remove-tag="removeTag"
+        />
+        
+        <!-- Tag Input -->
+        <div
+          v-if="taskTags"
+          id="newTag"
+          class="btn-group"
+        >
+          <div class="d-flex">
+            <button
+              id="addTagButton"
+              class="btn btn-light"
+              :title="showTagInput ? 'Cancel' : 'Add new tag'"
+              @click="addTagButton"
+            >
+              <font-awesome-icon
+                v-if="!showTagInput"
+                icon="plus"
+              />
+              <font-awesome-icon
+                v-if="showTagInput"
+                icon="times"
+              />
+            </button>
+            <div
+              v-if="showTagInput"
+              id="tagDropdown"
+            >
+              <div
+                id="tagDropdownMenu"
+                class="btn-group-vertical"
+              >
+                <button
+                  v-for="tag in availableTags(selectedTask.id, inputTagName)"
+                  :key="tag.id"
+                  class="tag-option btn btn-light"
+                  :style="`backgroundColor: ${tag.color}`"
+                  @click="addTag({ tagId: tag.id })"
+                >
+                  {{ tag.tagName }}
+                </button>
+              </div>
+            </div>
+            <input
+              v-if="showTagInput"
+              id="addTagInput"
+              ref="addTagInput"
+              v-model="inputTagName"
+              type="text"
+              class="form-control"
+              placeholder="add new tag"
+              @input="tagInputChange"
+              @focus="tagInputChange"
+              @blur="clickOutside"
+              @keyup.enter="addTag({ tagName: inputTagName })"
+            >
+          </div>
+        </div>
+      </div>
       
       <!-- Notes Section -->
       <div
@@ -227,7 +293,8 @@ export default {
     newTaskName: null,
     newTag: '',
     tagOptions: [],
-    showTagInput: false
+    showTagInput: false,
+    inputTagName: ''
   }),
   
   computed: {
@@ -236,11 +303,13 @@ export default {
       'tasks',
       'tempState',
       'tagOrder',
-      'selectedTaskID'
+      'selectedTaskID',
+      'tags'
     ]),
     
     ...mapGetters([
-      'selectedTask'
+      'selectedTask',
+      'availableTags'
     ]),
     
     checked () {
@@ -272,7 +341,9 @@ export default {
       'updateTaskNotes',
       'startTask',
       'archiveTask',
-      'removeTaskTag'
+      'removeTaskTag',
+      'addTaskTagById',
+      'addTaskTagByName'
     ]),
     
     editName () {
@@ -329,6 +400,32 @@ export default {
     
     async continueTimerHere () {
       await this.startTask({ taskId: this.selectedTask.id })
+    },
+    
+    tagInputChange () {
+      this.tagOptions = this.availableTags(this.selectedTask.id, this.inputTagName)
+    },
+    
+    addTag ({ tagId, tagName }) {
+      if (tagId != null) {
+        this.addTaskTagById({ taskId: this.selectedTask.id, tagId })
+      } else if (tagName != null && tagName.length) {
+        this.addTaskTagByName({ taskId: this.selectedTask.id, tagName })
+      }
+      this.inputTagName = ''
+      this.tagInputChange()
+      this.tagOptions = this.availableTags(this.selectedTask.id, this.inputTagName)
+      this.$refs.addTagInput.focus()
+    },
+    
+    clickOutside (event) {
+      if (!(event.relatedTarget && event.relatedTarget.classList &&
+        event.relatedTarget.classList.contains('tag-option'))) {
+        this.tagOptions = []
+        if (!(event.relatedTarget && event.relatedTarget.id === 'addTagButton')) {
+          this.showTagInput = false
+        }
+      }
     }
   }
 }
@@ -403,6 +500,33 @@ $play-btn-size: 75px;
 
 .top-margin {
   margin-top: 20px;
+}
+
+#addTagInput {
+  max-width: 160px;
+}
+
+#tagDropdown {
+  position: relative;
+}
+
+#tagDropdownMenu {
+  position: absolute;
+  top: 42px;
+  z-index: 4;
+  width: 160px;
+}
+
+.tag-option {
+  color: white;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
+  0 0 13px rgba(0, 0, 0, 0.1),
+  0 0 23px rgba(0, 0, 0, 0.1);
+  word-break: break-word;
+}
+
+.tag-option:hover {
+  color: lightgrey;
 }
 </style>
 

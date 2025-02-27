@@ -1,131 +1,55 @@
 <template>
-  <div
-    :id="taskTags ? 'taskTags' : 'filterTags'"
-    :class="taskTags ? 'd-flex' : 'form-inline'"
-  >
-    <h6
-      v-if="!taskTags"
-      style="width: 100%"
-      class="tag-label"
+  <div id="elements">
+    <div
+      v-for="tagId in sortedTagList"
+      :key="tagId"
+      class="tag btn-group"
     >
-      <span>{{ label }}:</span>
-    </h6>
-    <label
-      v-if="taskTags"
-      class="tag-label"
-    >
-      <span>{{ label }}:</span>
-    </label>
-    
-    <div id="elements">
-      <div
-        v-for="tagId in sortedTagList"
-        :key="tagId"
-        class="tag btn-group"
+      <button
+        class="tag-name btn"
+        :style="`backgroundColor: ${tags[tagId].color}`"
+        :title="selectText"
+        @click="selectTag ? selectTag(tagId, $event) : viewActivityModal(tagId)"
       >
-        <button
-          class="tag-name btn"
-          :style="`backgroundColor: ${tags[tagId].color}`"
-          :title="selectText"
-          @click="selectTag ? selectTag(tagId, $event) : viewActivityModal(tagId)"
-        >
-          {{ tags[tagId].tagName }}
-        </button>
-        <button
-          v-if="removeTag"
-          class="tag-close btn"
-          :style="`backgroundColor: ${tags[tagId].color}`"
-          :title="removeText"
-          aria-label="Close"
-          @click.stop="removeTag({tagId})"
-        >
-          <font-awesome-icon icon="times" />
-        </button>
-      </div>
-      <div v-if="label === 'Filtering on tasks with' && tagList.length > 1">
-        <div
-          class="btn-group btn-group-toggle"
-        >
-          <label
-            :class="'btn btn-light' + (filterOperator === 'and' ? ' active' : '')"
-            title="Show tasks with all of the selected tags"
-          >
-            <input
-              v-model="filterOperator"
-              type="radio"
-              value="and"
-            >
-            <span>All</span>
-          </label>
-          <label
-            :class="'btn btn-light' + (filterOperator === 'or' ? ' active' : '')"
-            title="Show tasks with any of the selected tags"
-          >
-            <input
-              v-model="filterOperator"
-              type="radio"
-              value="or"
-            >
-            <span>Any</span>
-          </label>
-        </div>
-      </div>
-      
-      <!-- Tag Input -->
-      <div
-        v-if="taskTags"
-        id="newTag"
-        class="btn-group"
+        {{ tags[tagId].tagName }}
+      </button>
+      <button
+        v-if="removeTag"
+        class="tag-close btn"
+        :style="`backgroundColor: ${tags[tagId].color}`"
+        :title="removeText"
+        aria-label="Close"
+        @click.stop="removeTag({tagId})"
       >
-        <div class="d-flex">
-          <button
-            id="addTagButton"
-            class="btn btn-light"
-            :title="showTagInput ? 'Cancel' : 'Add new tag'"
-            @click="addTagButton"
-          >
-            <font-awesome-icon
-              v-if="!showTagInput"
-              icon="plus"
-            />
-            <font-awesome-icon
-              v-if="showTagInput"
-              icon="times"
-            />
-          </button>
-          <div
-            v-if="showTagInput"
-            id="tagDropdown"
-          >
-            <div
-              id="tagDropdownMenu"
-              class="btn-group-vertical"
-            >
-              <button
-                v-for="tag in availableTags(taskId, inputTagName)"
-                :key="tag.id"
-                class="tag-option btn btn-light"
-                :style="`backgroundColor: ${tag.color}`"
-                @click="addTag({ tagId: tag.id })"
-              >
-                {{ tag.tagName }}
-              </button>
-            </div>
-          </div>
+        <font-awesome-icon icon="times" />
+      </button>
+    </div>
+    <div v-if="label === 'Filtering on tasks with' && tagList.length > 1">
+      <div
+        class="btn-group btn-group-toggle"
+      >
+        <label
+          :class="'btn btn-light' + (filterOperator === 'and' ? ' active' : '')"
+          title="Show tasks with all of the selected tags"
+        >
           <input
-            v-if="showTagInput"
-            id="addTagInput"
-            ref="addTagInput"
-            v-model="inputTagName"
-            type="text"
-            class="form-control"
-            placeholder="add new tag"
-            @input="tagInputChange"
-            @focus="tagInputChange"
-            @blur="clickOutside"
-            @keyup.enter="addTag({ tagName: inputTagName })"
+            v-model="filterOperator"
+            type="radio"
+            value="and"
           >
-        </div>
+          <span>All</span>
+        </label>
+        <label
+          :class="'btn btn-light' + (filterOperator === 'or' ? ' active' : '')"
+          title="Show tasks with any of the selected tags"
+        >
+          <input
+            v-model="filterOperator"
+            type="radio"
+            value="or"
+          >
+          <span>Any</span>
+        </label>
       </div>
     </div>
   </div>
@@ -168,6 +92,10 @@ export default {
     updateFilterOperator: {
       type: Function,
       default: null
+    },
+    mini: {
+      type: Boolean,
+      default: false
     }
   },
   
@@ -267,71 +195,28 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../styles/_variables.scss";
 
-/*noinspection CssUnusedSymbol*/
-#taskTags {
-  padding-left: 20px;
+.tag {
+  margin-right: 8px;
 }
 
-/*noinspection CssUnusedSymbol*/
-#taskTags > .tag-label, #taskTags > #elements > * {
-  margin-top: 20px;
-  margin-right: 20px;
-}
-
-/*noinspection CssUnusedSymbol*/
-#filterTags > .tag-label, #filterTags > #elements > * {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 10px;
-}
-
-#filterTags > label {
-  width: 100%;
-  justify-content: start;
-}
-
-#addTagInput {
-  max-width: 160px;
-}
-
-#tagDropdown {
-  position: relative;
-}
-
-#tagDropdownMenu {
-  position: absolute;
-  top: 42px;
-  z-index: 4;
-  width: 160px;
-}
-
-.tag > button {
+.tag > .btn {
+  border-radius: 24px;
   color: white;
+  font-size: $xs-font-size !important;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
   0 0 13px rgba(0, 0, 0, 0.1),
   0 0 23px rgba(0, 0, 0, 0.1);
+  padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
 }
 
-.tag > button:hover {
+.tag > .btn:hover {
   color: lightgrey;
 }
 
 .tag-name {
   word-break: break-word;
 }
-
-.tag-option {
-  color: white;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
-  0 0 13px rgba(0, 0, 0, 0.1),
-  0 0 23px rgba(0, 0, 0, 0.1);
-  word-break: break-word;
-}
-
-.tag-option:hover {
-  color: lightgrey;
-}
-
 </style>
