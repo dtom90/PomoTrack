@@ -1,5 +1,5 @@
 <template>
-  <div class="checkbox-container">
+  <div :class="['checkbox-container', { 'checkbox-large': size === 'large' }]">
     <input
       :checked="checked"
       :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
@@ -33,6 +33,11 @@ export default {
     taskId: {
       type: String,
       default: null
+    },
+    size: {
+      type: String,
+      default: 'small',
+      validator: value => ['small', 'large'].includes(value)
     }
   },
   
@@ -53,20 +58,31 @@ export default {
 /* Adapted from https://hackernoon.com/hacking-custom-checkboxes-and-radios-5d48230440d */
 
 $checkbox-size: 16px;
+$checkbox-large-size: 24px;
 
 .checkbox-container {
   position: relative;
   min-width: $checkbox-size;
   width: $checkbox-size;
   height: $checkbox-size;
-  margin-right: 20px;
-}
 
-.checkbox-container > * {
-  position: absolute;
-  left: 0;
-  width: $checkbox-size;
-  height: $checkbox-size;
+  > * {
+    position: absolute;
+    left: 0;
+    width: $checkbox-size;
+    height: $checkbox-size;
+  }
+  
+  &.checkbox-large {
+    min-width: $checkbox-large-size;
+    width: $checkbox-large-size;
+    height: $checkbox-large-size;
+    
+    > * {
+      width: $checkbox-large-size;
+      height: $checkbox-large-size;
+    }
+  }
 }
 
 /* Styles for hiding the native checkbox */

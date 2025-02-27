@@ -10,25 +10,19 @@
         id="title-section"
         class="d-flex justify-content-between"
       >
+        <!--  Checkbox  -->
+        <div>
+          <Checkbox
+            size="large"
+            :checked="checked"
+            :task-id="selectedTask.id"
+          />
+        </div>
+
         <div
           id="checkbox-name-container"
           class="d-flex align-items-center justify-content-center flex-grow-1"
         >
-          <div
-            v-if="!editingName"
-            id="menu-counterbalance"
-            style="width: 28px;"
-          />
-          
-          <!--  Checkbox  -->
-          <div>
-            <Checkbox
-              :checked="checked"
-              :task-id="selectedTask.id"
-              style="margin-left: 20px"
-            />
-          </div>
-          
           <!--  Task Name  -->
           <div
             v-if="!editingName"
@@ -42,8 +36,8 @@
               v-if="selectedTask.archived"
               class="archive-badge"
             >
-              Archived
-            </b-badge>&nbsp;
+              Archived&nbsp;
+            </b-badge>
             <span>{{ selectedTask.name }}</span>
           </div>
           
@@ -63,12 +57,6 @@
               @blur="saveName()"
             />
           </b-input-group>
-          
-          <div
-            v-if="!editingName"
-            id="checkbox-counterbalance"
-            style="width: 55.19px;"
-          />
         </div>
         
         <!-- Menu Options -->
@@ -357,7 +345,7 @@ export default {
 }
 
 #title-section {
-  margin-top: 20px;
+  margin: 20px;
 }
 
 #checkbox-name-section {
@@ -370,8 +358,8 @@ export default {
 }
 
 .task-name {
-  font-weight: 600;
-  font-size: xx-large;
+  font-weight: $large-font-weight;
+  font-size: $large-font-size;
   text-align: center;
 }
 
@@ -397,10 +385,6 @@ export default {
   min-height: 38px;
   overflow: visible;
   overflow-wrap: break-word;
-}
-
-.dropdown > button {
-  margin: 8px;
 }
 
 .dropdown-menu {

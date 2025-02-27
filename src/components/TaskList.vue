@@ -332,6 +332,7 @@ export default {
   flex: 1;
   text-align: left;
   font-size: $base-font-size;
+  font-weight: $large-font-weight;
 }
 
 .title-section > button,

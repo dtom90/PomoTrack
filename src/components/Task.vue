@@ -9,26 +9,26 @@
         :checked="checked"
         :task-id="task.id"
       />
-      <b-badge
-        v-if="task.archived"
-        class="archive-badge"
-      >
-        Archvied
-      </b-badge>&nbsp;
-      <span class="task-name">{{ task.name }}</span>
+      <div>
+        <div class="task-name">
+          {{ task.name }}
+        </div>
+        <div class="d-flex flex-wrap">
+          <div
+            v-for="tagId in taskTags"
+            :key="tagId"
+            class="badge mini-tag"
+            :style="{backgroundColor: tags[tagId].color}"
+          >
+&nbsp;&nbsp;
+          </div>
+        </div>
+      </div>
       <font-awesome-icon
         v-if="displayCountdownIndicator"
         id="indicatorIcon"
         icon="clock"
       />
-    </div>
-    <div class="d-flex flex-wrap">
-      <span
-        v-for="tagId in taskTags"
-        :key="tagId"
-        class="badge mini-tag"
-        :style="{backgroundColor: tags[tagId].color}"
-      >&nbsp;&nbsp;</span>
     </div>
   </li>
 </template>
@@ -95,12 +95,18 @@ export default {
 
 .task {
   padding: 8px;
+  border: none;
+  margin-bottom: 16px;
+  border-radius: 8px !important;
+  // background-color: #f8f9fa;
 }
 
 .task-name {
   flex: 1;
   text-align: left;
   font-size: $small-font-size;
+  margin-left: 8px;
+  line-height: 1;
 }
 
 #indicatorIcon {
