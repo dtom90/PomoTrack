@@ -74,6 +74,13 @@ jobs:
             gh release edit "v$VERSION" --draft=false
   
   build-web:
+    parameters:
+      target_repo:
+        type: string
+        default: "git@github.com:dtom90/PomoTrack.git"
+      target_branch:
+        type: string
+        default: "gh-pages"
     docker:
       - image: cimg/node:18.20.5
     steps:
@@ -92,7 +99,7 @@ jobs:
             npm install gh-pages@6.3.0 -g
             git config user.email "dtom90@users.noreply.github.com"
             git config user.name "David Thomason"
-            npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages"
+            npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages" --repo << parameters.target_repo >> --branch << parameters.target_branch >>
 
   build-mac:
     macos:
@@ -207,3 +214,13 @@ workflows:
           filters:
             branches:
               only: master
+  
+  # New workflow for DevTrack gh-pages deployment
+  deploy-devtrack:
+    jobs:
+      - build-web:
+          name: deploy-to-devtrack
+          target_repo: "git@github.com:username/DevTrack.git"
+          filters:
+            branches:
+              only: devtrack-deploy  # Create this branch when you want to trigger the workflow
