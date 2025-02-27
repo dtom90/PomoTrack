@@ -91,6 +91,9 @@ jobs:
       ssh_fingerprint:
         type: string
         default: "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
+      cname:
+        type: string
+        default: "pomotrack.app"
     docker:
       - image: cimg/node:18.20.5
     steps:
@@ -103,6 +106,11 @@ jobs:
       - run:
           name: Build GitHub Pages
           command: ./docker/gh-pages.sh
+      - run:
+          name: Update CNAME if needed
+          command: |
+            echo "<< parameters.cname >>" > dist_web/CNAME
+            echo "CNAME set to: << parameters.cname >>"
       - run:
           name: Publish to GitHub Pages
           command: |
@@ -232,6 +240,7 @@ workflows:
           name: deploy-to-devtrack
           target_repo: "git@github.com:dtom90/DevTrack.git"
           ssh_fingerprint: "SHA256:yU3fmPL2vH/VjtNkLb6dgI/JKV7MDY5Dppc71sJMouE"
+          cname: "devtrack.app"
           filters:
             branches:
               only: develop
