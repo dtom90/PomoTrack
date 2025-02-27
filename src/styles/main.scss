@@ -11,6 +11,11 @@
   padding: 8px;
 }
 
+// Custom border-radius for all light buttons
+.btn-light {
+  border-radius: 8px !important;
+}
+
 //noinspection CssInvalidPropertyValue
 .draggable-item {
   cursor: -webkit-grab !important;

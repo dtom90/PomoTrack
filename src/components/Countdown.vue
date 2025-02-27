@@ -416,7 +416,7 @@ export default {
   width: 38px;
   height: 38px;
   border: var(--countdown-color) 2px solid;
-  border-radius: 19px;
+  border-radius: 19px !important;
   color: var(--button-color)
 }
 

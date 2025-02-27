@@ -3,14 +3,13 @@
     <!-- TaskList Title Section -->
     <div class="title-section">
       <!-- TaskList Title -->
-      <h3 class="title">
+      <span class="title">
         {{ title }}
-      </h3>
+      </span>
       
       <!-- To Do List Filter Menu -->
       <b-dropdown
         v-if="!isCompletedList"
-        id="filter-menu-button"
         v-b-tooltip.hover.right="filterButtonTooltip"
         :disabled="Object.keys(tags).length === 0"
         dropright
@@ -109,21 +108,19 @@
       </div>
     </div>
     
-    <div
+    <b-input-group
       v-if="!isCompletedList"
       id="todo-input-section"
-      class="input-group"
+      class="my-3"
     >
       <!-- New Task Input Field -->
-      <input
+      <b-form-input
         id="new-task"
         v-model="newTaskName"
-        type="text"
-        class="form-control"
-        placeholder="enter new task"
+        placeholder="Enter new task.."
         @keyup.enter="addNewTask"
-      >
-    </div>
+      />
+    </b-input-group>
     
     <!-- Incomplete Tasks -->
     <draggable
@@ -328,11 +325,13 @@ export default {
 
 .title-section {
   display: flex;
+  align-items: center;
 }
 
 .title {
   flex: 1;
-  margin-left: 40px;
+  text-align: left;
+  font-size: $base-font-size;
 }
 
 .title-section > button,
@@ -352,11 +351,6 @@ export default {
 
 #add-position-menu {
   text-align: center;
-}
-
-#filter-menu-button {
-  width: 50px;
-  margin-bottom: 0.5rem;
 }
 
 .filter-btn-active > svg {

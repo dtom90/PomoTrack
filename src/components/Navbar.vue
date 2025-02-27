@@ -80,9 +80,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_variables.scss";
 
 .navbar-brand {
   z-index: 2;
+  font-size: $base-font-size;
 }
 
 .navbar-brand, .navbar-menu, .navbar-toggler {
@@ -95,5 +97,15 @@ export default {
 
 #navbarMenuOptions {
   z-index: 4;
+}
+
+// Add global font size for all elements in the navbar
+nav {
+  font-size: $base-font-size;
+}
+
+// Ensure time display also uses the same font size
+#time-container {
+  font-size: $base-font-size;
 }
 </style>
