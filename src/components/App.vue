@@ -6,7 +6,7 @@
     
     <div
       id="main-section"
-      class="d-flex"
+      class="d-flex border"
     >
       <div
         v-if="!isNarrowScreen"
@@ -25,7 +25,7 @@
 
       <div
         id="selected-task-section"
-        class="section"
+        class="section border-left border-right"
       >
         <div
           id="sidebar-buttons"
@@ -154,7 +154,7 @@ export default {
 <style lang="scss">
 @import "../styles/_variables.scss";
 
-$horiz-spacing: 8px;
+$horiz-spacing: 24px;
 
 body {
   overscroll-behavior-y: none;
@@ -169,9 +169,6 @@ body {
 #main-section {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: 20px;
-  margin-top: $main-section-margin-top;
-  padding-left: $horiz-spacing;
-  padding-right: $horiz-spacing;
   height: calc(100vh - #{$top-offset})
 }
 
@@ -180,8 +177,7 @@ h3, h4, h5, h6 {
 }
 
 .section {
-  margin-left: $horiz-spacing;
-  margin-right: $horiz-spacing;
+  padding: $horiz-spacing;
 }
 
 #selected-task-section {

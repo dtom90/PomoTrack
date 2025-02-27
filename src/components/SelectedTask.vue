@@ -2,7 +2,6 @@
   <div
     v-show="selectedTask"
     id="selected-task-container"
-    class="border"
   >
     <template v-if="selectedTask">
       <!--  Title Section  -->
@@ -340,7 +339,6 @@ export default {
 
 #selected-task-container {
   overflow-y: auto;
-  border-radius: 0.25rem;
   flex: 1;
 }
 
