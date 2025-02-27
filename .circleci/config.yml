@@ -74,6 +74,16 @@ jobs:
             gh release edit "v$VERSION" --draft=false
   
   build-web:
+    parameters:
+      target_repo:
+        type: string
+        default: "git@github.com:dtom90/PomoTrack.git"
+      target_branch:
+        type: string
+        default: "gh-pages"
+      ssh_fingerprint:
+        type: string
+        default: "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
     docker:
       - image: cimg/node:18.20.5
     steps:
@@ -81,7 +91,7 @@ jobs:
           docker_layer_caching: true
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
+            - << parameters.ssh_fingerprint >>
       - checkout
       - run:
           name: Build GitHub Pages
@@ -92,7 +102,7 @@ jobs:
             npm install gh-pages@6.3.0 -g
             git config user.email "dtom90@users.noreply.github.com"
             git config user.name "David Thomason"
-            npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages"
+            npx gh-pages --dist dist_web --dotfiles --no-history --message "GitHub Pages" --repo << parameters.target_repo >> --branch << parameters.target_branch >>
 
   build-mac:
     macos:
@@ -207,3 +217,14 @@ workflows:
           filters:
             branches:
               only: master
+  
+  # New workflow for DevTrack gh-pages deployment
+  deploy-to-devtrack:
+    jobs:
+      - build-web:
+          name: deploy-to-devtrack
+          target_repo: "git@github.com:username/DevTrack.git"
+          ssh_fingerprint: "SHA256:yU3fmPL2vH/VjtNkLb6dgI/JKV7MDY5Dppc71sJMouE"
+          filters:
+            branches:
+              only: develop
