@@ -244,6 +244,3 @@ workflows:
           filters:
             branches:
               only: develop
-    auto-cancel:
-      running: true  # Cancel running workflows on same branch
-      queued: true   # Cancel queued workflows on same branch
