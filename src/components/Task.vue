@@ -4,7 +4,7 @@
     :class="'task draggable-item list-group-item list-group-item-action form-check'+active"
     @click="selectTask({ taskId: task.id })"
   >
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-top">
       <Checkbox
         :checked="checked"
         :task-id="task.id"
@@ -93,9 +93,14 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+.task {
+  padding: 8px;
+}
+
 .task-name {
   flex: 1;
   text-align: left;
+  font-size: $small-font-size;
 }
 
 #indicatorIcon {
