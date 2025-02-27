@@ -3,13 +3,13 @@ describe('filter tasks', () => {
   const secondTagName = 'tag b'
   
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
     cy.get('input[placeholder="add new tag"]')
       .should('have.focus').type(firstTagName + '{enter}')
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -206,7 +206,7 @@ describe('filter tasks', () => {
     cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
       cy.get('input[type="checkbox"]').click()
     })
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     
@@ -222,7 +222,7 @@ describe('filter tasks', () => {
     })
     
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     
@@ -238,7 +238,7 @@ describe('filter tasks', () => {
     cy.contains('.dropdown-menu', 'Filter on:').within(() => {
       cy.contains('button', firstTagName).click()
     })
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     

@@ -3,7 +3,7 @@ describe('edit tags', () => {
   const secondTagName = 'my second tag'
 
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()

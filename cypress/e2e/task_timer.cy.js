@@ -1,6 +1,6 @@
 describe('task timer', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -89,7 +89,7 @@ describe('task timer', () => {
 
   it('starts then switches to another task, timer continues', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button').contains('Activity Log').click()
@@ -109,7 +109,7 @@ describe('task timer', () => {
 
   it('starts then switches to another task, log on previous task stops', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button').contains('Activity Log').click()
@@ -248,7 +248,7 @@ describe('task timer', () => {
 
   it('should stop timer when task completed and not continue next task', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#countdown-container').contains('25:00').click()
@@ -275,7 +275,7 @@ describe('task timer', () => {
 
   it('should reset timer when task completed during overtime', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#countdown-container').contains('25:00').click()
@@ -303,7 +303,7 @@ describe('task timer', () => {
   
   it('should order All Activity log in chronological order', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#incomplete-task-list .task').first().click()

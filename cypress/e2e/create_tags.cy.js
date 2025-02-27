@@ -3,7 +3,7 @@ describe('create tags', () => {
   const secondTagName = 'my second tag'
 
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -26,7 +26,7 @@ describe('create tags', () => {
 
   it('adds a tag to the first task after reload', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.reload()
@@ -47,7 +47,7 @@ describe('create tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -119,7 +119,7 @@ describe('create tags', () => {
 
   it('creates a second task then filters on tag', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -138,7 +138,7 @@ describe('create tags', () => {
     cy.get('.dropdown-menu').contains(firstTagName).click()
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -153,7 +153,7 @@ describe('create tags', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
     cy.get('.dropdown-menu').contains(firstTagName).click()
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -177,7 +177,7 @@ describe('create tags', () => {
     cy.get('.dropdown-menu div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 

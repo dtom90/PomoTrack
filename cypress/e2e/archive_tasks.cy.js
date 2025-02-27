@@ -1,7 +1,7 @@
 describe('create tasks', () => {
   beforeEach(() => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -44,7 +44,7 @@ describe('create tasks', () => {
 
   it('archives all completed tasks, hiding them from the list', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
@@ -65,7 +65,7 @@ describe('create tasks', () => {
   
   it('archives only visible completed tasks when filtering', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
@@ -95,7 +95,7 @@ describe('create tasks', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
     cy.get('button').contains('Archive').click()
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()

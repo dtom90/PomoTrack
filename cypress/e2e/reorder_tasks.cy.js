@@ -1,9 +1,9 @@
 describe('reorder tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
   })
@@ -35,7 +35,7 @@ describe('reorder tasks', () => {
 
   it('keeps completed archived task even after dragging', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Archived Task{enter}')
     cy.get('#selected-task-container').within(() => {
@@ -55,7 +55,7 @@ describe('reorder tasks', () => {
 
   it('keeps incomplete archived task even after dragging', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Archived Task{enter}')
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
@@ -74,7 +74,7 @@ describe('reorder tasks', () => {
     // Arrange
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
 

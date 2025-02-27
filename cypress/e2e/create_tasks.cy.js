@@ -1,6 +1,6 @@
 describe('create tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -47,7 +47,7 @@ describe('create tasks', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -58,7 +58,7 @@ describe('create tasks', () => {
 
   it('completes both tasks', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -73,7 +73,7 @@ describe('create tasks', () => {
 
   it('swaps order of completed tasks', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
