@@ -281,7 +281,7 @@ export default {
       }
     },
 
-    updateAddSelectedTagsValue(value) {
+    updateAddSelectedTagsValue (value) {
       this.updateSetting({ key: 'addSelectedTags', value })
     }
   }
@@ -294,12 +294,13 @@ export default {
 .title-section {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .title {
   flex: 1;
   text-align: left;
-  font-size: $base-font-size;
+  font-size: $large-font-size;
   font-weight: $large-font-weight;
 }
 
@@ -351,16 +352,6 @@ export default {
 
 .sortable-chosen {
   background-color: #e9ecef;
-}
-
-#incomplete-task-list {
-  max-height: calc(100vh - #{$top-offset} - 96px);
-  overflow-y: auto;
-}
-
-.scroll-list {
-  max-height: calc(100vh - #{$top-offset} - 42px);
-  overflow-y: auto;
 }
 
 </style>

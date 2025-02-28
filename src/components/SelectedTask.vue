@@ -7,7 +7,7 @@
       <!--  Title Section  -->
       <div
         id="title-section"
-        class="d-flex justify-content-between"
+        class="d-flex justify-content-between align-items-lg-center"
       >
         <!--  Checkbox  -->
         <div>
@@ -94,147 +94,151 @@
         </div>
       </div>
       
-      <!-- Tags Section -->
-      <div class="d-flex">
-        <label
-          v-if="taskTags"
-          class="tag-label"
-        >
-          <span>Tags:</span>
-        </label>
-        <TagList
-          id="taskTags"
-          :tag-list="taskTags"
-          :task-id="selectedTask.id"
-          :remove-tag="removeTag"
-        />
+      <!-- Countdown Timer -->
+      <div id="countdown-section">
+        <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
+          <Countdown
+            :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
+          />
+        </div>
         
-        <!-- Tag Input -->
+        <!-- Continue Timer Here -->
         <div
-          v-if="taskTags"
-          id="newTag"
-          class="btn-group"
+          v-if="selectedTask && !selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
+          class="d-flex flex-column align-items-center"
+          style="color: darkred"
         >
-          <div class="d-flex">
-            <button
-              id="addTagButton"
-              class="btn btn-light"
-              :title="showTagInput ? 'Cancel' : 'Add new tag'"
-              @click="addTagButton"
-            >
-              <font-awesome-icon
-                v-if="!showTagInput"
-                icon="plus"
-              />
-              <font-awesome-icon
-                v-if="showTagInput"
-                icon="times"
-              />
-            </button>
-            <div
-              v-if="showTagInput"
-              id="tagDropdown"
-            >
-              <div
-                id="tagDropdownMenu"
-                class="btn-group-vertical"
-              >
-                <button
-                  v-for="tag in availableTags(selectedTask.id, inputTagName)"
-                  :key="tag.id"
-                  class="tag-option btn btn-light"
-                  :style="`backgroundColor: ${tag.color}`"
-                  @click="addTag({ tagId: tag.id })"
-                >
-                  {{ tag.tagName }}
-                </button>
-              </div>
-            </div>
-            <input
-              v-if="showTagInput"
-              id="addTagInput"
-              ref="addTagInput"
-              v-model="inputTagName"
-              type="text"
-              class="form-control"
-              placeholder="add new tag"
-              @input="tagInputChange"
-              @focus="tagInputChange"
-              @blur="clickOutside"
-              @keyup.enter="addTag({ tagName: inputTagName })"
-            >
-          </div>
+          <div>Continue Here</div>
+          <button
+            id="continue-here-btn"
+            type="button"
+            class="btn btn-light btn-lg"
+            style="color: darkred"
+            title="Continue Timer Here"
+            @click="continueTimerHere"
+          >
+            <font-awesome-icon icon="play" />
+          </button>
         </div>
       </div>
       
-      <!-- Notes Section -->
-      <div
-        id="notes-section"
-        class="d-flex align-items-center"
-        style="max-width: 100%"
-      >
-        <span id="notes-label">Notes: </span>
-        
-        <!-- Display Mode -->
-        <!-- eslint-disable vue/no-v-html -->
-        <span
-          v-if="!editingNotes"
-          id="display-notes"
-          @click="editNotes"
-          v-html="displayNotes"
-        />
-        <!-- eslint-enable vue/no-v-html -->
-        
-        <!-- Editing Mode -->
-        <b-input-group
-          v-if="editingNotes"
+      <div id="tags-and-notes-section">
+        <!-- Notes Section -->
+        <div
+          id="notes-section"
+          class="d-flex align-items-center"
         >
-          <b-form-textarea
-            ref="notesInput"
-            v-model="selectedTask.notes"
-            placeholder="enter notes"
-            :rows="selectedTask.notes.split('\n').length"
-            @blur="saveNotes"
-            @keydown.enter="handleNotesEnter"
+          <!-- Display Mode -->
+          <!-- eslint-disable vue/no-v-html -->
+          <span
+            v-if="selectedTask.notes && !editingNotes"
+            id="display-notes"
+            class="notes-input-and-display"
+            @click="editNotes"
+            v-html="displayNotes"
           />
-        </b-input-group>
+          <!-- eslint-enable vue/no-v-html -->
+          
+          <!-- Editing Mode -->
+          <b-input-group
+            v-if="editingNotes || !selectedTask.notes"
+          >
+            <b-form-textarea
+              ref="notesInput"
+              v-model="selectedTask.notes"
+              placeholder="Enter notes here.."
+              :rows="selectedTask.notes.split('\n').length"
+              class="notes-input-and-display"
+              no-resize
+              @click="editNotes"
+              @blur="saveNotes"
+              @keydown.enter="handleNotesEnter"
+            />
+          </b-input-group>
+        </div>
+        
+        <!-- Tags Section -->
+        <div
+          id="tags-section"
+          class="d-flex align-items-center"
+        >
+          <label
+            v-if="taskTags"
+            id="tags-label"
+          >
+            <span>Tags:</span>
+          </label>
+          <TagList
+            id="taskTags"
+            :tag-list="taskTags"
+            :task-id="selectedTask.id"
+            :remove-tag="removeTag"
+          />
+          
+          <!-- Tag Input -->
+          <div
+            v-if="taskTags"
+            id="new-tag-section"
+            class="btn-group"
+          >
+            <div class="d-flex">
+              <button
+                id="addTagButton"
+                class="btn btn-light"
+                :title="showTagInput ? 'Cancel' : 'Add new tag'"
+                @click="addTagButton"
+              >
+                <font-awesome-icon
+                  v-if="!showTagInput"
+                  icon="plus"
+                />
+                <font-awesome-icon
+                  v-if="showTagInput"
+                  icon="times"
+                />
+              </button>
+              <div
+                v-if="showTagInput"
+                id="tagDropdown"
+              >
+                <div
+                  id="tagDropdownMenu"
+                  class="btn-group-vertical"
+                >
+                  <button
+                    v-for="tag in availableTags(selectedTask.id, inputTagName)"
+                    :key="tag.id"
+                    class="tag-option btn btn-light"
+                    :style="`backgroundColor: ${tag.color}`"
+                    @click="addTag({ tagId: tag.id })"
+                  >
+                    {{ tag.tagName }}
+                  </button>
+                </div>
+              </div>
+              <input
+                v-if="showTagInput"
+                id="addTagInput"
+                ref="addTagInput"
+                v-model="inputTagName"
+                type="text"
+                class="form-control"
+                placeholder="add new tag"
+                @input="tagInputChange"
+                @focus="tagInputChange"
+                @blur="clickOutside"
+                @keyup.enter="addTag({ tagName: inputTagName })"
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </template>
     
-    <!-- Countdown Timer -->
-    <div>
-      <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
-        <Countdown
-          :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
-          class="top-margin"
-        />
-      </div>
-    </div>
-    
     <template v-if="selectedTask">
-      <!-- Continue Timer Here -->
-      <div
-        v-if="!selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
-        class="d-flex flex-column align-items-center"
-        style="color: darkred"
-      >
-        <div>Continue Here</div>
-        <button
-          id="continue-here-btn"
-          type="button"
-          class="btn btn-light btn-lg"
-          style="color: darkred"
-          title="Continue Timer Here"
-          @click="continueTimerHere"
-        >
-          <font-awesome-icon icon="play" />
-        </button>
-      </div>
-      
       <!-- Activity View -->
       <ActivityView
         id="taskActivity"
-        class="border-top top-margin"
         :task-id="selectedTask.id"
         :label="selectedTask.name"
         :log="selectedTask.log"
@@ -291,7 +295,6 @@ export default {
     editingName: false,
     editingNotes: false,
     newTaskName: null,
-    newTag: '',
     tagOptions: [],
     showTagInput: false,
     inputTagName: ''
@@ -434,72 +437,92 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+$vertical-spacing: 30px;
+
 #selected-task-container {
-  overflow-y: auto;
   flex: 1;
-}
-
-#title-section {
-  margin: 20px;
-}
-
-#checkbox-name-section {
-  margin-left: 20px;
-  flex: 1;
-}
-
-#task-name-container {
-  margin: 8px;
-}
-
-.task-name {
-  font-weight: $large-font-weight;
-  font-size: $large-font-size;
-  text-align: center;
-}
-
-#selected-task-menu {
-  justify-content: space-evenly;
-}
-
-#notes-section {
-  padding: 15px 10px 10px;
-}
-
-#notes-label {
-  padding-right: 15px;
-}
-
-#display-notes {
-  padding: 10px;
-  border: #e2e6ea 1px solid;
-  border-radius: 5px;
-  font-size: 16px;
-  flex: 1;
-  min-width: 0;
-  min-height: 38px;
-  overflow: visible;
-  overflow-wrap: break-word;
-}
-
-.dropdown-menu {
-
-  .selected-task-menu {
-    margin: 8px;
+  
+  > * {
+    margin-bottom: $vertical-spacing;
   }
 }
 
-$play-btn-size: 75px;
-
-#play-btn {
-  width: $play-btn-size;
-  height: $play-btn-size;
-  font-size: 28px;
-  border-radius: $play-btn-size;
+#title-section {
+  .task-name {
+    min-height: 50px;
+    line-height: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+    font-size: $xl-font-size;
+    font-weight: $large-font-weight;
+  }
+  
+  #selected-task-menu {
+    justify-content: space-evenly;
+  }
 }
 
-.top-margin {
-  margin-top: 20px;
+#countdown-section {
+  $play-btn-size: 75px;
+  
+  #play-btn {
+    width: $play-btn-size;
+    height: $play-btn-size;
+    font-size: 28px;
+    border-radius: $play-btn-size;
+  }
+}
+
+#tags-and-notes-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  > div {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  #notes-section {
+    
+    .notes-input-and-display {
+      outline: none !important;
+      box-shadow: none !important;
+      border: 0;
+      padding: 0;
+      min-height: 48px;
+    }
+    
+    #display-notes {
+      flex: 1;
+      min-width: 0;
+      overflow: visible;
+      overflow-wrap: break-word;
+    }
+    margin-bottom: 10px;
+  }
+  
+  #tags-section {
+    
+    #tags-label {
+      padding-right: 15px;
+      margin-bottom: 0;
+    }
+    
+    #new-tag-section * {
+      max-height: 32px;
+      
+      #addTagButton {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
 }
 
 #addTagInput {
@@ -512,7 +535,7 @@ $play-btn-size: 75px;
 
 #tagDropdownMenu {
   position: absolute;
-  top: 42px;
+  top: 48px;
   z-index: 4;
   width: 160px;
 }

@@ -1,10 +1,15 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-vue/src/index.scss";
+@import "variables";
+@import "fonts";
+@import "tags";
 
-.tag-close {
-  @include font-size($close-font-size);
-  font-weight: $close-font-weight;
-  line-height: 1;
+.top-margin {
+  margin-top: 20px;
+}
+
+.bottom-margin {
+  margin-top: 20px;
 }
 
 .dropdown-menu {
@@ -13,7 +18,7 @@
 
 // Custom border-radius for all light buttons
 .btn-light {
-  border-radius: 8px !important;
+  border-radius: 8px;
 }
 
 //noinspection CssInvalidPropertyValue

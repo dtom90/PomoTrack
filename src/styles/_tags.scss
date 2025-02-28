@@ -1,0 +1,27 @@
+.tag {
+  margin-right: 8px;
+  
+  > .btn {
+    border-radius: 24px;
+    color: white;
+    font-size: $xs-font-size !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
+    0 0 13px rgba(0, 0, 0, 0.1),
+    0 0 23px rgba(0, 0, 0, 0.1);
+    padding: 0.375rem .75rem;
+  }
+  
+  > .btn:hover {
+    color: lightgrey;
+  }
+  
+  .tag-name {
+    word-break: break-word;
+  }
+}
+
+.tag-close {
+  @include font-size($close-font-size);
+  font-weight: $close-font-weight;
+  line-height: 1;
+}

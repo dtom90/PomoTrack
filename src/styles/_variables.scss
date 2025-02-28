@@ -1,12 +1,14 @@
 $navbar-height: 56px;
-$main-section-margin-top: 15px;
-$top-offset: calc(#{$navbar-height} + #{$main-section-margin-top});
+$top-offset: $navbar-height;
 
-$base-font-size: 16px;
-$large-font-weight: 500;
-$large-font-size: 24px;
-$small-font-size: 14px;
 $xs-font-size: 12px;
+$small-font-size: 14px;
+$base-font-size: 16px;
+$large-font-size: 20px;
+$xl-font-size: 24px;
+
+$large-font-weight: 500;
+
 $archive-color: #654321;
 
 .archive-badge {

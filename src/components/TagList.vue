@@ -1,5 +1,10 @@
 <template>
   <div id="elements">
+    <!--  spacing for consistent spacing  -->
+    <div
+      v-if="!sortedTagList.length"
+      style="height: 30px"
+    />
     <div
       v-for="tagId in sortedTagList"
       :key="tagId"
@@ -196,27 +201,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
-
 .tag {
-  margin-right: 8px;
-}
-
-.tag > .btn {
-  border-radius: 24px;
-  color: white;
-  font-size: $xs-font-size !important;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
-  0 0 13px rgba(0, 0, 0, 0.1),
-  0 0 23px rgba(0, 0, 0, 0.1);
-  padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
-}
-
-.tag > .btn:hover {
-  color: lightgrey;
-}
-
-.tag-name {
-  word-break: break-word;
+  > .btn {
+    padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
+  }
 }
 </style>

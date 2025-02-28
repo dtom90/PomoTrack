@@ -6,7 +6,7 @@
     
     <div
       id="main-section"
-      class="d-flex border"
+      class="d-flex border poppins-regular"
     >
       <div
         v-if="!isNarrowScreen"
@@ -167,8 +167,7 @@ body {
 }
 
 #main-section {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  font-size: 20px;
+  font-size: $base-font-size;
   height: calc(100vh - #{$top-offset})
 }
 
@@ -178,6 +177,7 @@ h3, h4, h5, h6 {
 
 .section {
   padding: $horiz-spacing;
+  overflow-y: auto;
 }
 
 #selected-task-section {
@@ -221,9 +221,5 @@ h3, h4, h5, h6 {
 
 #sidebar-done {
   right: 0;
-}
-
-.top-margin {
-  margin-top: 20px;
 }
 </style>

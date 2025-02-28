@@ -102,8 +102,8 @@ export default {
 .task-name {
   flex: 1;
   text-align: left;
-  font-size: $small-font-size;
   margin-left: 8px;
+  margin-bottom: 8px;
   line-height: 1;
 }
 
