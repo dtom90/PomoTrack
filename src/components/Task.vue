@@ -21,10 +21,10 @@
           />
         </div>
       </div>
-      <CountdownDial 
+      <CountdownDial
         v-if="displayCountdownIndicator"
-        size="20"
-        circle-thickness="4"
+        :size="20"
+        :circle-thickness="4"
       />
     </div>
   </li>
@@ -112,22 +112,5 @@ export default {
   min-height: $checkbox-size;
   display: flex;
   align-items: center;
-}
-
-#indicatorIcon {
-  color: red;
-  width: 2rem;
-  height: 2rem;
-}
-
-.badge:empty {
-  display: inline-block !important;
-}
-
-.mini-tag {
-  width: 50px !important;
-  height: 10px !important;
-  margin-top: 10px;
-  margin-right: 10px;
 }
 </style>

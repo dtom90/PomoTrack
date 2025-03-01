@@ -4,7 +4,10 @@
     class="btn btn-light border d-flex justify-content-center align-items-center"
     @click="selectTask({ taskId: activeTask.id })"
   >
-    <CountdownDial size="60" circle-thickness="9" />
+    <CountdownDial
+      :size="60"
+      :circle-thickness="9"
+    />
     <span id="active-task-name">{{ activeTask.name }}</span>
   </button>
 </template>
@@ -37,13 +40,6 @@ export default {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   width: 100%;
-}
-
-#active-indicator-icon {
-  color: red;
-  width: 4rem;
-  height: 4rem;
-  margin: 2px 0.75rem 2px 0.75rem;
 }
 
 #active-task-name {
