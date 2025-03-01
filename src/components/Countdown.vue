@@ -7,55 +7,51 @@
       id="dial-section"
       class="width-100 d-flex justify-content-center"
     >
-      <div id="dial-container">
-        <div id="red-arc-reducer" />
-        <div id="gray-outer-circle" />
-        <div
-          id="white-inner-circle"
-          class="d-flex justify-content-center align-items-center"
+      <CountdownDial
+        :progress="tempState.secondsRemaining / totalSeconds"
+        :active="active"
+      >
+        <p
+          v-if="!editing"
+          id="timer-display"
+          @click="onTimerClick"
         >
-          <p
-            v-if="!editing"
-            id="timer-display"
-            @click="onTimerClick"
+          {{ displayTime }}
+        </p>
+        
+        <div class="d-flex justify-content-center">
+          <div
+            v-if="editing"
+            id="edit-wrapper"
+            class="input-group"
           >
-            {{ displayTime }}
-          </p>
-          
-          <div class="d-flex justify-content-center">
-            <div
-              v-if="editing"
-              id="edit-wrapper"
-              class="input-group"
+            <input
+              v-if="active"
+              v-model="newActiveMinutes"
+              type="number"
+              class="form-control"
+              @keyup.enter="changeMinutes"
             >
-              <input
-                v-if="active"
-                v-model="newActiveMinutes"
-                type="number"
-                class="form-control"
-                @keyup.enter="changeMinutes"
+            <input
+              v-if="!active"
+              v-model="newRestMinutes"
+              type="number"
+              class="form-control"
+              @keyup.enter="changeMinutes"
+            >
+            <div class="input-group-append">
+              <button
+                id="timer-save-button"
+                type="button"
+                class="btn btn-primary"
+                @click="changeMinutes"
               >
-              <input
-                v-if="!active"
-                v-model="newRestMinutes"
-                type="number"
-                class="form-control"
-                @keyup.enter="changeMinutes"
-              >
-              <div class="input-group-append">
-                <button
-                  id="timer-save-button"
-                  type="button"
-                  class="btn btn-primary"
-                  @click="changeMinutes"
-                >
-                  <font-awesome-icon icon="save" />
-                </button>
-              </div>
+                <font-awesome-icon icon="save" />
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </CountdownDial>
     </div>
     
     <div
@@ -148,10 +144,15 @@
 import { mapState, mapMutations, mapActions } from 'vuex'
 import CountdownTimer from '../lib/CountdownTimer'
 import notifications from '../lib/notifications'
+import CountdownDial from './CountdownDial.vue'
 
 export default {
   
   name: 'Countdown',
+  
+  components: {
+    CountdownDial
+  },
   
   mixins: [notifications],
   
@@ -412,55 +413,6 @@ $circle-thickness: 18px;
 }
 
 #dial-section {
-  
-  #dial-container {
-    position: relative;
-    width: $dial-size;
-    height: $dial-size;
-    margin: 0 auto;
-  }
-  
-  #gray-outer-circle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: gray $circle-thickness solid;
-  }
-  
-  #red-arc-reducer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    //noinspection CssInvalidFunction
-    background: conic-gradient(
-      from 0deg,
-      var(--countdown-color) 0%,
-      var(--countdown-color) calc(var(--arc-angle) * 1%),
-      transparent calc(var(--arc-angle) * 1%),
-      transparent 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  #white-inner-circle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% - $circle-thickness * 2);
-    height: calc(100% - $circle-thickness * 2);
-    border-radius: 50%;
-    margin: $circle-thickness;
-    z-index: 2;
-    background-color: white;
-  }
-  
   #timer-display {
     font-size: $xxxxl-font-size;
     font-weight: $large-font-weight;
