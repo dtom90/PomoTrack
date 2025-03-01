@@ -7,9 +7,7 @@
       id="dial-section"
       class="width-100 d-flex justify-content-center"
     >
-      <CountdownDial
-        :active="active"
-      >
+      <CountdownDial>
         <p
           v-if="!editing"
           id="timer-display"
@@ -25,14 +23,14 @@
             class="input-group"
           >
             <input
-              v-if="active"
+              v-if="tempState.active"
               v-model="newActiveMinutes"
               type="number"
               class="form-control"
               @keyup.enter="changeMinutes"
             >
             <input
-              v-if="!active"
+              v-if="!tempState.active"
               v-model="newRestMinutes"
               type="number"
               class="form-control"
@@ -166,8 +164,6 @@ export default {
     editing: false,
     newActiveMinutes: 0,
     newRestMinutes: 0,
-    active: true,
-    overtime: false,
     secondReminderDisplayed: false,
     timer: null
   }),
@@ -180,15 +176,15 @@ export default {
     ]),
     
     totalSeconds () {
-      return (this.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
+      return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
     },
     
     playPauseIcon () {
-      return this.overtime ? 'stop' : this.tempState.running ? 'pause' : 'play'
+      return this.tempState.overtime ? 'stop' : this.tempState.running ? 'pause' : 'play'
     },
     
     playPauseTitle () {
-      return this.overtime ? 'Stop' : (this.tempState.running ? 'Pause' : 'Start') + ' timer'
+      return this.tempState.overtime ? 'Stop' : (this.tempState.running ? 'Pause' : 'Start') + ' timer'
     },
     
     cssProps () {
@@ -198,17 +194,17 @@ export default {
       return {
         '--rotation-factor': progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.active ? 'red' : 'darkseagreen',
-        '--button-color': this.active ? 'darkred' : 'green'
+        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen',
+        '--button-color': this.tempState.active ? 'darkred' : 'green'
       }
     },
     
     displayTime () {
-      const totalSecs = this.overtime ? -this.tempState.secondsRemaining : this.tempState.secondsRemaining
+      const totalSecs = this.tempState.overtime ? -this.tempState.secondsRemaining : this.tempState.secondsRemaining
       const mins = Math.floor(totalSecs / 60)
       const secs = totalSecs % 60
       const secString = secs.toString().padStart(2, '0')
-      return `${this.overtime ? '+' : ''}${mins}:${secString}`
+      return `${this.tempState.overtime ? '+' : ''}${mins}:${secString}`
     },
     
     continueOnComplete: {
@@ -254,7 +250,7 @@ export default {
   
   watch: {
     'settings.activeMinutes': function () {
-      if (this.active) {
+      if (this.tempState.active) {
         this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
       }
     }
@@ -283,7 +279,7 @@ export default {
         return
       }
       this.editing = true
-      if (this.active) {
+      if (this.tempState.active) {
         this.newActiveMinutes = this.settings.activeMinutes
       } else {
         this.newRestMinutes = this.settings.restMinutes
@@ -297,8 +293,8 @@ export default {
     
     async changeMinutes () {
       await this.updateSetting({
-        key: this.active ? 'activeMinutes' : 'restMinutes',
-        value: this.active ? this.newActiveMinutes : this.newRestMinutes
+        key: this.tempState.active ? 'activeMinutes' : 'restMinutes',
+        value: this.tempState.active ? this.newActiveMinutes : this.newRestMinutes
       })
       this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
       this.timer.setSeconds(this.totalSeconds)
@@ -310,15 +306,15 @@ export default {
 
       this.clearNotifications()
       
-      if (this.overtime) {
-        this.overtime = false
+      if (this.tempState.overtime) {
+        this.updateTempState({ key: 'overtime', value: false })
         this.resetTimer()
       } else if (this.tempState.running) {
         this.timer.pause()
         this.endInterval()
         this.updateTempState({ key: 'running', value: false })
       } else {
-        if (this.active) { // start an active interval
+        if (this.tempState.active) { // start an active interval
           this.startTask({ taskId: this.taskId })
         } else { // this is a rest interval, simply toggle running
           this.updateTempState({ key: 'running', value: !this.tempState.running })
@@ -330,16 +326,16 @@ export default {
     decrementTimer (secondsRemaining) {
       if (this.tempState.running) {
         this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining })
-        if (this.active) {
+        if (this.tempState.active) {
           this.updateTaskTimer({ taskId: this.taskId })
-          if (this.overtime && !this.secondReminderDisplayed && this.tempState.secondsRemaining <= this.secondReminderSeconds) {
+          if (this.tempState.overtime && !this.secondReminderDisplayed && this.tempState.secondsRemaining <= this.secondReminderSeconds) {
             this.notify('Finished Working, Take a Break!')
             this.secondReminderDisplayed = true
           }
         }
       } else {
-        if (this.overtime) {
-          this.overtime = false
+        if (this.tempState.overtime) {
+          this.updateTempState({ key: 'overtime', value: false })
           this.resetTimer()
         } else {
           this.timer.pause()
@@ -348,7 +344,7 @@ export default {
     },
     
     endInterval () {
-      if (this.active && this.tempState.running) {
+      if (this.tempState.active && this.tempState.running) {
         this.stopTask()
       }
     },
@@ -359,19 +355,19 @@ export default {
       
       if (fromCountdownFinish) { // If this came from the countdown finishing
         this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining }) // reset secondsRemaining
-        if (!this.overtime) { // If we're not in overtime
+        if (!this.tempState.overtime) { // If we're not in overtime
           notify = true // Set notify to true
-          if (this.continueOnComplete && this.active) { // If continueOnComplete is set, go into overtime
-            this.overtime = true
+          if (this.continueOnComplete && this.tempState.active) { // If continueOnComplete is set, go into overtime
+            this.updateTempState({ key: 'overtime', value: true })
           }
         }
-      } else if (this.overtime) {
-        this.overtime = false
+      } else if (this.tempState.overtime) {
+        this.updateTempState({ key: 'overtime', value: false })
       }
       
       // Notify interval finish
       if (notify) {
-        if (this.active) {
+        if (this.tempState.active) {
           this.notify('Finished Working, Take a Break!')
         } else {
           this.notify('Finished Break, Time to Work!')
@@ -379,7 +375,7 @@ export default {
       }
       
       // If this was a manual finishTimer, or we're not continuing into overtime, then reset the timer
-      if (!fromCountdownFinish || !this.active || !this.overtime) {
+      if (!fromCountdownFinish || !this.tempState.active || !this.tempState.overtime) {
         this.resetTimer()
       } else {
         this.decrementTimer(this.tempState.secondsRemaining)
@@ -391,7 +387,7 @@ export default {
       this.endInterval()
       this.updateTempState({ key: 'activeTaskID', value: null })
       this.updateTempState({ key: 'running', value: false })
-      this.active = !this.active
+      this.updateTempState({ key: 'active', value: !this.tempState.active })
       this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
       this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
       this.secondReminderDisplayed = false

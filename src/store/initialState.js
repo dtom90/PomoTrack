@@ -9,7 +9,9 @@ const initialState = {
     running: false,
     modalTagId: null,
     notificationList: [],
-    secondsRemaining: 0
+    secondsRemaining: 0,
+    active: true,
+    overtime: false
   },
   
   settings: {

@@ -20,10 +20,6 @@ export default {
   name: 'CountdownDial',
   
   props: {
-    active: {
-      type: Boolean,
-      default: true
-    },
     size: {
       type: Number,
       default: 300
@@ -41,7 +37,7 @@ export default {
     ]),
     
     totalSeconds() {
-      return (this.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
+      return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
     },
     
     progress() {
@@ -54,7 +50,7 @@ export default {
       return {
         '--rotation-factor': this.progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.active ? 'red' : 'darkseagreen',
+        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen',
         '--dial-size': `${this.size}px`,
         '--circle-thickness': `${this.circleThickness}px`
       };
