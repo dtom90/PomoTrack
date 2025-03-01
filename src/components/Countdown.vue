@@ -88,74 +88,55 @@
           <font-awesome-icon :icon="playPauseIcon" />
         </b-button>
         
-        <b-button
-          id="countdown-menu-button"
-          variant="light"
-          class="mx-2 circular-button"
-          data-toggle="dropdown"
-          size="sm"
-        >
-          <font-awesome-icon icon="gear" />
-        </b-button>
-        
-        <div
+        <b-dropdown
           id="countdown-settings-dropdown"
-          class="dropright"
+          right
+          variant="light"
+          class="mx-2"
+          no-caret
+          dropright
+          boundary="viewport"
         >
-          <div
-            id="countdown-menu"
-            class="dropdown-menu"
-          >
-            <div
-              class="form-check form-check-inline"
+          <template #button-content>
+            <font-awesome-icon icon="gear" />
+          </template>
+          
+          <b-dropdown-form>
+            <b-form-checkbox
+              id="continueTimer"
+              v-model="continueOnComplete"
             >
-              <input
-                id="continueTimer"
-                v-model="continueOnComplete"
-                type="checkbox"
-                class="form-check-input"
-              >
-              <label
-                class="form-check-label"
-                for="continueTimer"
-                style="margin-left: 6px;"
-                @click.stop=""
-              >Continue Timer when Interval Complete</label>
-            </div>
-            <div class="dropdown-divider" />
-            <form class="form-inline">
-              <fieldset :disabled="!continueOnComplete">
-                <div class="form-group">
-                  <input
-                    id="secondReminderEnabled"
-                    v-model="secondReminderEnabled"
-                    type="checkbox"
-                    class="form-check-input"
-                  >
-                  <label
-                    class="form-check-label"
-                    for="secondReminderEnabled"
-                    style="margin-left: 6px;"
-                    @click.stop=""
-                  >Second Reminder</label>
-                </div>
-                
-                <div class="form-group">
-                  <label for="secondReminderMinutes">after&nbsp;</label>
-                  <input
-                    id="secondReminderMinutes"
-                    v-model="secondReminderMinutes"
-                    type="number"
-                    class="form-control mx-sm-1"
-                    style="max-width: 60px;"
-                    :disabled="!secondReminderEnabled"
-                  >
-                  <span>&nbsp;minutes</span>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </div>
+              <div>Continue Timer </div>
+              <div>on Interval Complete</div>
+            </b-form-checkbox>
+            
+            <b-dropdown-divider />
+            
+            <fieldset :disabled="!continueOnComplete">
+              <b-form-group>
+                <b-form-checkbox
+                  id="secondReminderEnabled"
+                  v-model="secondReminderEnabled"
+                >
+                  Second Reminder
+                </b-form-checkbox>
+              </b-form-group>
+              
+              <b-form-group>
+                <label for="secondReminderMinutes">after</label>
+                <b-form-input
+                  id="secondReminderMinutes"
+                  v-model="secondReminderMinutes"
+                  type="number"
+                  class="mx-2"
+                  style="max-width: 60px; display: inline-block;"
+                  :disabled="!secondReminderEnabled"
+                />
+                <span>minutes</span>
+              </b-form-group>
+            </fieldset>
+          </b-dropdown-form>
+        </b-dropdown>
       </div>
     </div>
   </div>
@@ -537,13 +518,17 @@ $circle-thickness: 18px;
   }
   
   #countdown-settings-dropdown {
-    position: absolute;
-    right: -38px;
-    bottom: 0;
-  }
-  
-  #countdown-menu {
-    width: 210px;
+    button {
+      border-radius: 50% !important;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+    }
+    
+    .dropdown-menu {
+      width: 250px;
+      padding: 1rem;
+    }
   }
 }
 </style>
