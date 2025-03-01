@@ -55,11 +55,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_variables.scss";
+
 /* Adapted from https://hackernoon.com/hacking-custom-checkboxes-and-radios-5d48230440d */
-
-$checkbox-size: 16px;
-$checkbox-large-size: 24px;
-
 .checkbox-container {
   position: relative;
   min-width: $checkbox-size;

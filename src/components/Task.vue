@@ -9,7 +9,7 @@
         :checked="checked"
         :task-id="task.id"
       />
-      <div>
+      <div class="task-name-and-tags-wrapper">
         <div class="task-name">
           {{ task.name }}
         </div>
@@ -96,15 +96,20 @@ export default {
   border: none;
   margin-bottom: 16px;
   border-radius: 8px !important;
-  // background-color: #f8f9fa;
+}
+
+.task-name-and-tags-wrapper {
+  margin-left: 8px;
 }
 
 .task-name {
   flex: 1;
   text-align: left;
-  margin-left: 8px;
   margin-bottom: 8px;
   line-height: 1;
+  min-height: $checkbox-size;
+  display: flex;
+  align-items: center;
 }
 
 #indicatorIcon {

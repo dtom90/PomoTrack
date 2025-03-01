@@ -1,142 +1,161 @@
 <template>
   <div
     id="countdown-container"
-    class="d-flex justify-content-center"
     :style="cssProps"
   >
-    <div id="dial-container">
-      <button
-        id="skip-btn"
-        class="btn btn-light"
-        title="Skip current interval"
-        :disabled="editing"
-        @click="onSkipTimerClick"
-      >
-        <font-awesome-icon icon="times" />
-      </button>
-      
-      <div
-        id="countdown-settings-dropdown"
-        class="dropright"
-      >
-        <button
-          id="countdown-menu-button"
-          class="btn btn-light"
-          data-toggle="dropdown"
-        >
-          <font-awesome-icon icon="gear" />
-        </button>
+    <div
+      id="dial-section"
+      class="width-100 d-flex justify-content-center"
+    >
+      <div id="dial-container">
+        <div id="red-arc-reducer" />
+        <div id="gray-outer-circle" />
         <div
-          id="countdown-menu"
-          class="dropdown-menu"
+          id="white-inner-circle"
+          class="d-flex justify-content-center align-items-center"
         >
-          <div
-            class="form-check form-check-inline"
+          <p
+            v-if="!editing"
+            id="timer-display"
+            @click="onTimerClick"
           >
-            <input
-              id="continueTimer"
-              v-model="continueOnComplete"
-              type="checkbox"
-              class="form-check-input"
+            {{ displayTime }}
+          </p>
+          
+          <div class="d-flex justify-content-center">
+            <div
+              v-if="editing"
+              id="edit-wrapper"
+              class="input-group"
             >
-            <label
-              class="form-check-label"
-              for="continueTimer"
-              style="margin-left: 6px;"
-              @click.stop=""
-            >Continue Timer when Interval Complete</label>
-          </div>
-          <div class="dropdown-divider" />
-          <form class="form-inline">
-            <fieldset :disabled="!continueOnComplete">
-              <div class="form-group">
-                <input
-                  id="secondReminderEnabled"
-                  v-model="secondReminderEnabled"
-                  type="checkbox"
-                  class="form-check-input"
-                >
-                <label
-                  class="form-check-label"
-                  for="secondReminderEnabled"
-                  style="margin-left: 6px;"
-                  @click.stop=""
-                >Second Reminder</label>
-              </div>
-              
-              <div class="form-group">
-                <label for="secondReminderMinutes">after&nbsp;</label>
-                <input
-                  id="secondReminderMinutes"
-                  v-model="secondReminderMinutes"
-                  type="number"
-                  class="form-control mx-sm-1"
-                  style="max-width: 60px;"
-                  :disabled="!secondReminderEnabled"
-                >
-                <span>&nbsp;minutes</span>
-              </div>
-            </fieldset>
-          </form>
-        </div>
-      </div>
-      
-      <div id="countdown-button-rotator">
-        <div id="countdown-button" />
-      </div>
-      
-      <div id="countdown-trail">
-        <p
-          v-if="!editing"
-          id="timer-display"
-          @click="onTimerClick"
-        >
-          {{ displayTime }}
-        </p>
-        
-        <div class="d-flex justify-content-center">
-          <div
-            v-if="editing"
-            id="edit-wrapper"
-            class="input-group"
-          >
-            <input
-              v-if="active"
-              v-model="newActiveMinutes"
-              type="number"
-              class="form-control"
-              @keyup.enter="changeMinutes"
-            >
-            <input
-              v-if="!active"
-              v-model="newRestMinutes"
-              type="number"
-              class="form-control"
-              @keyup.enter="changeMinutes"
-            >
-            <div class="input-group-append">
-              <button
-                id="timer-save-button"
-                type="button"
-                class="btn btn-primary"
-                @click="changeMinutes"
+              <input
+                v-if="active"
+                v-model="newActiveMinutes"
+                type="number"
+                class="form-control"
+                @keyup.enter="changeMinutes"
               >
-                <font-awesome-icon icon="save" />
-              </button>
+              <input
+                v-if="!active"
+                v-model="newRestMinutes"
+                type="number"
+                class="form-control"
+                @keyup.enter="changeMinutes"
+              >
+              <div class="input-group-append">
+                <button
+                  id="timer-save-button"
+                  type="button"
+                  class="btn btn-primary"
+                  @click="changeMinutes"
+                >
+                  <font-awesome-icon icon="save" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    
+    <div
+      id="controls-section"
+      class="d-flex justify-content-center mt-3"
+    >
+      <div id="controls-wrapper" class="d-flex justify-content-around align-items-center">
         
-        <button
+        <b-button
+          id="skip-btn"
+          variant="light"
+          class="mx-2 circular-button"
+          title="Skip current interval"
+          :disabled="editing"
+          size="sm"
+          @click="onSkipTimerClick"
+        >
+          <font-awesome-icon icon="times" />
+        </b-button>
+        
+        <b-button
           id="play-pause-btn"
-          type="button"
-          class="btn btn-light btn-lg"
+          variant="light"
+          class="mx-2 circular-button"
           :disabled="editing"
           :title="playPauseTitle"
+          size="lg"
           @click="toggleTimer"
         >
           <font-awesome-icon :icon="playPauseIcon" />
-        </button>
+        </b-button>
+        
+        <b-button
+          id="countdown-menu-button"
+          variant="light"
+          class="mx-2 circular-button"
+          data-toggle="dropdown"
+          size="sm"
+        >
+          <font-awesome-icon icon="gear" />
+        </b-button>
+        
+        <div
+          id="countdown-settings-dropdown"
+          class="dropright"
+        >
+          <div
+            id="countdown-menu"
+            class="dropdown-menu"
+          >
+            <div
+              class="form-check form-check-inline"
+            >
+              <input
+                id="continueTimer"
+                v-model="continueOnComplete"
+                type="checkbox"
+                class="form-check-input"
+              >
+              <label
+                class="form-check-label"
+                for="continueTimer"
+                style="margin-left: 6px;"
+                @click.stop=""
+              >Continue Timer when Interval Complete</label>
+            </div>
+            <div class="dropdown-divider" />
+            <form class="form-inline">
+              <fieldset :disabled="!continueOnComplete">
+                <div class="form-group">
+                  <input
+                    id="secondReminderEnabled"
+                    v-model="secondReminderEnabled"
+                    type="checkbox"
+                    class="form-check-input"
+                  >
+                  <label
+                    class="form-check-label"
+                    for="secondReminderEnabled"
+                    style="margin-left: 6px;"
+                    @click.stop=""
+                  >Second Reminder</label>
+                </div>
+                
+                <div class="form-group">
+                  <label for="secondReminderMinutes">after&nbsp;</label>
+                  <input
+                    id="secondReminderMinutes"
+                    v-model="secondReminderMinutes"
+                    type="number"
+                    class="form-control mx-sm-1"
+                    style="max-width: 60px;"
+                    :disabled="!secondReminderEnabled"
+                  >
+                  <span>&nbsp;minutes</span>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -191,8 +210,12 @@ export default {
     },
     
     cssProps () {
+      const progress = this.secondsRemaining / this.totalSeconds
+      const arcAngle = progress * 100 // Grows counterclockwise as timer decreases
+      
       return {
-        '--rotation-factor': (this.secondsRemaining / this.totalSeconds).toString() + 'turn',
+        '--rotation-factor': progress.toString() + 'turn',
+        '--arc-angle': arcAngle.toString(),
         '--countdown-color': this.active ? 'red' : 'darkseagreen',
         '--button-color': this.active ? 'darkred' : 'green'
       }
@@ -397,88 +420,130 @@ export default {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/variables.scss';
+
+$dial-size: 300px;
+$circle-thickness: 18px;
 
 #countdown-container {
   text-align: center;
 }
 
-#dial-container {
-  position: relative;
-  width: 200px;
-  height: 200px;
+#dial-section {
+  
+  #dial-container {
+    position: relative;
+    width: $dial-size;
+    height: $dial-size;
+    margin: 0 auto;
+  }
+  
+  #gray-outer-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: gray $circle-thickness solid;
+  }
+  
+  #red-arc-reducer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    //noinspection CssInvalidFunction
+    background: conic-gradient(
+      from 0deg,
+      var(--countdown-color) 0%,
+      var(--countdown-color) calc(var(--arc-angle) * 1%),
+      transparent calc(var(--arc-angle) * 1%),
+      transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #white-inner-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - $circle-thickness * 2);
+    height: calc(100% - $circle-thickness * 2);
+    border-radius: 50%;
+    margin: $circle-thickness;
+    z-index: 2;
+    background-color: white;
+  }
+  
+  #timer-display {
+    font-size: $xxxxl-font-size;
+    font-weight: $large-font-weight;
+    margin: 0;
+    z-index: 2;
+  }
+  
+  #edit-wrapper {
+    height: 48px;
+    max-width: 110px;
+    margin-bottom: 16px;
+  }
+  
+  #edit-wrapper > input {
+    height: 100%;
+    font-size: 1.2rem;
+  }
 }
 
-/*noinspection CssUnresolvedCustomProperty*/
-#skip-btn {
-  position: absolute;
-  right: -38px;
-  width: 38px;
-  height: 38px;
-  border: var(--countdown-color) 2px solid;
-  border-radius: 19px !important;
-  color: var(--button-color)
-}
-
-#countdown-settings-dropdown {
-  position: absolute;
-  right: -38px;
-  bottom: 0;
-}
-
-#countdown-menu {
-  width: 210px;
-}
-
-/*noinspection CssUnresolvedCustomProperty*/
-#countdown-button-rotator {
-  position: absolute;
+#controls-section {
   width: 100%;
-  height: 100%;
-  transform: rotate(var(--rotation-factor));
-  z-index: 1;
-  pointer-events: none;
-}
 
-/*noinspection CssUnresolvedCustomProperty*/
-#countdown-button {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  border: var(--countdown-color) 2px solid;
-  background-color: white;
-  transform: translate(90px, -8px);
-}
+  #controls-wrapper {
+    width: $dial-size;
+  }
+  
+  > .btn {
+    border: 2px solid var(--countdown-color);
+    border-radius: 50px;
+    color: var(--button-color)
+  }
 
-/*noinspection CssUnresolvedCustomProperty*/
-#countdown-trail {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding-top: 35px;
-  border-radius: 100px;
-  border: var(--countdown-color) 4px solid;
-}
+  .circular-button {
+    border-radius: 50% !important;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-#timer-display {
-  font-size: xx-large;
-}
+  .circular-button.btn-lg {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
 
-#edit-wrapper {
-  height: 48px;
-  max-width: 110px;
-  margin-bottom: 16px;
-}
+  .circular-button.btn-sm {
+    width: 2rem;
+    height: 2rem;
+  }
 
-#edit-wrapper > input {
-  height: 100%;
-  font-size: 1.2rem;
+  #play-pause-btn {
+    color: var(--button-color);
+  }
+  
+  #countdown-settings-dropdown {
+    position: absolute;
+    right: -38px;
+    bottom: 0;
+  }
+  
+  #countdown-menu {
+    width: 210px;
+  }
 }
-
-/*noinspection CssUnresolvedCustomProperty*/
-#play-pause-btn {
-  color: var(--button-color);
-}
-
 </style>
