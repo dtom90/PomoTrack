@@ -14,14 +14,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'CountdownDial',
   
   props: {
-    progress: {
-      type: Number,
-      required: true
-    },
     active: {
       type: Boolean,
       default: true
@@ -37,6 +35,19 @@ export default {
   },
   
   computed: {
+    ...mapState([
+      'tempState',
+      'settings'
+    ]),
+    
+    totalSeconds() {
+      return (this.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
+    },
+    
+    progress() {
+      return this.tempState.secondsRemaining / this.totalSeconds
+    },
+    
     cssProps() {
       const arcAngle = this.progress * 100; // Grows counterclockwise as timer decreases
       

@@ -8,7 +8,6 @@
       class="width-100 d-flex justify-content-center"
     >
       <CountdownDial
-        :progress="tempState.secondsRemaining / totalSeconds"
         :active="active"
       >
         <p
