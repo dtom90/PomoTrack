@@ -8,7 +8,8 @@ const initialState = {
     activeTaskID: null,
     running: false,
     modalTagId: null,
-    notificationList: []
+    notificationList: [],
+    secondsRemaining: 0
   },
   
   settings: {

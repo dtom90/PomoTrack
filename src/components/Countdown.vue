@@ -62,8 +62,10 @@
       id="controls-section"
       class="d-flex justify-content-center mt-3"
     >
-      <div id="controls-wrapper" class="d-flex justify-content-around align-items-center">
-        
+      <div
+        id="controls-wrapper"
+        class="d-flex justify-content-around align-items-center"
+      >
         <b-button
           id="skip-btn"
           variant="light"
@@ -167,7 +169,6 @@ export default {
     active: true,
     overtime: false,
     secondReminderDisplayed: false,
-    secondsRemaining: 0,
     timer: null
   }),
   
@@ -191,7 +192,7 @@ export default {
     },
     
     cssProps () {
-      const progress = this.secondsRemaining / this.totalSeconds
+      const progress = this.tempState.secondsRemaining / this.totalSeconds
       const arcAngle = progress * 100 // Grows counterclockwise as timer decreases
       
       return {
@@ -203,7 +204,7 @@ export default {
     },
     
     displayTime () {
-      const totalSecs = this.overtime ? -this.secondsRemaining : this.secondsRemaining
+      const totalSecs = this.overtime ? -this.tempState.secondsRemaining : this.tempState.secondsRemaining
       const mins = Math.floor(totalSecs / 60)
       const secs = totalSecs % 60
       const secString = secs.toString().padStart(2, '0')
@@ -252,16 +253,15 @@ export default {
   },
   
   watch: {
-    'settings.activeMinutes': function (newVal) {
+    'settings.activeMinutes': function () {
       if (this.active) {
-        this.secondsRemaining = newVal * 60
         this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
       }
     }
   },
   
   mounted: function () {
-    this.secondsRemaining = this.totalSeconds
+    this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
     this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
   },
   
@@ -300,7 +300,7 @@ export default {
         key: this.active ? 'activeMinutes' : 'restMinutes',
         value: this.active ? this.newActiveMinutes : this.newRestMinutes
       })
-      this.secondsRemaining = this.totalSeconds
+      this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
       this.timer.setSeconds(this.totalSeconds)
       this.editing = false
     },
@@ -329,10 +329,10 @@ export default {
     
     decrementTimer (secondsRemaining) {
       if (this.tempState.running) {
-        this.secondsRemaining = secondsRemaining
+        this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining })
         if (this.active) {
           this.updateTaskTimer({ taskId: this.taskId })
-          if (this.overtime && !this.secondReminderDisplayed && this.secondsRemaining <= this.secondReminderSeconds) {
+          if (this.overtime && !this.secondReminderDisplayed && this.tempState.secondsRemaining <= this.secondReminderSeconds) {
             this.notify('Finished Working, Take a Break!')
             this.secondReminderDisplayed = true
           }
@@ -358,7 +358,7 @@ export default {
       let notify = false
       
       if (fromCountdownFinish) { // If this came from the countdown finishing
-        this.secondsRemaining = secondsRemaining // reset secondsRemaining
+        this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining }) // reset secondsRemaining
         if (!this.overtime) { // If we're not in overtime
           notify = true // Set notify to true
           if (this.continueOnComplete && this.active) { // If continueOnComplete is set, go into overtime
@@ -382,7 +382,7 @@ export default {
       if (!fromCountdownFinish || !this.active || !this.overtime) {
         this.resetTimer()
       } else {
-        this.decrementTimer(this.secondsRemaining)
+        this.decrementTimer(this.tempState.secondsRemaining)
       }
     },
     
@@ -393,7 +393,7 @@ export default {
       this.updateTempState({ key: 'running', value: false })
       this.active = !this.active
       this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
-      this.secondsRemaining = this.totalSeconds
+      this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
       this.secondReminderDisplayed = false
     }
   }
