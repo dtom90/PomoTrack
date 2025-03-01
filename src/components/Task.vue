@@ -21,10 +21,10 @@
           />
         </div>
       </div>
-      <font-awesome-icon
+      <CountdownDial 
         v-if="displayCountdownIndicator"
-        id="indicatorIcon"
-        icon="clock"
+        size="20"
+        circle-thickness="4"
       />
     </div>
   </li>
@@ -34,11 +34,12 @@
 import { mapState, mapActions } from 'vuex'
 import Checkbox from './Checkbox'
 import TagList from './TagList.vue'
+import CountdownDial from './CountdownDial.vue'
 
 export default {
   
   name: 'Task',
-  components: { TagList, Checkbox },
+  components: { TagList, Checkbox, CountdownDial },
   props: {
     task: {
       type: Object,
@@ -100,6 +101,7 @@ export default {
 
 .task-name-and-tags-wrapper {
   margin-left: 8px;
+  flex: 1;
 }
 
 .task-name {
