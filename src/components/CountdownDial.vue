@@ -64,7 +64,6 @@ export default {
   position: relative;
   width: var(--dial-size);
   height: var(--dial-size);
-  margin: 0 auto;
 }
 
 .gray-outer-circle {

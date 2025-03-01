@@ -4,19 +4,21 @@
     class="btn btn-light border d-flex justify-content-center align-items-center"
     @click="selectTask({ taskId: activeTask.id })"
   >
-    <font-awesome-icon
-      id="active-indicator-icon"
-      icon="clock"
-    />
+    <CountdownDial size="60" circle-thickness="9" />
     <span id="active-task-name">{{ activeTask.name }}</span>
   </button>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import CountdownDial from './CountdownDial.vue'
 
 export default {
   name: 'ActiveTaskButton',
+  
+  components: {
+    CountdownDial
+  },
   
   computed: {
     ...mapGetters([
@@ -48,5 +50,6 @@ export default {
   font-weight: 600;
   font-size: xx-large;
   text-align: center;
+  margin-left: 10px;
 }
 </style>
