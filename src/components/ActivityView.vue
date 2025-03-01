@@ -60,22 +60,14 @@
     
     <!-- Log View Switch -->
     <div
-      id="viewType"
+      id="activity-log-title"
       class="d-flex justify-content-center"
     >
-      <button
-        id="viewLogSwitch"
-        :class="'btn btn-light nav-link' + (logVisible ? ' active' : '')"
-        :title="(logVisible ? 'Hide' : 'Show') + ' activity log'"
-        @click="toggleLog"
-      >
-        <span>Activity Log</span>
-      </button>
+      <span>Activity Log</span>
     </div>
     
     <!-- Activity Data -->
     <div
-      v-if="logVisible"
       class="border"
     >
       <!-- Dropdown to add interval manually -->
@@ -375,7 +367,8 @@ function monthlyChartData (that) {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/variables.scss';
 
 .view-select {
   margin-bottom: 20px;
@@ -385,9 +378,10 @@ function monthlyChartData (that) {
   padding: 20px;
 }
 
-#viewLogSwitch {
-  font-size: 1.25rem;
-  font-weight: 500;
+#activity-log-title {
+  font-size: $large-font-size;
+  font-weight: $large-font-weight;
+  margin-bottom : 20px;
 }
 
 #task-log {
