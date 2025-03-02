@@ -13,7 +13,7 @@
           id="timer-display"
           @click="onTimerClick"
         >
-          {{ displayTime }}
+          {{ displayCountdownTime }}
         </p>
         
         <div class="d-flex justify-content-center">
@@ -142,6 +142,7 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 import CountdownTimer from '../lib/CountdownTimer'
 import notifications from '../lib/notifications'
 import CountdownDial from './CountdownDial.vue'
+import time from '../lib/time';
 
 export default {
   
@@ -151,7 +152,10 @@ export default {
     CountdownDial
   },
   
-  mixins: [notifications],
+  mixins: [
+    time,
+    notifications
+  ],
   
   props: {
     taskId: {
@@ -197,14 +201,6 @@ export default {
         '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen',
         '--button-color': this.tempState.active ? 'darkred' : 'green'
       }
-    },
-    
-    displayTime () {
-      const totalSecs = this.tempState.overtime ? -this.tempState.secondsRemaining : this.tempState.secondsRemaining
-      const mins = Math.floor(totalSecs / 60)
-      const secs = totalSecs % 60
-      const secString = secs.toString().padStart(2, '0')
-      return `${this.tempState.overtime ? '+' : ''}${mins}:${secString}`
     },
     
     continueOnComplete: {
@@ -409,8 +405,8 @@ $circle-thickness: 18px;
 
 #dial-section {
   #timer-display {
-    font-size: $xxxxl-font-size;
-    font-weight: $large-font-weight;
+    font-size: $font-size-xxxxl;
+    font-weight: $font-weight-bold;
     margin: 0;
     z-index: 2;
   }

@@ -300,8 +300,8 @@ export default {
 .title {
   flex: 1;
   text-align: left;
-  font-size: $large-font-size;
-  font-weight: $large-font-weight;
+  font-size: $font-size-large;
+  font-weight: $font-weight-bold;
 }
 
 .title-section > button,

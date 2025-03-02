@@ -1,23 +1,32 @@
 <template v-if="activeTask">
-  <button
-    id="active-task-container"
-    class="btn btn-light border d-flex justify-content-center align-items-center"
-    @click="selectTask({ taskId: activeTask.id })"
-  >
-    <CountdownDial
-      :size="60"
-      :circle-thickness="9"
-    />
-    <span id="active-task-name">{{ activeTask.name }}</span>
-  </button>
+  <div class="d-flex justify-content-center align-items-center">
+    <button
+      id="active-task-button"
+      class="btn btn-light border d-flex justify-content-center align-items-center"
+      @click="selectTask({ taskId: activeTask.id })"
+    >
+      <CountdownDial
+        :size="60"
+        :circle-thickness="9"
+      />
+      <div id="active-task-name-and-time">
+        <div id="active-task-time">{{ displayCountdownTime }}</div>
+        <div id="active-task-name">{{ activeTask.name }}</div>
+      </div>
+    </button>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CountdownDial from './CountdownDial.vue'
-
+import time from '../lib/time';
 export default {
   name: 'ActiveTaskButton',
+
+  mixins: [
+    time
+  ],
   
   components: {
     CountdownDial
@@ -35,17 +44,26 @@ export default {
 }
 </script>
 
-<style scoped>
-#active-task-container {
+<style scoped lang="scss">
+@import "../styles/_variables.scss";
+
+#active-task-button {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  width: 100%;
+  width: 400px;
+}
+
+#active-task-name-and-time {
+  font-weight: $font-weight-bold;
+  margin-left: 10px;
+  text-align: left;
 }
 
 #active-task-name {
-  font-weight: 600;
-  font-size: xx-large;
-  text-align: center;
-  margin-left: 10px;
+  font-size: $font-size-base;
+}
+
+#active-task-time {
+  font-size: $font-size-large;
 }
 </style>

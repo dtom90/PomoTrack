@@ -167,7 +167,7 @@ body {
 }
 
 #main-section {
-  font-size: $base-font-size;
+  font-size: $font-size-base;
   height: calc(100vh - #{$top-offset})
 }
 

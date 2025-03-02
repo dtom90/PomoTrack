@@ -379,8 +379,8 @@ function monthlyChartData (that) {
 }
 
 #activity-log-title {
-  font-size: $large-font-size;
-  font-weight: $large-font-weight;
+  font-size: $font-size-large;
+  font-weight: $font-weight-bold;
   margin-bottom : 20px;
 }
 

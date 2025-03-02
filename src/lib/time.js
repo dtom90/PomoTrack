@@ -27,7 +27,18 @@ const displayDuration = ms => humanizeDuration(ms, baseDurationOptions)
 
 export default {
   computed: {
-    ...mapState(['settings'])
+    ...mapState([
+      'settings',
+      'tempState'
+    ]),
+
+    displayCountdownTime () {
+      const totalSecs = this.tempState.overtime ? -this.tempState.secondsRemaining : this.tempState.secondsRemaining
+      const mins = Math.floor(totalSecs / 60)
+      const secs = totalSecs % 60
+      const secString = secs.toString().padStart(2, '0')
+      return `${this.tempState.overtime ? '+' : ''}${mins}:${secString}`
+    },
   },
   
   methods: {

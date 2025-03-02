@@ -454,8 +454,8 @@ $vertical-spacing: 30px;
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
-    font-size: $xl-font-size;
-    font-weight: $large-font-weight;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
   }
   
   #selected-task-menu {
