@@ -19,8 +19,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import CountdownDial from './CountdownDial.vue'
-import time from '../lib/time';
+import TimerDial from './TimerDial.vue'
+import time from '../lib/time'
 export default {
   name: 'ActiveTaskButton',
 
@@ -29,7 +29,7 @@ export default {
   ],
   
   components: {
-    CountdownDial
+    TimerDial
   },
   
   computed: {

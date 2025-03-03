@@ -7,7 +7,7 @@
       id="dial-section"
       class="width-100 d-flex justify-content-center"
     >
-      <CountdownDial>
+      <TimerDial>
         <p
           v-if="!editing"
           id="timer-display"
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-      </CountdownDial>
+      </TimerDial>
     </div>
     
     <div
@@ -141,15 +141,15 @@
 import { mapState, mapMutations, mapActions } from 'vuex'
 import CountdownTimer from '../lib/CountdownTimer'
 import notifications from '../lib/notifications'
-import CountdownDial from './CountdownDial.vue'
-import time from '../lib/time';
+import TimerDial from './TimerDial.vue'
+import time from '../lib/time'
 
 export default {
   
-  name: 'Countdown',
+  name: 'Timer',
   
   components: {
-    CountdownDial
+    TimerDial
   },
   
   mixins: [

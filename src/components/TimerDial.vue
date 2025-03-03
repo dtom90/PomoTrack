@@ -17,7 +17,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  name: 'CountdownDial',
+  name: 'TimerDial',
   
   props: {
     size: {

@@ -21,7 +21,7 @@
           />
         </div>
       </div>
-      <CountdownDial
+      <TimerDial
         v-if="displayCountdownIndicator"
         :size="20"
         :circle-thickness="4"
@@ -34,12 +34,12 @@
 import { mapState, mapActions } from 'vuex'
 import Checkbox from './Checkbox'
 import TagList from './TagList.vue'
-import CountdownDial from './CountdownDial.vue'
+import TimerDial from './TimerDial.vue'
 
 export default {
   
   name: 'Task',
-  components: { TagList, Checkbox, CountdownDial },
+  components: { TagList, Checkbox, TimerDial },
   props: {
     task: {
       type: Object,

@@ -97,7 +97,7 @@
       <!-- Countdown Timer -->
       <div id="countdown-section">
         <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
-          <Countdown
+          <Timer
             :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
           />
         </div>
@@ -255,7 +255,7 @@ import ActivityView from './ActivityView'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import Countdown from './Countdown.vue'
+import Timer from './Timer.vue'
 
 marked.setOptions({
   breaks: true
@@ -277,7 +277,7 @@ export default {
   name: 'SelectedTask',
   
   components: {
-    Countdown,
+    Timer,
     Checkbox,
     TagList,
     ActivityView
