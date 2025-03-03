@@ -23,6 +23,16 @@
 // Custom border-radius for all light buttons
 .btn-light {
   border-radius: 8px;
+  border-color: $dark-tertiary;
+  background-color: $dark-quaternary;
+}
+
+.btn-light:hover {
+  background-color: $dark-tertiary;
+}
+
+.btn-light.active {
+  background-color: $white !important;
 }
 
 //noinspection CssInvalidPropertyValue
@@ -48,5 +58,7 @@
 }
 
 table {
-  border-bottom: rgb(222, 226, 230) 1px solid;
+  td {
+    border-top: none !important;
+  }
 }

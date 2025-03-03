@@ -67,9 +67,7 @@
     </div>
     
     <!-- Activity Data -->
-    <div
-      class="border"
-    >
+    <div>
       <!-- Dropdown to add interval manually -->
       <AddIntervalDropdown
         :task-id="taskId"

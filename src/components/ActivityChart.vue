@@ -64,6 +64,16 @@ const defaultChartOptions = {
     annotation: {
       annotations: {}
     }
+  },
+  elements: {
+    bar: {
+      borderRadius: {
+        topLeft: 8,
+        topRight: 8,
+        bottomLeft: 0,
+        bottomRight: 0
+      }
+    }
   }
 }
 

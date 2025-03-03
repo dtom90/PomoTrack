@@ -15,7 +15,10 @@
       @hidden="dropdownShown = false"
     >
       <template v-slot:button-content>
-        <font-awesome-icon :icon="dropdownShown ? 'times' : 'plus'" />
+        <img
+          src="/icons/add-to-bottom.svg"
+          alt="Add interval"
+        >
       </template>
       <b-dropdown-form @submit="addIntervalButtonClicked">
         <b-form-group>

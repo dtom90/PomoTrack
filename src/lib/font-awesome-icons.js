@@ -26,9 +26,10 @@ import {
   faChevronLeft,
   faChevronRight,
   faTag,
-  faChartSimple
+  faChartSimple,
+  faAdd
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faBars, faTrashAlt, faPlay, faPause, faStop, faSave, faSort, faCaretUp, faCaretDown, faFilter, faEllipsisV, faCog, faPencilAlt, faPlus, faTimes, faArrowRight, faClock, faUpload, faDownload, faStar, faCheck, faMoneyBill, faChevronLeft, faChevronRight, faTag, faChartSimple)
+library.add(faBars, faTrashAlt, faPlay, faPause, faStop, faSave, faSort, faCaretUp, faCaretDown, faFilter, faEllipsisV, faCog, faPencilAlt, faPlus, faTimes, faArrowRight, faClock, faUpload, faDownload, faStar, faCheck, faMoneyBill, faChevronLeft, faChevronRight, faTag, faChartSimple, faAdd)
 export { FontAwesomeIcon }
