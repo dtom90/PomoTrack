@@ -8,7 +8,7 @@
     <div
       class="white-inner-circle d-flex justify-content-center align-items-center"
     >
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -36,34 +36,37 @@ export default {
       'settings'
     ]),
     
-    totalSeconds() {
+    totalSeconds () {
       return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
     },
     
-    progress() {
+    progress () {
       return this.tempState.secondsRemaining / this.totalSeconds
     },
     
-    cssProps() {
-      const arcAngle = this.progress * 100; // Grows counterclockwise as timer decreases
+    cssProps () {
+      const arcAngle = this.progress * 100 // Grows counterclockwise as timer decreases
       
       return {
         '--rotation-factor': this.progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen',
+        '--countdown-color': this.tempState.active ? 'var(--error-red)' : 'darkseagreen',
         '--dial-size': `${this.size}px`,
         '--circle-thickness': `${this.circleThickness}px`
-      };
+      }
     }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_variables.scss";
+
 .dial-container {
   position: relative;
   width: var(--dial-size);
   height: var(--dial-size);
+  --error-red: #{$error-red};
 }
 
 .gray-outer-circle {
@@ -105,4 +108,4 @@ export default {
   z-index: 2;
   background-color: white;
 }
-</style> 
+</style>

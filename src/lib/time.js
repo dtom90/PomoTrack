@@ -38,7 +38,7 @@ export default {
       const secs = totalSecs % 60
       const secString = secs.toString().padStart(2, '0')
       return `${this.tempState.overtime ? '+' : ''}${mins}:${secString}`
-    },
+    }
   },
   
   methods: {

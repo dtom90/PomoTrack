@@ -88,6 +88,7 @@
           right
           variant="light"
           class="mx-2"
+          toggle-class="circular-button btn-sm"
           no-caret
           dropright
           boundary="viewport"
@@ -198,8 +199,7 @@ export default {
       return {
         '--rotation-factor': progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen',
-        '--button-color': this.tempState.active ? 'darkred' : 'green'
+        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen'
       }
     },
     
@@ -394,7 +394,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/variables.scss';
+@import '../styles/_variables.scss';
 
 $dial-size: 300px;
 $circle-thickness: 18px;
@@ -430,48 +430,38 @@ $circle-thickness: 18px;
     width: $dial-size;
   }
   
-  > .btn {
-    border: 2px solid var(--countdown-color);
-    border-radius: 50px;
-    color: var(--button-color)
-  }
-
-  .circular-button {
-    border-radius: 50% !important;
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .circular-button.btn-lg {
-    width: 3.5rem;
-    height: 3.5rem;
-  }
-
-  .circular-button.btn-sm {
-    width: 2rem;
-    height: 2rem;
-  }
-
   #play-pause-btn {
-    color: var(--button-color);
+    color: $white;
+    background-color: $dark-primary;
   }
-  
-  #countdown-settings-dropdown {
-    button {
-      border-radius: 50% !important;
-      width: 2rem;
-      height: 2rem;
-      padding: 0;
-    }
-    
-    .dropdown-menu {
-      width: 250px;
-      padding: 1rem;
-    }
+
+  #play-pause-btn:hover {
+    color: $dark-tertiary;
   }
+}
+</style>
+
+<style lang="scss">
+@import '../styles/_variables.scss';
+.circular-button {
+  border-radius: 50% !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circular-button.btn-lg {
+  width: 48px;
+  height: 48px;
+}
+
+.circular-button.btn-sm {
+  width: 36px;
+  height: 36px;
+  background-color: $white;
+  border: 1px solid $dark-tertiary;
 }
 </style>

@@ -5,13 +5,17 @@
       class="btn btn-light border d-flex justify-content-center align-items-center"
       @click="selectTask({ taskId: activeTask.id })"
     >
-      <CountdownDial
+      <TimerDial
         :size="60"
         :circle-thickness="9"
       />
       <div id="active-task-name-and-time">
-        <div id="active-task-time">{{ displayCountdownTime }}</div>
-        <div id="active-task-name">{{ activeTask.name }}</div>
+        <div id="active-task-time">
+          {{ displayCountdownTime }}
+        </div>
+        <div id="active-task-name">
+          {{ activeTask.name }}
+        </div>
       </div>
     </button>
   </div>
@@ -23,14 +27,14 @@ import TimerDial from './TimerDial.vue'
 import time from '../lib/time'
 export default {
   name: 'ActiveTaskButton',
-
-  mixins: [
-    time
-  ],
   
   components: {
     TimerDial
   },
+
+  mixins: [
+    time
+  ],
   
   computed: {
     ...mapGetters([
