@@ -76,7 +76,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: gray var(--circle-thickness) solid;
+  border: $dark-quaternary var(--circle-thickness) solid;
 }
 
 .red-arc-reducer {
@@ -86,6 +86,20 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  mask: radial-gradient(
+    transparent 0,
+    transparent calc(71% - var(--circle-thickness)),
+    black calc(71% - var(--circle-thickness)),
+    black 71%,
+    transparent 71%
+  );
+  -webkit-mask: radial-gradient(
+    transparent 0,
+    transparent calc(71% - var(--circle-thickness)),
+    black calc(71% - var(--circle-thickness)),
+    black 71%,
+    transparent 71%
+  );
   background: conic-gradient(
     from 0deg,
     var(--countdown-color) 0%,
@@ -106,6 +120,6 @@ export default {
   border-radius: 50%;
   margin: var(--circle-thickness);
   z-index: 2;
-  background-color: white;
+  background-color: transparent;
 }
 </style>
