@@ -1,5 +1,6 @@
 <template>
   <b-dropdown
+    ref="dropdown"
     v-b-tooltip.hover.right="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
     dropright
@@ -13,9 +14,11 @@
       <font-awesome-icon icon="filter" />
     </template>
     
+    <b-dropdown-header>Filter by tag</b-dropdown-header>
     <b-dropdown-item
       v-for="tag in sortedTagList"
       :key="tag.id"
+      @click.native.stop="itemClicked(tag.id)"
     >
       <TagButton
         :tag="tag"
@@ -97,13 +100,10 @@ export default {
       'removeTagFilter',
       'selectTask'
     ]),
-    
-    selectTag (tagId, e) {
-      this.$emit('select-tag', tagId, e)
-    },
-    
-    removeTag (tag) {
-      this.$emit('remove-tag', tag)
+
+    itemClicked (tagId) {
+      this.$refs.dropdown.show();
+      this.toggleSelectedTag({ tagId })
     },
     
     async toggleSelectedTag ({ tagId }) {
