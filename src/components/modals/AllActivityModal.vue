@@ -8,11 +8,10 @@
     @hidden="isModalShown = false"
   >
     <template v-slot:modal-title>
-      <ModalTitle
-        title="All Activity"
-        icon="chart-simple"
-      />
+      <div class="title-spacer" />
+      <span>All Activity</span>
     </template>
+
     <DailyActivitySummary />
     <ActivityView
       v-if="isModalShown"
@@ -27,13 +26,11 @@
 import ActivityView from '../ActivityView'
 import { mapGetters } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
-import ModalTitle from './ModalTitle.vue'
 
 export default {
   name: 'AllActivityModal',
   
   components: {
-    ModalTitle,
     DailyActivitySummary,
     ActivityView
   },
@@ -49,3 +46,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.title-spacer {
+  width: 32px;
+}
+</style>
