@@ -1,70 +1,32 @@
 <template>
-  <div id="elements">
+  <div>
     <!--  spacing for consistent spacing  -->
     <div
       v-if="!sortedTagList.length"
       style="height: 30px"
     />
-    <div
+    <TagButton
       v-for="tagId in sortedTagList"
       :key="tagId"
-      class="tag btn-group"
-    >
-      <button
-        class="tag-name btn"
-        :style="`backgroundColor: ${tags[tagId].color}`"
-        :title="selectText"
-        @click="selectTag ? selectTag(tagId, $event) : viewActivityModal(tagId)"
-      >
-        {{ tags[tagId].tagName }}
-      </button>
-      <button
-        v-if="removeTag"
-        class="tag-close btn"
-        :style="`backgroundColor: ${tags[tagId].color}`"
-        :title="removeText"
-        aria-label="Close"
-        @click.stop="removeTag({tagId})"
-      >
-        <font-awesome-icon icon="times" />
-      </button>
-    </div>
-    <div v-if="label === 'Filtering on tasks with' && tagList.length > 1">
-      <div
-        class="btn-group btn-group-toggle"
-      >
-        <label
-          :class="'btn btn-light' + (filterOperator === 'and' ? ' active' : '')"
-          title="Show tasks with all of the selected tags"
-        >
-          <input
-            v-model="filterOperator"
-            type="radio"
-            value="and"
-          >
-          <span>All</span>
-        </label>
-        <label
-          :class="'btn btn-light' + (filterOperator === 'or' ? ' active' : '')"
-          title="Show tasks with any of the selected tags"
-        >
-          <input
-            v-model="filterOperator"
-            type="radio"
-            value="or"
-          >
-          <span>Any</span>
-        </label>
-      </div>
-    </div>
+      :tag="tags[tagId]"
+      :tag-id="tagId"
+      :mini="mini"
+      :remove-tag-button="!mini"
+      :remove-text="removeText"
+      :remove-tag="removeTag"
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import TagButton from './TagButton.vue'
 
 export default {
-  name: 'TagList',
+  name: 'TagListHorizontal',
+  components: {
+    TagButton
+  },
   props: {
     tagList: {
       type: Array,
@@ -181,11 +143,6 @@ export default {
       this.$refs.addTagInput.focus()
     },
     
-    viewActivityModal: function (tagId) {
-      this.updateTempState({ key: 'modalTagId', value: tagId })
-      this.$root.$emit('bv::toggle::modal', 'activityModal')
-    },
-    
     clickOutside: function (event) {
       if (!(event.relatedTarget && event.relatedTarget.classList &&
         event.relatedTarget.classList.contains('tag-option'))) {
@@ -201,9 +158,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.tag {
-  > .btn {
-    padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
-  }
-}
+
 </style>

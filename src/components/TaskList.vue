@@ -15,8 +15,7 @@
         :unselected-tags="unselectedTags"
         :add-selected-tags="addSelectedTags"
         :tasks="tasks"
-        @select-tag="selectTag"
-        @remove-tag="removeTag"
+        @select-tag="toggleSelectedTag"
         @update-selected-task="updateSelectedTask"
         @update-add-selected-tags="updateAddSelectedTagsValue"
       />
@@ -246,9 +245,12 @@ export default {
       this.newTaskName = ''
     },
 
-    async selectTag (tagId, e) {
-      e.stopPropagation()
-      await this.addTagFilter({ tagId })
+    async toggleSelectedTag ({ tagId }) {
+      if (!this.settings.selectedTagIds.includes(tagId)) {
+        await this.addTagFilter({ tagId })
+      } else {
+        await this.removeTagFilter({ tagId })
+      }
       await this.updateSelectedTask()
     },
     

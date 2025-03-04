@@ -3,6 +3,7 @@
     v-b-tooltip.hover.right="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
     dropright
+    boundary="viewport"
     variant="light"
     :toggle-class="selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
     :style="filterBtnStyle"
@@ -12,66 +13,29 @@
       <font-awesome-icon icon="filter" />
     </template>
     
-    <div v-if="selectedTagIds.length > 0">
-      <h6
-        v-if="!taskTags"
-        style="width: 100%"
-        class="tag-label"
-      >
-        <span>Filtering on tasks with:</span>
-      </h6>
-      <TagList
-        v-if="selectedTagIds.length > 0"
-        :tag-list="selectedTagIds"
-        :remove-tag="removeTag"
-        :update-filter-operator="updateSelectedTask"
-        remove-text="Clear Filter"
-      />
-    </div>
-    <div
-      v-if="selectedTagIds.length > 0"
-      class="form-check form-check-inline"
+    <b-dropdown-item
+      v-for="tag in sortedTagList"
+      :key="tag.id"
     >
-      <input
-        id="addTagsSelect"
-        v-model="addSelectedTags"
-        class="form-check-input"
-        type="checkbox"
-      >
-      <label
-        class="form-check-label"
-        for="addTagsSelect"
-      >Include in new tasks</label>
-    </div>
-    <div
-      v-if="selectedTagIds.length > 0 && unselectedTags.length > 0"
-      class="dropdown-divider"
-    />
-    <div v-if="unselectedTags.length > 0">
-      <h6
-        v-if="!taskTags"
-        style="width: 100%"
-        class="tag-label"
-      >
-        <span>{{ selectedTagIds.length > 0 ? 'Add to filter' : 'Filter on' }}:</span>
-      </h6>
-      <TagList
-        id="filterTags"
-        :tag-list="unselectedTags"
+      <TagButton
+        :tag="tag"
+        :tag-id="tag.id"
         :select-tag="selectTag"
+        :unselected="unselectedTags.includes(tag.id)"
       />
-    </div>
+    </b-dropdown-item>
   </b-dropdown>
 </template>
 
 <script>
-import TagList from './TagList.vue'
+import TagButton from './TagButton.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'TaskFilterDropdown',
   
   components: {
-    TagList
+    TagButton,
   },
   
   props: {
@@ -102,6 +66,10 @@ export default {
   },
   
   computed: {
+    ...mapGetters([
+      'sortedTagList'
+    ]),
+    
     filterBtnStyle () {
       return {
         '--filter-btn-background-color': this.selectedTagIds.length > 0 ? this.tags[this.selectedTagIds[0]].color : 'white'
