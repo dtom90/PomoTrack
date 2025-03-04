@@ -3,6 +3,7 @@
     id="activityModal"
     size="lg"
     ok-only
+    scrollable
     @shown="isModalShown = true"
     @hidden="isModalShown = false"
   >

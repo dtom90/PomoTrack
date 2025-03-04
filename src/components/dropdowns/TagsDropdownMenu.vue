@@ -174,7 +174,7 @@ export default {
     ]),
     
     toggleSubmenu (tagId) {
-      this.$refs.dropdown.show()
+      this.$refs.dropdown.show() // Keep dropdown open after submenu is toggled
       if (this.activeSubmenu === tagId) {
         this.activeSubmenu = null
       } else {

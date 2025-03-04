@@ -68,3 +68,9 @@ table {
     border-top: none !important;
   }
 }
+
+// Modal height override
+.modal-content {
+  height: 80vh;
+  max-height: 80vh;
+}
