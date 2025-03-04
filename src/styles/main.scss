@@ -20,15 +20,21 @@
   padding: 8px;
 }
 
+.navbar-nav li.nav-item:hover,li.nav-item.show {
+  background-color: $dark-quaternary;
+  border-radius: 8px;
+}
+
 // Custom border-radius for all light buttons
 .btn-light {
   border-radius: 8px;
-  border-color: $dark-tertiary;
-  background-color: $dark-quaternary;
+  border-color: transparent;
+  background-color: $white;
 }
 
 .btn-light:hover {
-  background-color: $dark-tertiary;
+  border-color: transparent;
+  background-color: $dark-quaternary;
 }
 
 .btn-light.active {

@@ -1,35 +1,122 @@
 <template>
-  <div>
-    <b-dropdown-item
+  <b-nav-item-dropdown
+    ref="dropdown"
+    text="Tags"
+    no-caret
+    boundary="viewport"
+    right
+  >
+    <template #button-content>
+      <span>Tags</span>
+    </template>
+    
+    <div
       v-for="tag in sortedTagList"
       :key="tag.id"
+      class="tag-item-wrapper"
     >
-      <TagButton
-        :tag="tag"
-        :tag-id="tag.id"
-      />
-    </b-dropdown-item>
+      <b-dropdown-item
+        class="tag-dropdown-item"
+        @click.native.stop="toggleSubmenu(tag.id)"
+      >
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <TagButton
+            :tag="tag"
+            :tag-id="tag.id"
+          />
+          <font-awesome-icon
+            icon="chevron-right"
+            class="submenu-indicator"
+          />
+        </div>
+      </b-dropdown-item>
+      
+      <!-- Submenu -->
+      <div
+        class="tag-submenu"
+        :class="{ 'active': activeSubmenu === tag.id }"
+      >
+        <!-- Tag Edit Form -->
+        <b-dropdown-form @submit.prevent="updateTagSubmit(tag.id)">
+          <b-input-group>
+            <b-form-input
+              id="tag-name-input"
+              ref="tagNameInput"
+              v-model="newTagName"
+              title="Rename tag"
+              :style="`backgroundColor: ${newTagColor}`"
+            />
+          </b-input-group>
+        </b-dropdown-form>
+        
+        <div class="dropdown-divider" />
+        
+        <sketch-picker
+          v-model="newTagColor"
+          class="color-picker"
+          @input="newTagColor = $event.hex"
+        />
+        
+        <div class="dropdown-divider" />
+        
+        <b-button
+          variant="primary"
+          class="w-100"
+          @click="updateTagSubmit(tag.id)"
+        >
+          Confirm
+        </b-button>
+        
+        <br><br>
+        
+        <b-button
+          :id="`delete-tag-btn-${tag.id}`"
+          title="Delete tag"
+          variant="danger"
+          class="w-100"
+          @click="deleteTag({ tagId: tag.id })"
+        >
+          Delete
+        </b-button>
+      </div>
+    </div>
+    
     <b-dropdown-divider v-if="sortedTagList.length > 0" />
-    <b-dropdown-item>
-      <font-awesome-icon icon="plus" />
-      Create New Tag
+    <b-dropdown-item
+      disabled
+      @click="createNewTag"
+    >
+      <div class="d-flex justify-content-between align-items-center w-100">
+        Create New Tag
+        <font-awesome-icon
+          icon="chevron-right"
+          class="submenu-indicator"
+        />
+      </div>
     </b-dropdown-item>
-    <b-dropdown-item>
-      <font-awesome-icon icon="gear" />
-      Manage Tags
-    </b-dropdown-item>
-  </div>
+  </b-nav-item-dropdown>
 </template>
 
 <script>
 import TagButton from '../TagButton'
-import { mapGetters } from 'vuex'
+import Sketch from 'vue-color/src/components/Sketch'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'TagsDropdownMenu',
   
   components: {
-    TagButton
+    TagButton,
+    'sketch-picker': Sketch
+  },
+  
+  data () {
+    return {
+      activeSubmenu: null,
+      tagEdits: {},
+      newTagName: '',
+      newTagColor: '#FFFFFF'
+    }
   },
   
   computed: {
@@ -38,11 +125,118 @@ export default {
     ])
   },
   
+  watch: {
+    activeSubmenu (tagId) {
+      if (tagId) {
+        const tag = this.sortedTagList.find(t => t.id === tagId)
+        if (tag) {
+          // Initialize edit form with current values
+          this.newTagName = tag.tagName
+          this.newTagColor = tag.color
+        }
+      }
+    }
+  },
+  
   methods: {
+    ...mapActions([
+      'updateTag',
+      'deleteTag'
+    ]),
+    
+    toggleSubmenu (tagId) {
+      this.$refs.dropdown.show()
+      if (this.activeSubmenu === tagId) {
+        this.activeSubmenu = null
+      } else {
+        this.activeSubmenu = tagId
+      }
+    },
+    
+    closeSubmenu () {
+      this.activeSubmenu = null
+    },
+    
+    createNewTag () {
+      this.$emit('create-new-tag')
+    },
+    
+    manageTags () {
+      this.$emit('manage-tags')
+    },
+    
+    async updateTagSubmit (tagId) {
+      await this.updateTag({
+        tagId: tagId,
+        tagName: this.newTagName,
+        color: this.newTagColor
+      })
+      this.closeSubmenu()
+    }
   }
 }
 </script>
 
 <style scoped>
+.dropdown-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
+.tag-item-wrapper {
+  position: relative;
+}
+
+.tag-dropdown-item {
+  padding-right: 2rem;
+}
+
+.submenu-indicator {
+  position: absolute;
+  right: 1rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.tag-submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  display: none;
+  min-width: 16rem;
+  padding: 0.5rem;
+  margin: 0;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+  z-index: 1000;
+}
+
+.tag-submenu.active {
+  display: block;
+}
+
+.color-picker {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.delete-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  text-align: left;
+  padding: 0.25rem 1.5rem;
+}
+
+.archive-btn {
+  margin-bottom: 0.5rem;
+}
+
+#tag-name-input {
+  color: white;
+}
 </style>

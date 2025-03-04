@@ -10,7 +10,6 @@
           v-model="chartType"
           :options="chartTypeOptions"
           buttons
-          button-variant="light"
           @change="onChartTypeChange"
         />
       </b-form-group>

@@ -15,25 +15,20 @@
         is-nav
       >
         <b-navbar-nav class="ml-auto">
+          <TagsDropdownMenu />
+          <b-nav-item-dropdown
+            text="Archive"
+            no-caret
+            boundary="viewport"
+            right
+          >
+            <ArchiveDropdownMenu />
+          </b-nav-item-dropdown>
           <b-nav-item v-b-modal.allActivityModal>
             <span>
               All Activity
             </span>
           </b-nav-item>
-          <b-nav-item-dropdown
-            text="Tags"
-            no-caret
-            boundary="viewport"
-          >
-            <TagsDropdownMenu />
-          </b-nav-item-dropdown>
-          <b-nav-item-dropdown
-            text="Archive"
-            no-caret
-            boundary="viewport"
-          >
-            <ArchiveDropdownMenu />
-          </b-nav-item-dropdown>
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>
