@@ -68,6 +68,7 @@ export default {
     ]),
 
     onSelectTag () {
+      console.log('onSelectTag')
       if (this.selectTag) {
         this.selectTag({ tagId: this.tagId })
       } else {
@@ -86,9 +87,9 @@ export default {
   > .btn {
     padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
   }
-}
-
-.unselected {
-  opacity: 0.5;
+  
+  &.unselected {
+    opacity: 0.5;
+  }
 }
 </style>

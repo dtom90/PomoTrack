@@ -5,7 +5,7 @@
     dropright
     boundary="viewport"
     variant="light"
-    :toggle-class="selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
+    :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
     :style="filterBtnStyle"
     no-caret
   >
@@ -20,7 +20,7 @@
       <TagButton
         :tag="tag"
         :tag-id="tag.id"
-        :select-tag="selectTag"
+        :select-tag="toggleSelectedTag"
         :unselected="unselectedTags.includes(tag.id)"
       />
     </b-dropdown-item>
@@ -29,52 +29,43 @@
 
 <script>
 import TagButton from './TagButton.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   name: 'TaskFilterDropdown',
   
   components: {
-    TagButton,
+    TagButton
   },
   
   props: {
-    tags: {
-      type: Object,
-      required: true
-    },
-    selectedTagIds: {
-      type: Array,
-      required: true
-    },
-    unselectedTags: {
-      type: Array,
-      required: true
-    },
-    addSelectedTags: {
-      type: Boolean,
-      required: true
-    },
     taskTags: {
       type: Array,
       default: null
-    },
-    tasks: {
-      type: Array,
-      required: true
     }
   },
   
   computed: {
     ...mapGetters([
-      'sortedTagList'
+      'unselectedTags',
+      'sortedTagList',
+      'incompleteTasks',
+      'completedTasksFiltered'
+    ]),
+    
+    ...mapState([
+      'tags',
+      'tasks',
+      'selectedTask',
+      'settings'
     ]),
     
     filterBtnStyle () {
       return {
-        '--filter-btn-background-color': this.selectedTagIds.length > 0 ? this.tags[this.selectedTagIds[0]].color : 'white'
+        '--filter-btn-background-color': this.settings.selectedTagIds.length > 0 ? this.tags[this.settings.selectedTagIds[0]].color : 'white'
       }
     },
+    
     filterButtonTooltip () {
       if (this.tasks.length === 0) {
         return 'Add a task enable filtering'
@@ -82,6 +73,15 @@ export default {
         return 'Add a tag to a task to enable filtering'
       }
       return 'Filter tasks'
+    },
+    
+    addSelectedTags: {
+      get () {
+        return this.settings.addSelectedTags
+      },
+      set (value) {
+        this.updateSetting({ key: 'addSelectedTags', value })
+      }
     }
   },
   
@@ -92,6 +92,12 @@ export default {
   },
   
   methods: {
+    ...mapActions([
+      'addTagFilter',
+      'removeTagFilter',
+      'selectTask'
+    ]),
+    
     selectTag (tagId, e) {
       this.$emit('select-tag', tagId, e)
     },
@@ -100,12 +106,41 @@ export default {
       this.$emit('remove-tag', tag)
     },
     
+    async toggleSelectedTag ({ tagId }) {
+      if (!this.settings.selectedTagIds.includes(tagId)) {
+        await this.addTagFilter({ tagId })
+      } else {
+        await this.removeTagFilter({ tagId })
+      }
+      await this.updateSelectedTask()
+    },
+    
     updateSelectedTask () {
-      this.$emit('update-selected-task')
+      // Select some task with the selected tags
+      if (!this.selectedTask || (this.selectedTask && !(
+        (this.settings.filterOperator === 'or' && this.settings.selectedTagIds.some(tag => this.selectedTask.tags.includes(tag))) ||
+        (this.settings.filterOperator === 'and' && this.settings.selectedTagIds.every(tag => this.selectedTask.tags.includes(tag)))
+      ))) {
+        let tasksWithTag = this.settings.filterOperator === 'or'
+          ? this.incompleteTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
+          : this.incompleteTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
+        if (!tasksWithTag) {
+          let completedTasks = this.completedTasksFiltered
+          completedTasks = completedTasks.filter(t => !t.archived)
+          tasksWithTag = this.settings.filterOperator === 'or'
+            ? completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
+            : completedTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
+        }
+        if (tasksWithTag) {
+          this.selectTask({ taskId: tasksWithTag.id })
+        } else {
+          this.selectTask({ taskId: null })
+        }
+      }
     },
     
     updateAddSelectedTags (value) {
-      this.$emit('update-add-selected-tags', value)
+      this.updateSetting({ key: 'addSelectedTags', value })
     }
   }
 }

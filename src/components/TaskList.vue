@@ -8,17 +8,7 @@
       </span>
       
       <!-- To Do List Filter Menu -->
-      <TaskFilterDropdown
-        v-if="!isCompletedList"
-        :tags="tags"
-        :selected-tag-ids="settings.selectedTagIds"
-        :unselected-tags="unselectedTags"
-        :add-selected-tags="addSelectedTags"
-        :tasks="tasks"
-        @select-tag="toggleSelectedTag"
-        @update-selected-task="updateSelectedTask"
-        @update-add-selected-tags="updateAddSelectedTagsValue"
-      />
+      <TaskFilterDropdown v-if="!isCompletedList" />
       
       <!-- Done List Menu -->
       <div
@@ -165,7 +155,6 @@ export default {
       'incompleteTasks',
       'completedTasksFiltered',
       'selectedTask',
-      'unselectedTags'
     ]),
     isCompletedList () {
       return this.title === 'Done'
@@ -188,14 +177,6 @@ export default {
         return 'Add a tag to a task to enable filtering'
       }
       return 'Filter tasks'
-    },
-    addSelectedTags: {
-      get () {
-        return this.settings.addSelectedTags
-      },
-      set (value) {
-        this.updateSetting({ key: 'addSelectedTags', value })
-      }
     },
     incompleteTaskList: {
       get () {
@@ -243,48 +224,6 @@ export default {
         name: this.newTaskName
       })
       this.newTaskName = ''
-    },
-
-    async toggleSelectedTag ({ tagId }) {
-      if (!this.settings.selectedTagIds.includes(tagId)) {
-        await this.addTagFilter({ tagId })
-      } else {
-        await this.removeTagFilter({ tagId })
-      }
-      await this.updateSelectedTask()
-    },
-    
-    async removeTag ({ tagId }) {
-      await this.removeTagFilter({ tagId })
-      await this.updateSelectedTask()
-    },
-    
-    async updateSelectedTask () {
-      // Select some task with the selected tags
-      if (!this.selectedTask || (this.selectedTask && !(
-        (this.settings.filterOperator === 'or' && this.settings.selectedTagIds.some(tag => this.selectedTask.tags.includes(tag))) ||
-        (this.settings.filterOperator === 'and' && this.settings.selectedTagIds.every(tag => this.selectedTask.tags.includes(tag)))
-      ))) {
-        let tasksWithTag = this.settings.filterOperator === 'or'
-          ? this.incompleteTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-          : this.incompleteTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-        if (!tasksWithTag) {
-          let completedTasks = this.completedTasksFiltered
-          completedTasks = completedTasks.filter(t => !t.archived)
-          tasksWithTag = this.settings.filterOperator === 'or'
-            ? completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-            : completedTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-        }
-        if (tasksWithTag) {
-          await this.selectTask({ taskId: tasksWithTag.id })
-        } else {
-          await this.selectTask({ taskId: null })
-        }
-      }
-    },
-
-    updateAddSelectedTagsValue (value) {
-      this.updateSetting({ key: 'addSelectedTags', value })
     }
   }
 }
