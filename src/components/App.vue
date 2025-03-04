@@ -74,8 +74,6 @@
     <AllActivityModal />
     
     <TagActivityModal />
-    
-    <TagModal />
   </div>
 </template>
 
@@ -84,7 +82,7 @@ import Navbar from './Navbar'
 import TaskList from './TaskList'
 import ActiveTaskButtonButton from './ActiveTaskButton.vue'
 import SelectedTask from './SelectedTask'
-import { AllActivityModal, TagActivityModal, TagModal } from './modals'
+import { AllActivityModal, TagActivityModal } from './modals'
 
 import { mapState } from 'vuex'
 import $ from 'jquery'
@@ -103,8 +101,7 @@ export default {
     TaskList,
     SelectedTask,
     TagActivityModal,
-    AllActivityModal,
-    TagModal
+    AllActivityModal
   },
   
   data () {
