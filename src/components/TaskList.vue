@@ -154,7 +154,7 @@ export default {
     ...mapGetters([
       'incompleteTasks',
       'completedTasksFiltered',
-      'selectedTask',
+      'selectedTask'
     ]),
     isCompletedList () {
       return this.title === 'Done'

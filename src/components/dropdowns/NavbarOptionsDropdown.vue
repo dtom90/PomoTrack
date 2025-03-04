@@ -1,12 +1,10 @@
 <template>
   <b-nav-item-dropdown
+    text="Options"
     boundary="viewport"
+    no-caret
     @show="refreshNotificationsEnabled"
   >
-    <template #text>
-      <font-awesome-icon icon="gear" />
-      Options
-    </template>
     <b-dropdown-item-button
       v-b-tooltip.hover="notificationsEnabled ? 'Notifications are enabled (to disable, revoke in URL settings)' : 'Enable notifications'"
       :disabled="notificationsEnabled"

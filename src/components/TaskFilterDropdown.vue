@@ -102,7 +102,7 @@ export default {
     ]),
 
     itemClicked (tagId) {
-      this.$refs.dropdown.show();
+      this.$refs.dropdown.show()
       this.toggleSelectedTag({ tagId })
     },
     

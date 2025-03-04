@@ -1,31 +1,11 @@
 <template>
-  <b-modal
-    id="archiveModal"
-    size="lg"
-    scrollable
-    ok-only
-  >
-    <template v-slot:modal-title>
-      <ModalTitle
-        title="Archived Tasks"
-        icon="trash-can"
-      />
-    </template>
-    <div
-      v-if="!archivedTasks.length"
-      class="text-center"
-    >
-      (No archived tasks)
-    </div>
-    <table
-      v-if="archivedTasks.length"
-      class="table"
-    >
-      <tr
+  <div>
+    <template v-if="archivedTasks.length">
+      <b-dropdown-item
         v-for="task of archivedTasks"
         :key="task.id"
       >
-        <td class="d-flex">
+        <div class="d-flex">
           <div class="flex-1 d-flex align-items-center">
             <Checkbox
               :checked="task.completed !== null"
@@ -46,28 +26,27 @@
               </span>
             </b-button>
           </div>
-        </td>
-      </tr>
-    </table>
-  </b-modal>
+        </div>
+      </b-dropdown-item>
+    </template>
+    
+    <b-dropdown-item
+      v-if="archivedTasks.length === 0"
+      disabled
+    >
+      <em>No archived tasks</em>
+    </b-dropdown-item>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Checkbox from '../Checkbox.vue'
-import ModalTitle from './ModalTitle.vue'
 
 export default {
-  name: 'ArchiveModal',
+  name: 'ArchiveDropdownMenu',
   
-  components: {
-    ModalTitle,
-    Checkbox
-  },
-  
-  data: () => ({
-    isModalShown: false
-  }),
+  components: { Checkbox },
   
   computed: {
     ...mapGetters([
@@ -82,3 +61,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

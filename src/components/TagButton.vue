@@ -68,7 +68,6 @@ export default {
     ]),
 
     onSelectTag () {
-      console.log('onSelectTag')
       if (this.selectTag) {
         this.selectTag({ tagId: this.tagId })
       } else {

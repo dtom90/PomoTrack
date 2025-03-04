@@ -16,23 +16,24 @@
       >
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-b-modal.allActivityModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="chart-simple" />
+            <span>
               All Activity
             </span>
           </b-nav-item>
-          <b-nav-item v-b-modal.tagModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="tag" />
-              Tags
-            </span>
-          </b-nav-item>
-          <b-nav-item v-b-modal.archiveModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="trash-can" />
-              Archive
-            </span>
-          </b-nav-item>
+          <b-nav-item-dropdown
+            text="Tags"
+            no-caret
+            boundary="viewport"
+          >
+            <TagsDropdownMenu />
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown
+            text="Archive"
+            no-caret
+            boundary="viewport"
+          >
+            <ArchiveDropdownMenu />
+          </b-nav-item-dropdown>
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>
@@ -43,12 +44,17 @@
 <script>
 import time from '../lib/time'
 import NavbarOptionsDropdown from './dropdowns/NavbarOptionsDropdown'
+import TagsDropdownMenu from './dropdowns/TagsDropdownMenu'
+import ArchiveDropdownMenu from './dropdowns/ArchiveDropdownMenu'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Navbar',
   
   components: {
-    NavbarOptionsDropdown
+    NavbarOptionsDropdown,
+    TagsDropdownMenu,
+    ArchiveDropdownMenu
   },
   
   mixins: [time],
@@ -61,6 +67,10 @@ export default {
   },
   
   computed: {
+    ...mapGetters([
+      'sortedTagList'
+    ]),
+    
     displayTime () {
       return this.displayTimeHuman(this.currentDate)
     }
