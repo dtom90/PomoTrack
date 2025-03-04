@@ -27,10 +27,11 @@
           @click.native.stop="toggleSubmenu(tagId)"
         >
           <div class="d-flex justify-content-between align-items-center w-100">
-            <font-awesome-icon
-              icon="ellipsis-v"
+            <img
+              src="/icons/dots-6-vertical.svg"
+              alt="Add interval"
               class="drag-handle"
-            />
+            >
             <TagButton
               :tag="tags[tagId]"
               :tag-id="tagId"
@@ -257,5 +258,12 @@ export default {
 
 #tag-name-input {
   color: white;
+}
+</style>
+
+<style>
+.dropdown-item {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
 }
 </style>
