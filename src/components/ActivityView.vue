@@ -10,9 +10,12 @@
           v-model="chartType"
           :options="chartTypeOptions"
           buttons
+          button-variant="light"
+          class="chart-type-buttons"
           @change="onChartTypeChange"
         />
       </b-form-group>
+      
       <div
         v-if="!isTaskActivity"
         class="position-absolute"
@@ -385,4 +388,17 @@ function monthlyChartData (that) {
   margin-top: -38px;
 }
 
+</style>
+
+<style lang="scss">
+@import '../styles/variables.scss';
+
+.chart-type-buttons > .btn-light {
+  background-color: $dark-quaternary !important;
+}
+
+.chart-type-buttons > .btn-light.active {
+  background-color: white !important;
+  border-color: $dark-tertiary !important;
+}
 </style>
