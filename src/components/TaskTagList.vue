@@ -11,15 +11,15 @@
       :tag="tags[tagId]"
       :tag-id="tagId"
       :mini="mini"
-      :remove-tag-button="!mini"
-      :remove-text="removeText"
-      :remove-tag="removeTag"
+      :select-tag="selectTag"
+      :remove-text="'Remove tag from task'"
+      :remove-tag="mini ? null : removeTag"
     />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import TagButton from './TagButton.vue'
 
 export default {
@@ -30,14 +30,6 @@ export default {
   props: {
     taskId: {
       type: String,
-      default: null
-    },
-    removeText: {
-      type: String,
-      default: 'Remove tag from task'
-    },
-    removeTag: {
-      type: Function,
       default: null
     },
     mini: {
@@ -63,6 +55,28 @@ export default {
       const task = this.getTaskById(this.taskId)
       if (!task) return []
       return task.tags.slice().sort((a, b) => this.tagOrder.indexOf(a) - this.tagOrder.indexOf(b))
+    }
+  },
+  
+  methods: {
+    ...mapActions([
+      'removeTaskTag'
+    ]),
+    
+    ...mapMutations([
+      'updateTempState'
+    ]),
+    
+    selectTag ({ tagId }) {
+      if (!this.mini) {
+        this.updateTempState({ key: 'modalTagId', value: tagId })
+        this.$root.$emit('bv::toggle::modal', 'activityModal')
+      }
+    },
+    
+    removeTag ({ tagId }) {
+      this.removeTaskTag({ taskId: this.taskId, tagId })
+      this.$forceUpdate()
     }
   }
 }

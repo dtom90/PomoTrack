@@ -4,7 +4,7 @@
       class="tag-name btn"
       :style="`backgroundColor: ${tag.color}`"
       :title="selectText"
-      @click.stop="onSelectTag"
+      @click="onSelectTag"
     >
       {{ tag.tagName }}
     </button>
@@ -70,11 +70,6 @@ export default {
     onSelectTag () {
       if (this.selectTag) {
         this.selectTag({ tagId: this.tagId })
-      } else {
-        if (!this.mini) {
-          this.updateTempState({ key: 'modalTagId', value: this.tagId })
-          this.$root.$emit('bv::toggle::modal', 'activityModal')
-        }
       }
     }
   }

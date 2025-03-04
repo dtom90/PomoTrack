@@ -168,11 +168,7 @@
           >
             <span>Tags:</span>
           </label>
-          <TaskTagList
-            id="taskTags"
-            :task-id="selectedTask.id"
-            :remove-tag="removeTag"
-          />
+          <TaskTagList :task-id="selectedTask.id" />
           
           <!-- Tag Input -->
           <div
@@ -374,11 +370,6 @@ export default {
           this.$refs.addTagInput.focus()
         })
       }
-    },
-    
-    removeTag ({ tagId }) {
-      this.removeTaskTag({ taskId: this.selectedTask.id, tagId })
-      this.$forceUpdate()
     },
     
     editNotes () {
