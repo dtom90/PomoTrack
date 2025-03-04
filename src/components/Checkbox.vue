@@ -1,14 +1,22 @@
 <template>
-  <div :class="['checkbox-container', { 'checkbox-large': size === 'large' }]">
-    <input
-      :checked="checked"
-      :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
-      type="checkbox"
-      :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
-      :disabled="disabled"
-      @change="onCheckboxClick"
+  <div class="d-flex align-items-center">
+    <div :class="['checkbox-container', { 'checkbox-large': size === 'large' }]">
+      <input
+        :checked="checked"
+        :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
+        type="checkbox"
+        :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
+        :disabled="disabled"
+        @change="onCheckboxClick"
+      >
+      <span class="check-custom" />
+    </div>
+    <span
+      v-if="disabled"
+      class="task-checkbox-label ml-2"
     >
-    <span class="check-custom" />
+      {{ checked ? 'Completed' : 'Incomplete' }}
+    </span>
   </div>
 </template>
 

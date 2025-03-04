@@ -26,22 +26,27 @@
         </b-button>
       </div>
     </div>
-    <br>
-    <table class="table">
-      <tr
-        v-for="task of selectedDayActivity"
-        :key="task[0]"
-      >
-        <td class="d-flex align-items-center">
-          <Checkbox
-            :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
-            :disabled="true"
-          />
-          <span class="ml-2">{{ task[0] }}</span>
-        </td>
-        <td>{{ displayDuration(task[1]) }}</td>
-      </tr>
-    </table>
+    <h5 class="my-3">
+      Tasks Worked On
+    </h5>
+    <div
+      v-for="task of selectedDayActivity"
+      :key="task[0]"
+      class="d-flex align-items-center justify-content-around mb-3"
+    >
+      <div>
+        <Checkbox
+          :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
+          :disabled="true"
+        />
+      </div>
+      <div>
+        <span class="ml-2">{{ task[0] }}</span>
+      </div>
+      <div>
+        <span class="ml-2">{{ displayDuration(task[1]) }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
