@@ -4,6 +4,12 @@
 @import "fonts";
 @import "tags";
 
+// Apply Poppins Regular to all text in the app
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+}
+
 .width-100 {
   width: 100%;
 }
@@ -20,6 +26,11 @@
   padding: 8px;
 }
 
+h6 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+}
+
 .navbar-nav li.nav-item:hover,li.nav-item.show {
   background-color: $dark-quaternary;
   border-radius: 8px;
@@ -32,7 +43,7 @@
   background-color: $white;
 }
 
-.btn-light:hover {
+.btn-light:hover:not(:disabled) {
   border-color: transparent;
   background-color: $dark-quaternary;
 }

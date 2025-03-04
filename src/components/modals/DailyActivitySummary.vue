@@ -1,10 +1,11 @@
 <template>
   <div>
     <div class="d-flex">
-      <div class="flex-1 text-right">
+      <div class="flex-1 text-right align-self-center">
         <b-button
           v-show="selectedDay !== null"
           variant="light"
+          class="rounded-circle"
           @click="daysBack++"
         >
           <font-awesome-icon icon="chevron-left" />
@@ -14,10 +15,11 @@
         <h4>{{ selectedDayRelative }}</h4>
         <h6>{{ selectedDayDisplay }}</h6>
       </div>
-      <div class="flex-1 text-left">
+      <div class="flex-1 text-left align-self-center">
         <b-button
-          v-show="daysBack > 0"
+          :disabled="daysBack === 0"
           variant="light"
+          class="rounded-circle"
           @click="daysBack--"
         >
           <font-awesome-icon icon="chevron-right" />
@@ -35,7 +37,7 @@
             :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
             :disabled="true"
           />
-          <span>{{ task[0] }}</span>
+          <span class="ml-2">{{ task[0] }}</span>
         </td>
         <td>{{ displayDuration(task[1]) }}</td>
       </tr>

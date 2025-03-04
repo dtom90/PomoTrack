@@ -6,7 +6,7 @@
     
     <div
       id="main-section"
-      class="d-flex border poppins-regular"
+      class="d-flex border"
     >
       <div
         v-if="!isNarrowScreen"

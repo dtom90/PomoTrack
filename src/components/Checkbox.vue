@@ -87,6 +87,9 @@ export default {
 .task-checkbox {
   z-index: 2;
   opacity: 0;
+}
+
+.task-checkbox.enabled-checkbox {
   cursor: pointer;
 }
 
