@@ -14,8 +14,7 @@
           {{ task.name }}
         </div>
         <div class="d-flex flex-wrap">
-          <TagListHorizontal
-            :tag-list="taskTags"
+          <TaskTagList
             :task-id="task.id"
             mini
           />
@@ -33,13 +32,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Checkbox from './Checkbox'
-import TagListHorizontalHorizontal from './TagListHorizontal.vue'
+import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
 
 export default {
   
   name: 'Task',
-  components: { TagListHorizontal: TagListHorizontalHorizontal, Checkbox, TimerDial },
+  components: { TaskTagList, Checkbox, TimerDial },
   props: {
     task: {
       type: Object,

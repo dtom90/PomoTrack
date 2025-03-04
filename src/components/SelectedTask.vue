@@ -168,9 +168,8 @@
           >
             <span>Tags:</span>
           </label>
-          <TagListHorizontal
+          <TaskTagList
             id="taskTags"
-            :tag-list="taskTags"
             :task-id="selectedTask.id"
             :remove-tag="removeTag"
           />
@@ -250,7 +249,7 @@
 
 <script>
 import Checkbox from './Checkbox'
-import TagListHorizontal from './TagListHorizontal.vue'
+import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
@@ -279,7 +278,7 @@ export default {
   components: {
     Timer,
     Checkbox,
-    TagListHorizontal,
+    TaskTagList,
     ActivityView
   },
   
