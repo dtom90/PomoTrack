@@ -16,19 +16,15 @@
       >
         <b-navbar-nav class="ml-auto">
           <TagsDropdownMenu />
-          <b-nav-item-dropdown
-            text="Archive"
-            no-caret
-            boundary="viewport"
-            right
-          >
-            <ArchiveDropdownMenu />
-          </b-nav-item-dropdown>
+          
+          <ArchiveDropdownMenu />
+
           <b-nav-item v-b-modal.allActivityModal>
             <span>
               All Activity
             </span>
           </b-nav-item>
+          
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>

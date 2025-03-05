@@ -8,7 +8,7 @@
     @hidden="isModalShown = false"
   >
     <template v-slot:modal-title>
-      <div class="title-spacer"></div>
+      <span class="title-spacer" />
       <span id="activity-for">Activity for</span>
       <TagSettingsButton :tag-id="tempState.modalTagId" />
     </template>

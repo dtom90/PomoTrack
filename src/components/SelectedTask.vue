@@ -59,39 +59,10 @@
         </div>
         
         <!-- Menu Options -->
-        <div
-          ref="taskMenu"
-          class="dropdown"
-        >
-          <button
-            class="btn btn-light"
-            title="Task options"
-            data-toggle="dropdown"
-          >
-            <font-awesome-icon icon="ellipsis-vertical" />
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <div
-              id="selected-task-menu"
-            >
-              <b-button
-                block
-                variant="archive-color"
-                title="Archive task"
-                @click="archiveTask({taskId: selectedTask.id})"
-              >
-                <span v-if="!selectedTask.archived">
-                  <font-awesome-icon icon="download" />
-                  <span>&nbsp;&nbsp;Archive</span>
-                </span>
-                <span v-if="selectedTask.archived">
-                  <font-awesome-icon icon="upload" />
-                  <span>&nbsp;&nbsp;Unarchive</span>
-                </span>
-              </b-button>
-            </div>
-          </div>
-        </div>
+        <TaskMenu
+          :task-id="selectedTask.id"
+          :is-archived="selectedTask.archived"
+        />
       </div>
       
       <!-- Countdown Timer -->
@@ -247,6 +218,7 @@
 import Checkbox from './Checkbox'
 import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
+import TaskMenu from './TaskMenu.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -275,7 +247,8 @@ export default {
     Timer,
     Checkbox,
     TaskTagList,
-    ActivityView
+    ActivityView,
+    TaskMenu
   },
   
   props: {
@@ -338,7 +311,6 @@ export default {
       'updateTaskName',
       'updateTaskNotes',
       'startTask',
-      'archiveTask',
       'removeTaskTag',
       'addTaskTagById',
       'addTaskTagByName'
