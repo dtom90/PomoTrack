@@ -11,54 +11,31 @@
       <TaskFilterDropdown v-if="!isCompletedList" />
       
       <!-- Done List Menu -->
-      <div
+      <b-dropdown
         v-if="isCompletedList"
+        :id="btnId"
+        right
+        variant="light"
+        toggle-class="btn-light"
+        title="List options"
+        no-caret
       >
-        <button
-          :id="btnId"
-          class="btn btn-light"
-          title="List options"
-          data-toggle="dropdown"
-        >
+        <template #button-content>
           <font-awesome-icon icon="ellipsis-vertical" />
-        </button>
+        </template>
         
-        <div
-          id="done-menu"
-          class="dropdown-menu"
+        <b-dropdown-item
+          id="archive-btn"
+          variant="danger"
+          title="Archive all list tasks"
+          @click="archiveTasks"
         >
-          <div class="input-group">
-            <select
-              :id="selectId"
-              v-model="sortOrder"
-              class="custom-select"
-            >
-              <option
-                v-for="option in sortingOptions"
-                :key="option"
-                :value="option"
-              >
-                {{ option }}
-              </option>
-            </select>
-            <div class="input-group-append">
-              <label
-                class="input-group-text"
-                :for="selectId"
-              >First</label>
-            </div>
-          </div>
-          <div class="dropdown-divider" />
-          <button
-            id="archive-btn"
-            class="btn btn-danger"
-            title="Archive all list tasks"
-            @click="archiveTasks"
-          >
-            Archive All
-          </button>
-        </div>
-      </div>
+          Archive All
+        </b-dropdown-item>
+      </b-dropdown>
+      
+      <!-- To Do List Filter Menu -->
+      <TaskFilterDropdown v-if="!isCompletedList" />
     </div>
     
     <b-input-group

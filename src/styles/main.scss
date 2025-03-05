@@ -40,6 +40,10 @@ h6 {
   border-radius: 9999px !important;
 }
 
+.navbar {
+  background-color: $white !important;
+}
+
 .navbar-nav li.nav-item:hover,li.nav-item.show {
   background-color: $dark-quaternary;
   border-radius: 8px;
@@ -83,6 +87,18 @@ h6 {
   flex: 1;
 }
 
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.flex-4 {
+  flex: 4;
+}
+
 table {
   td {
     border-top: none !important;
@@ -93,4 +109,8 @@ table {
 .modal-content {
   height: 90vh;
   max-height: 90vh;
+}
+
+.dropdown-menu {
+  border-radius: 8px;
 }

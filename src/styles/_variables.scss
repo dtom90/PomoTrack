@@ -17,24 +17,8 @@ $font-weight-extra-bold: 600;
 $checkbox-size: 20px;
 $checkbox-large-size: 24px;
 
-$archive-color: #654321;
 $dark-primary: #37352F;
 $dark-tertiary: #DEDEDE;
 $dark-quaternary: #F1F1F0;
 $white: #FFFFFF;
 $error-red: #D92D20;
-
-.archive-badge {
-  background-color: $archive-color;
-}
-
-.btn-archive-color {
-  background-color: $archive-color !important;
-  color: white !important;
-  border-color: $archive-color !important;
-}
-.btn-archive-color:hover {
-  background-color: #7B5544 !important;
-  color: white !important;
-  border-color: #7B5544 !important;
-}

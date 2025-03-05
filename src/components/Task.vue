@@ -4,7 +4,7 @@
     :class="'task draggable-item list-group-item list-group-item-action form-check'+active"
     @click="selectTask({ taskId: task.id })"
   >
-    <div class="d-flex align-items-top">
+    <div class="d-flex align-items-start ">
       <Checkbox
         :checked="checked"
         :task-id="task.id"
@@ -96,6 +96,12 @@ export default {
   border: none;
   margin-bottom: 16px;
   border-radius: 8px !important;
+}
+
+.task.active, .task:hover {
+  color: $dark-primary;
+  background-color: $dark-quaternary;
+  font-weight: $font-weight-bold;
 }
 
 .task-name-and-tags-wrapper {

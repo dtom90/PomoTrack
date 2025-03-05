@@ -29,22 +29,25 @@
     <h5 class="my-3">
       Tasks Worked On
     </h5>
-    <div
-      v-for="task of selectedDayActivity"
-      :key="task[0]"
-      class="d-flex align-items-center mb-3"
-    >
-      <div class="flex-1 ml-2">
-        <Checkbox
-          :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
-          :disabled="true"
-        />
-      </div>
-      <div class="flex-1 ml-2">
-        <span class="ml-2">{{ task[0] }}</span>
-      </div>
-      <div class="flex-1 ml-2">
-        <span class="ml-2">{{ displayDuration(task[1]) }}</span>
+    <div class="px-2">
+      <div
+        v-for="task of selectedDayActivity"
+        :key="task[0]"
+        class="d-flex align-items-center mb-3"
+      >
+        <div class="flex-1 px-2" />
+        <div class="flex-2 px-2">
+          <Checkbox
+            :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
+            :disabled="true"
+          />
+        </div>
+        <div class="flex-4 px-2">
+          <span class="px-2">{{ task[0] }}</span>
+        </div>
+        <div class="flex-3 px-2">
+          <span class="px-2">{{ displayDuration(task[1]) }}</span>
+        </div>
       </div>
     </div>
   </div>

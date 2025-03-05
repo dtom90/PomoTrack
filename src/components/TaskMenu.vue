@@ -16,10 +16,10 @@
           @click="archiveTask({taskId: taskId})"
         >
           <span v-if="!isArchived">
-            <span>&nbsp;&nbsp;Archive</span>
+            <span>Archive</span>
           </span>
           <span v-if="isArchived">
-            <span>&nbsp;&nbsp;Unarchive</span>
+            <span>Unarchive</span>
           </span>
         </b-dropdown-item-button>
       </div>
