@@ -32,18 +32,18 @@
     <div
       v-for="task of selectedDayActivity"
       :key="task[0]"
-      class="d-flex align-items-center justify-content-around mb-3"
+      class="d-flex align-items-center mb-3"
     >
-      <div>
+      <div class="flex-1 ml-2">
         <Checkbox
           :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
           :disabled="true"
         />
       </div>
-      <div>
+      <div class="flex-1 ml-2">
         <span class="ml-2">{{ task[0] }}</span>
       </div>
-      <div>
+      <div class="flex-1 ml-2">
         <span class="ml-2">{{ displayDuration(task[1]) }}</span>
       </div>
     </div>

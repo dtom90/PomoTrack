@@ -443,6 +443,7 @@ $circle-thickness: 18px;
 
 <style lang="scss">
 @import '../styles/_variables.scss';
+
 .circular-button {
   border-radius: 50% !important;
   width: 2.5rem;

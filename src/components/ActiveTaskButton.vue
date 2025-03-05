@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-center align-items-center">
     <button
       id="active-task-button"
-      class="btn btn-light border d-flex justify-content-center align-items-center"
+      class="btn btn-light border d-flex justify-content-center align-items-center oval-border"
       @click="selectTask({ taskId: activeTask.id })"
     >
       <TimerDial

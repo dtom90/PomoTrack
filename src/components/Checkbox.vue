@@ -1,6 +1,9 @@
 <template>
   <div class="d-flex align-items-center">
-    <div :class="['checkbox-container', { 'checkbox-large': size === 'large' }]">
+    <div
+      v-if="checked || !disabled"
+      :class="['checkbox-container', { 'checkbox-large': size === 'large' }]"
+    >
       <input
         :checked="checked"
         :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
@@ -11,6 +14,12 @@
       >
       <span class="check-custom" />
     </div>
+    <img
+      v-if="!checked && disabled"
+      src="/icons/incomplete.svg"
+      alt="incomplete"
+      class="incomplete-checkbox"
+    >
     <span
       v-if="disabled"
       class="task-checkbox-label ml-2"
@@ -65,6 +74,8 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+$incomplete-size: 24px;
+
 /* Adapted from https://hackernoon.com/hacking-custom-checkboxes-and-radios-5d48230440d */
 .checkbox-container {
   position: relative;
@@ -89,6 +100,11 @@ export default {
       height: $checkbox-large-size;
     }
   }
+}
+
+.incomplete-checkbox {
+  width: $incomplete-size;
+  height: $incomplete-size;
 }
 
 /* Styles for hiding the native checkbox */

@@ -45,7 +45,7 @@ export default {
   components: {
     NavbarArchiveDropdown,
     NavbarTagsDropdown,
-    NavbarOptionsDropdown,
+    NavbarOptionsDropdown
   },
   
   mixins: [time],
