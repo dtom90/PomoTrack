@@ -93,7 +93,7 @@
 <script>
 import Log from './Log'
 import ActivityChart from './ActivityChart'
-import AddIntervalDropdown from './dropdowns/AddIntervalDropdown'
+import AddIntervalDropdown from './AddIntervalDropdown.vue'
 import { mapState, mapActions } from 'vuex'
 import time from '../lib/time'
 

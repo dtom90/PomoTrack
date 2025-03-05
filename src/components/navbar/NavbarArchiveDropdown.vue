@@ -63,7 +63,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import Checkbox from '../Checkbox.vue'
 export default {
-  name: 'ArchiveDropdownMenu',
+  name: 'NavbarArchiveDropdown',
   
   components: { Checkbox },
   

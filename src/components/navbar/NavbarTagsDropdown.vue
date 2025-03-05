@@ -118,7 +118,7 @@ import { mapGetters, mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
 
 export default {
-  name: 'TagsDropdownMenu',
+  name: 'NavbarTagsDropdown',
   
   components: {
     TagButton,

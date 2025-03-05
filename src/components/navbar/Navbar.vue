@@ -15,9 +15,9 @@
         is-nav
       >
         <b-navbar-nav class="ml-auto">
-          <TagsDropdownMenu />
+          <NavbarTagsDropdown />
           
-          <ArchiveDropdownMenu />
+          <NavbarArchiveDropdown />
 
           <b-nav-item v-b-modal.allActivityModal>
             <span>
@@ -33,19 +33,19 @@
 </template>
 
 <script>
-import time from '../lib/time'
-import NavbarOptionsDropdown from './dropdowns/NavbarOptionsDropdown'
-import TagsDropdownMenu from './dropdowns/TagsDropdownMenu'
-import ArchiveDropdownMenu from './dropdowns/ArchiveDropdownMenu'
+import time from '../../lib/time'
+import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
+import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
+import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Navbar',
   
   components: {
+    NavbarArchiveDropdown,
+    NavbarTagsDropdown,
     NavbarOptionsDropdown,
-    TagsDropdownMenu,
-    ArchiveDropdownMenu
   },
   
   mixins: [time],
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@import "../../styles/variables";
 
 .navbar-brand {
   z-index: 2;
