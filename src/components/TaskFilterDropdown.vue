@@ -17,7 +17,10 @@
     <b-dropdown-header>
       <div class="d-flex justify-content-between">
         <div>Filter by Tag</div>
-        <a :href="settings.selectedTagIds.length ? '#' : null" @click="clearAllTags">Clear All</a>
+        <a
+          :href="settings.selectedTagIds.length ? '#' : null"
+          @click="clearAllTags"
+        >Clear All</a>
       </div>
     </b-dropdown-header>
 
@@ -26,8 +29,8 @@
     <b-dropdown-item
       v-for="tag in sortedTagList"
       :key="tag.id"
-      @click.native.stop="itemClicked(tag.id)"
       :class="unselectedTags.includes(tag.id) ? '' : 'selected'"
+      @click.native.stop="itemClicked(tag.id)"
     >
       <TagButton
         :tag="tag"
@@ -172,7 +175,5 @@ export default {
 </style>
 
 <style>
-.dropdown-menu{
-  min-width: 240px !important;
-}
+
 </style>

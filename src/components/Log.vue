@@ -127,7 +127,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../styles/variables";
 
 .log {
   margin-top: 32px;
@@ -143,5 +144,9 @@ export default {
 .btn-container {
   padding: 0;
   vertical-align: middle;
+}
+
+td {
+  font-size: $font-size-small;
 }
 </style>

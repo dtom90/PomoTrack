@@ -2,7 +2,13 @@
   <div class="d-flex align-items-center">
     <div
       v-if="checked || !disabled"
-      :class="['checkbox-container', { 'checkbox-large': size === 'large' }]"
+      :class="[
+        'checkbox-container',
+        {
+          'checkbox-large': size === 'large' && !disabled,
+          'checkbox-small': disabled
+        }
+      ]"
     >
       <input
         :checked="checked"
@@ -19,6 +25,7 @@
       src="/icons/incomplete.svg"
       alt="incomplete"
       class="incomplete-checkbox"
+      :class="{ 'incomplete-checkbox-small': disabled }"
     >
     <span
       v-if="disabled"
@@ -100,11 +107,27 @@ $incomplete-size: 24px;
       height: $checkbox-large-size;
     }
   }
+  
+  &.checkbox-small {
+    min-width: $checkbox-size-small;
+    width: $checkbox-size-small;
+    height: $checkbox-size-small;
+    
+    > * {
+      width: $checkbox-size-small;
+      height: $checkbox-size-small;
+    }
+  }
 }
 
 .incomplete-checkbox {
   width: $incomplete-size;
   height: $incomplete-size;
+  
+  &.incomplete-checkbox-small {
+    width: $checkbox-size-small;
+    height: $checkbox-size-small;
+  }
 }
 
 /* Styles for hiding the native checkbox */

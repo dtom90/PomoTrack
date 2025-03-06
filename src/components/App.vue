@@ -25,7 +25,7 @@
 
       <div
         id="selected-task-section"
-        class="section"
+        class="section border-left border-right"
       >
         <div
           id="sidebar-buttons"
@@ -157,7 +157,7 @@ body {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: $dark-primary;
 }
 
 #main-section {

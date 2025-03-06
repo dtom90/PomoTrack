@@ -39,10 +39,12 @@
                 class="ml-3"
               />
             </div>
-            <font-awesome-icon
-              icon="chevron-right"
-              class="submenu-indicator"
-            />
+            <div class="submenu-indicator-wrapper">
+              <font-awesome-icon
+                icon="chevron-right"
+                class="submenu-indicator"
+              />
+            </div>
           </div>
         </b-dropdown-item>
           
@@ -76,14 +78,12 @@
             
           <b-button
             variant="primary"
-            class="w-100"
+            class="w-100 mb-2"
             @click="updateTagSubmit(tagId)"
           >
             Confirm
           </b-button>
-            
-          <br><br>
-            
+
           <b-button
             :id="`delete-tag-btn-${tagId}`"
             title="Delete tag"
@@ -96,20 +96,6 @@
         </div>
       </div>
     </draggable>
-    
-    <b-dropdown-divider v-if="tagOrder.length > 0" />
-    <b-dropdown-item
-      disabled
-      @click="createNewTag"
-    >
-      <div class="d-flex justify-content-between align-items-center w-100">
-        Create New Tag
-        <font-awesome-icon
-          icon="chevron-right"
-          class="submenu-indicator"
-        />
-      </div>
-    </b-dropdown-item>
   </b-nav-item-dropdown>
 </template>
 
@@ -249,5 +235,12 @@ export default {
 
 #tag-name-input {
   color: white;
+}
+
+.submenu-indicator-wrapper {
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

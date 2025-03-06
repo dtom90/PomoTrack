@@ -6,7 +6,10 @@
       :title="selectText"
       @click="onSelectTag"
     >
-      <span v-if="!mini">{{ tag.tagName }}</span>
+      <span
+        v-if="!mini"
+        class="text-wrap"
+      >{{ tag.tagName }}</span>
     </button>
     <button
       v-if="removeTag"

@@ -1,15 +1,17 @@
 <template>
   <b-nav-item-dropdown
+    id="archive-dropdown"
     ref="dropdown"
     text="Archive"
     no-caret
     boundary="viewport"
     right
   >
-    <div id="archive-dropdown-menu">
-      <h5 class="text-left">
+    <div>
+      <b-dropdown-header>
         Archived Tasks
-      </h5>
+      </b-dropdown-header>
+      <b-dropdown-divider />
       <template v-if="archivedTasks.length">
         <b-dropdown-item
           v-for="task of archivedTasks"
@@ -110,10 +112,6 @@ export default {
 </script>
 
 <style scoped>
-#archive-dropdown-menu {
-  width: 500px;
-}
-
 .task-item-wrapper {
   position: relative;
 }
@@ -137,5 +135,13 @@ export default {
 
 .task-submenu.active {
   display: block;
+}
+</style>
+
+<style>
+#archive-dropdown {
+  .dropdown-menu {
+    width: 500px !important;
+  }
 }
 </style>
