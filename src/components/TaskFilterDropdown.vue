@@ -23,7 +23,6 @@
       <TagButton
         :tag="tag"
         :tag-id="tag.id"
-        :select-tag="toggleSelectedTag"
         :unselected="unselectedTags.includes(tag.id)"
       />
     </b-dropdown-item>

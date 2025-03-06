@@ -32,11 +32,13 @@
               alt="Add interval"
               class="drag-handle"
             >
-            <TagButton
-              :tag="tags[tagId]"
-              :tag-id="tagId"
-              class="ml-3"
-            />
+            <div class="flex-1">
+              <TagButton
+                :tag="tags[tagId]"
+                :tag-id="tagId"
+                class="ml-3"
+              />
+            </div>
             <font-awesome-icon
               icon="chevron-right"
               class="submenu-indicator"
@@ -216,16 +218,16 @@ export default {
   position: relative;
 }
 
-.tag-dropdown-item {
+/* .tag-dropdown-item {
   padding-right: 2rem;
-}
+} */
 
-.submenu-indicator {
+/* .submenu-indicator {
   position: absolute;
   right: 1rem;
   font-size: 0.8rem;
   opacity: 0.7;
-}
+} */
 
 .drag-handle {
   cursor: move;
