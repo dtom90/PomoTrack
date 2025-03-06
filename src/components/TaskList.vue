@@ -33,9 +33,6 @@
           Archive All
         </b-dropdown-item>
       </b-dropdown>
-      
-      <!-- To Do List Filter Menu -->
-      <TaskFilterDropdown v-if="!isCompletedList" />
     </div>
     
     <b-input-group

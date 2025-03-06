@@ -113,4 +113,9 @@ table {
 
 .dropdown-menu {
   border-radius: 8px;
+
+  .dropdown-item {
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
 }
