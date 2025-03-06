@@ -142,60 +142,12 @@
           <TaskTagList :task-id="selectedTask.id" />
           
           <!-- Tag Input -->
-          <div
-            v-if="taskTags"
-            id="new-tag-section"
-            class="btn-group"
-          >
-            <div class="d-flex">
-              <button
-                id="addTagButton"
-                class="btn btn-light"
-                :title="showTagInput ? 'Cancel' : 'Add new tag'"
-                @click="addTagButton"
-              >
-                <font-awesome-icon
-                  v-if="!showTagInput"
-                  icon="plus"
-                />
-                <font-awesome-icon
-                  v-if="showTagInput"
-                  icon="times"
-                />
-              </button>
-              <div
-                v-if="showTagInput"
-                id="tagDropdown"
-              >
-                <div
-                  id="tagDropdownMenu"
-                  class="btn-group-vertical"
-                >
-                  <button
-                    v-for="tag in availableTags(selectedTask.id, inputTagName)"
-                    :key="tag.id"
-                    class="tag-option btn btn-light"
-                    :style="`backgroundColor: ${tag.color}`"
-                    @click="addTag({ tagId: tag.id })"
-                  >
-                    {{ tag.tagName }}
-                  </button>
-                </div>
-              </div>
-              <input
-                v-if="showTagInput"
-                id="addTagInput"
-                ref="addTagInput"
-                v-model="inputTagName"
-                type="text"
-                class="form-control"
-                placeholder="add new tag"
-                @input="tagInputChange"
-                @focus="tagInputChange"
-                @blur="clickOutside"
-                @keyup.enter="addTag({ tagName: inputTagName })"
-              >
-            </div>
+          <div v-if="taskTags" id="new-tag-section">
+            <TagInput 
+              :task-id="selectedTask.id"
+              :get-available-tags="availableTags"
+              @add-tag="handleAddTag"
+            />
           </div>
         </div>
       </div>
@@ -219,6 +171,7 @@ import Checkbox from './Checkbox'
 import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
 import TaskMenu from './TaskMenu.vue'
+import TagInput from './TagInput.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -248,7 +201,8 @@ export default {
     Checkbox,
     TaskTagList,
     ActivityView,
-    TaskMenu
+    TaskMenu,
+    TagInput
   },
   
   props: {
@@ -262,10 +216,7 @@ export default {
     possibleEdit: true,
     editingName: false,
     editingNotes: false,
-    newTaskName: null,
-    tagOptions: [],
-    showTagInput: false,
-    inputTagName: ''
+    newTaskName: null
   }),
   
   computed: {
@@ -335,15 +286,6 @@ export default {
       this.editingName = false
     },
     
-    addTagButton () {
-      this.showTagInput = !this.showTagInput
-      if (this.showTagInput) {
-        this.$nextTick(() => {
-          this.$refs.addTagInput.focus()
-        })
-      }
-    },
-    
     editNotes () {
       this.editingNotes = true
       this.$nextTick(() => {
@@ -367,29 +309,11 @@ export default {
       await this.startTask({ taskId: this.selectedTask.id })
     },
     
-    tagInputChange () {
-      this.tagOptions = this.availableTags(this.selectedTask.id, this.inputTagName)
-    },
-    
-    addTag ({ tagId, tagName }) {
+    handleAddTag({ taskId, tagId, tagName }) {
       if (tagId != null) {
-        this.addTaskTagById({ taskId: this.selectedTask.id, tagId })
+        this.addTaskTagById({ taskId, tagId })
       } else if (tagName != null && tagName.length) {
-        this.addTaskTagByName({ taskId: this.selectedTask.id, tagName })
-      }
-      this.inputTagName = ''
-      this.tagInputChange()
-      this.tagOptions = this.availableTags(this.selectedTask.id, this.inputTagName)
-      this.$refs.addTagInput.focus()
-    },
-    
-    clickOutside (event) {
-      if (!(event.relatedTarget && event.relatedTarget.classList &&
-        event.relatedTarget.classList.contains('tag-option'))) {
-        this.tagOptions = []
-        if (!(event.relatedTarget && event.relatedTarget.id === 'addTagButton')) {
-          this.showTagInput = false
-        }
+        this.addTaskTagByName({ taskId, tagName })
       }
     }
   }
@@ -474,44 +398,8 @@ $vertical-spacing: 30px;
     
     #new-tag-section * {
       max-height: 32px;
-      
-      #addTagButton {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
     }
   }
-}
-
-#addTagInput {
-  max-width: 160px;
-}
-
-#tagDropdown {
-  position: relative;
-}
-
-#tagDropdownMenu {
-  position: absolute;
-  top: 48px;
-  z-index: 4;
-  width: 160px;
-}
-
-.tag-option {
-  color: white;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.4),
-  0 0 13px rgba(0, 0, 0, 0.1),
-  0 0 23px rgba(0, 0, 0, 0.1);
-  word-break: break-word;
-}
-
-.tag-option:hover {
-  color: lightgrey;
 }
 </style>
 
