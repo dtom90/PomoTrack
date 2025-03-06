@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="selectedTask"
+    v-show="selectedTask && !selectedTask.archived"
     id="selected-task-container"
   >
     <template v-if="selectedTask">
