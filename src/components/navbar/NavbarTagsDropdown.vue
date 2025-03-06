@@ -218,17 +218,6 @@ export default {
   position: relative;
 }
 
-/* .tag-dropdown-item {
-  padding-right: 2rem;
-} */
-
-/* .submenu-indicator {
-  position: absolute;
-  right: 1rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
-} */
-
 .drag-handle {
   cursor: move;
 }

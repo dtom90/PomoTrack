@@ -65,6 +65,15 @@ h6 {
   background-color: $white !important;
 }
 
+.btn-danger, .text-danger {
+  color: $error-red;
+}
+
+.btn-danger {
+  background-color: $white;
+  border-color: $error-red;
+}
+
 //noinspection CssInvalidPropertyValue
 .draggable-item {
   cursor: -webkit-grab !important;
