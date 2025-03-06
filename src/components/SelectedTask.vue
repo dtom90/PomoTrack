@@ -142,12 +142,11 @@
           <TaskTagList :task-id="selectedTask.id" />
           
           <!-- Tag Input -->
-          <div v-if="taskTags" id="new-tag-section">
-            <TagInput 
-              :task-id="selectedTask.id"
-              :get-available-tags="availableTags"
-              @add-tag="handleAddTag"
-            />
+          <div
+            v-if="taskTags"
+            id="new-tag-section"
+          >
+            <TagInput :task-id="selectedTask.id" />
           </div>
         </div>
       </div>
@@ -230,8 +229,7 @@ export default {
     ]),
     
     ...mapGetters([
-      'selectedTask',
-      'availableTags'
+      'selectedTask'
     ]),
     
     checked () {
@@ -262,9 +260,7 @@ export default {
       'updateTaskName',
       'updateTaskNotes',
       'startTask',
-      'removeTaskTag',
-      'addTaskTagById',
-      'addTaskTagByName'
+      'removeTaskTag'
     ]),
     
     editName () {
@@ -307,14 +303,6 @@ export default {
     
     async continueTimerHere () {
       await this.startTask({ taskId: this.selectedTask.id })
-    },
-    
-    handleAddTag({ taskId, tagId, tagName }) {
-      if (tagId != null) {
-        this.addTaskTagById({ taskId, tagId })
-      } else if (tagName != null && tagName.length) {
-        this.addTaskTagByName({ taskId, tagName })
-      }
     }
   }
 }
@@ -394,10 +382,6 @@ $vertical-spacing: 30px;
     #tags-label {
       padding-right: 15px;
       margin-bottom: 0;
-    }
-    
-    #new-tag-section * {
-      max-height: 32px;
     }
   }
 }
