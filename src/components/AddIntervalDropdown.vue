@@ -5,9 +5,9 @@
     <b-dropdown
       id="add-interval-dropdown"
       ref="addIntervalDropdown"
-      right
+      dropright
+      boundary="viewport"
       variant="light"
-      toggle-class="text-decoration-none"
       no-caret
       @show="dropdownWillShow"
       @shown="dropdownShown = true"
@@ -205,6 +205,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+  #add-interval-dropdown {
+    .dropdown-menu {
+      width: 274px !important;
+    }
+  }
 </style>

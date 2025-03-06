@@ -72,6 +72,7 @@
     <div>
       <!-- Dropdown to add interval manually -->
       <AddIntervalDropdown
+        v-if="isTaskActivity"
         :task-id="taskId"
       />
       
