@@ -22,7 +22,7 @@
                 :checked="task.completed !== null"
                 :disabled="true"
               />
-              <span class="ml-4">{{ task.name }}</span>
+              <span class="ml-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">
               <div class="task-item-wrapper">
@@ -53,7 +53,7 @@
         v-if="archivedTasks.length === 0"
         disabled
       >
-        <em>No archived tasks</em>
+        
       </b-dropdown-item>
     </div>
   </b-nav-item-dropdown>

@@ -123,8 +123,27 @@ table {
 .dropdown-menu {
   border-radius: 8px;
 
+  .dropdown-header {
+    padding: 8px;
+    color: $dark-primary;
+  }
+
   .dropdown-item {
     border: 1px solid transparent;
     border-radius: 8px;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .dropdown-item:hover {
+    background-color: $dark-tertiary;
+    border-color: $dark-quaternary;
+  }
+
+  li.selected {
+    a {
+      background-color: #007aff26;
+      // border-color: #007aff26;
+    }
   }
 }

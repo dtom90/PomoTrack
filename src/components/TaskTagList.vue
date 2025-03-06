@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!--  spacing for consistent spacing  -->
-    <div
-      v-if="!taskTags.length"
-      style="height: 30px"
-    />
     <TagButton
       v-for="tagId in taskTags"
       :key="tagId"
@@ -14,6 +9,7 @@
       :select-tag="selectTag"
       :remove-text="'Remove tag from task'"
       :remove-tag="mini ? null : removeTag"
+      :class="mini ? 'tag-button-mini' : 'tag-button'"
     />
   </div>
 </template>
@@ -83,5 +79,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.tag-button-mini {
+  margin-right: 4px;
+  margin-top: 4px;
+}
 
+.tag-button {
+  margin-right: 8px;
+  margin-top: 8px;
+}
 </style>

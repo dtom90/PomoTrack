@@ -1,12 +1,12 @@
 <template>
-  <div :class="'tag btn-group' + (unselected ? ' unselected' : '')">
+  <div :class="'tag btn-group' + (unselected ? ' unselected' : '') + (mini ? ' mini' : '')">
     <button
       class="tag-name btn"
       :style="`backgroundColor: ${tag.color}`"
       :title="selectText"
       @click="onSelectTag"
     >
-      {{ tag.tagName }}
+      <span v-if="!mini">{{ tag.tagName }}</span>
     </button>
     <button
       v-if="removeTag"
@@ -79,7 +79,7 @@ export default {
 <style scoped lang="scss">
 .tag {
   > .btn {
-    padding: v-bind('mini ? "0.1rem 0.5rem" : "0.375rem .75rem"');
+    padding: v-bind('mini ? "0.375rem 1rem" : "0.375rem .75rem"');
   }
   
   &.unselected {

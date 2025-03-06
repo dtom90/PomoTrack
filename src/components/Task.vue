@@ -92,30 +92,35 @@ export default {
 @import "../styles/_variables.scss";
 
 .task {
-  padding: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
   border: none;
-  margin-bottom: 16px;
   border-radius: 8px !important;
+  color: $dark-primary !important;
 }
 
 .task.active, .task:hover {
-  color: $dark-primary;
   background-color: $dark-quaternary;
+}
+
+.task.active {
   font-weight: $font-weight-bold;
 }
 
 .task-name-and-tags-wrapper {
-  margin-left: 8px;
+  margin-left: 12px;
   flex: 1;
 }
 
 .task-name {
   flex: 1;
   text-align: left;
-  margin-bottom: 8px;
-  line-height: 1;
+  line-height: 21px;
   min-height: $checkbox-size;
   display: flex;
   align-items: center;
+  margin-bottom: 4px;
 }
 </style>

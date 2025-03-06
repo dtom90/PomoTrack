@@ -322,8 +322,12 @@ const actions = {
   async updateSetting ({ state, commit }, { key, value }) {
     await dexieDb.settings.put({ key, value })
     commit('updateSetting', { key, value })
+  },
+
+  async removeAllTagFilters ({ dispatch }) {
+    await dexieDb.settings.put({ key: 'selectedTagIds', value: [] })
+    await dispatch('updateSetting', { key: 'selectedTagIds', value: [] })
   }
-  
 }
 
 export default actions

@@ -251,10 +251,3 @@ export default {
   color: white;
 }
 </style>
-
-<style>
-.dropdown-item {
-  padding-left: 4px !important;
-  padding-right: 4px !important;
-}
-</style>
