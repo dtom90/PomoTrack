@@ -2,7 +2,7 @@
   <b-modal
     id="activityModal"
     size="lg"
-    ok-only
+    hide-footer
     scrollable
     @shown="isModalShown = true"
     @hidden="isModalShown = false"

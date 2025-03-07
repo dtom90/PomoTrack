@@ -57,11 +57,12 @@
           <b-dropdown-form @submit.prevent="updateTagSubmit(tagId)">
             <b-input-group>
               <b-form-input
-                id="tag-name-input"
+                :id="`tag-name-input-${tagId}`"
                 ref="tagNameInput"
                 v-model="newTagName"
                 title="Rename tag"
-                :style="`backgroundColor: ${newTagColor}`"
+                class="tag-name-input"
+                :style="`backgroundColor: ${newTagColor}; color: ${textColor}`"
               />
             </b-input-group>
           </b-dropdown-form>
@@ -104,6 +105,7 @@ import TagButton from '../TagButton'
 import Sketch from 'vue-color/src/components/Sketch'
 import { mapGetters, mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
+import getTextColor from '../../lib/getTextColor'
 
 export default {
   name: 'NavbarTagsDropdown',
@@ -120,7 +122,8 @@ export default {
       tagEdits: {},
       newTagName: '',
       newTagColor: '#FFFFFF',
-      isDragging: false
+      isDragging: false,
+      textColor: '#FFFFFF'
     }
   },
   
@@ -149,9 +152,34 @@ export default {
           // Initialize edit form with current values
           this.newTagName = tag.tagName
           this.newTagColor = tag.color
+          this.textColor = getTextColor(tag.color)
         }
       }
+    },
+    newTagColor: {
+      handler (newVal) {
+        this.textColor = getTextColor(newVal)
+      },
+      immediate: true
     }
+  },
+
+  mounted () {
+    // Prevent clicking within the dropdown from dragging the tag button
+    this.$el.querySelector('.dropdown-menu').addEventListener('mousedown', (event) => {
+      event.preventDefault()
+    })
+    
+    // Add event listeners to all tag name inputs
+    this.$nextTick(() => {
+      // Select all tag name inputs using a class selector
+      const tagInputs = this.$el.querySelectorAll('.tag-name-input')
+      tagInputs.forEach(input => {
+        input.addEventListener('mousedown', (event) => {
+          event.stopPropagation()
+        })
+      })
+    })
   },
   
   methods: {
@@ -233,7 +261,7 @@ export default {
   box-sizing: border-box;
 }
 
-#tag-name-input {
+.tag-name-input {
   color: white;
 }
 
