@@ -19,7 +19,7 @@
         :key="index"
       >
         <template v-if="!event.completed">
-          <td v-if="event.task">
+          <td v-if="event.task" class="align-middle">
             <span>{{ event.task }}</span>
           </td>
           

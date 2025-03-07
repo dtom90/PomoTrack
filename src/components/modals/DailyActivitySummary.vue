@@ -33,7 +33,7 @@
       <div
         v-for="task of selectedDayActivity"
         :key="task[0]"
-        class="d-flex align-items-center justify-content-between mb-3"
+        class="d-flex align-items-top justify-content-between mb-3"
       >
         <div class="completed-section">
           <Checkbox

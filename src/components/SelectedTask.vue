@@ -131,7 +131,7 @@
         <!-- Tags Section -->
         <div
           id="tags-section"
-          class="d-flex align-items-center"
+          class="d-flex align-items-top"
         >
           <label
             v-if="taskTags"
@@ -381,6 +381,7 @@ $vertical-spacing: 30px;
     
     #tags-label {
       padding-right: 15px;
+      margin-top: 10px;
       margin-bottom: 0;
     }
   }

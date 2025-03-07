@@ -54,16 +54,15 @@
     
     <br>
     
-    <!-- Log View Switch -->
-    <div
-      id="activity-log-title"
-      class="d-flex justify-content-center"
-    >
-      <span>Activity Log</span>
-    </div>
-    
     <!-- Activity Data -->
     <div>
+      <div
+        id="activity-log-title"
+        class="d-flex justify-content-center"
+      >
+        <span>Activity Log</span>
+      </div>
+
       <!-- Dropdown to add interval manually -->
       <AddIntervalDropdown
         v-if="isTaskActivity"
@@ -72,6 +71,7 @@
       
       <!-- Log -->
       <div id="task-log">
+        <br/>
         <Log
           v-for="([day, dayActivity]) in dailyActivity"
           :key="day"

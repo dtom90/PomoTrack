@@ -9,6 +9,7 @@ body {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   font-size: $font-size-base;
+  color: $dark-primary;
 }
 
 .width-100 {
@@ -106,8 +107,9 @@ h6 {
 }
 
 table {
+  color: $dark-primary;
   td {
-    border-top: none !important;
+    padding: 8px !important;
   }
 }
 

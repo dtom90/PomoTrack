@@ -57,7 +57,7 @@
     >
       <div
         id="controls-wrapper"
-        class="d-flex justify-content-around align-items-center"
+        class="d-flex justify-content-center align-items-center"
       >
         <b-button
           id="skip-btn"
@@ -428,6 +428,11 @@ $circle-thickness: 18px;
 
   #controls-wrapper {
     width: $dial-size;
+
+    > * {
+      margin-left: 20px !important;
+      margin-right: 20px !important;
+    }
   }
   
   #play-pause-btn {
