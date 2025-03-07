@@ -21,32 +21,26 @@
         class="position-absolute"
         style="right: 0"
       >
-        <div class="dropdown">
-          <button
-            class="btn btn-light"
-            data-toggle="dropdown"
-          >
-            Set Target
-          </button>
-          <div class="dropdown-menu">
-            <label>{{ chartType }} Target:</label>
-            <div
-              class="input-group"
-            >
-              <input
+        <b-dropdown
+          no-caret
+          right
+          text="Set Target"
+          variant="light"
+        >
+          <b-dropdown-form>
+            <label>{{ chartType }} Target</label>
+            <b-input-group>
+              <b-form-input
                 v-model="target"
                 type="number"
                 min="0"
-                class="form-control"
-              >
-              <div class="input-group-append">
-                <span
-                  class="input-group-text"
-                >hours</span>
-              </div>
-            </div>
-          </div>
-        </div>
+              />
+              <b-input-group-append>
+                <b-input-group-text>hours</b-input-group-text>
+              </b-input-group-append>
+            </b-input-group>
+          </b-dropdown-form>
+        </b-dropdown>
       </div>
     </div>
     

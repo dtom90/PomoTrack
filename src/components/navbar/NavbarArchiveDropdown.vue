@@ -55,7 +55,16 @@
         v-if="archivedTasks.length === 0"
         disabled
       >
-        
+        <div class="d-flex flex-column align-items-center justify-content-center">
+          <div class="empty-archive-state d-flex flex-column align-items-center justify-content-center">
+            <img
+              src="/icons/empty-white-box.svg"
+              alt="Empty Archive"
+              class="mb-2"
+            >
+            <span class="text-muted">Archived Tasks will appear here</span>
+          </div>
+        </div>
       </b-dropdown-item>
     </div>
   </b-nav-item-dropdown>
@@ -135,6 +144,11 @@ export default {
 
 .task-submenu.active {
   display: block;
+}
+
+.empty-archive-state {
+  height: 220px;
+  width: 180px;
 }
 </style>
 

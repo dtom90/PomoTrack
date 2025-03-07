@@ -2,7 +2,7 @@
   <div :class="'tag btn-group' + (unselected ? ' unselected' : '') + (mini ? ' mini' : '')">
     <button
       class="tag-name btn"
-      :style="`backgroundColor: ${tag.color}`"
+      :style="`backgroundColor: ${tag.color}; color: ${textColor}`"
       :title="selectText"
       @click="onSelectTag"
     >
@@ -14,7 +14,7 @@
     <button
       v-if="removeTag"
       class="tag-close btn"
-      :style="`backgroundColor: ${tag.color}`"
+      :style="`backgroundColor: ${tag.color}; color: ${textColor}`"
       :title="removeText"
       aria-label="Close"
       @click="removeTag({ tagId })"
@@ -26,6 +26,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import getTextColor from '../lib/getTextColor'
 
 export default {
   name: 'TagButton',
@@ -62,6 +63,21 @@ export default {
     unselected: {
       type: Boolean,
       default: false
+    }
+  },
+
+  data () {
+    return {
+      textColor: '#FFFFFF'
+    }
+  },
+  
+  watch: {
+    'tag.color': {
+      handler (newVal) {
+        this.textColor = getTextColor(newVal)
+      },
+      immediate: true
     }
   },
   

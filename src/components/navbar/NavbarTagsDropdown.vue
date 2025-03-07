@@ -50,7 +50,7 @@
           
         <!-- Submenu -->
         <div
-          class="tag-submenu"
+          class="tag-submenu submenu"
           :class="{ 'active': activeSubmenu === tagId }"
         >
           <!-- Tag Edit Form -->
@@ -247,7 +247,6 @@ export default {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
   z-index: 1000;
 }

@@ -64,7 +64,7 @@
         
         <b-btn
           variant="primary"
-          style="width: 258px"
+          class="w-100"
           :disabled="durationMinutes <= 0"
           @click="addIntervalButtonClicked"
         >
@@ -208,7 +208,7 @@ export default {
 <style>
   #add-interval-dropdown {
     .dropdown-menu {
-      width: 274px !important;
+      width: 260px !important;
     }
   }
 </style>

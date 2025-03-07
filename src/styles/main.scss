@@ -23,10 +23,6 @@ body {
   margin-top: 20px;
 }
 
-.dropdown-menu {
-  padding: 8px;
-}
-
 h5 {
   font-size: $font-size-base;
   font-weight: $font-weight-extra-bold;
@@ -151,6 +147,14 @@ table {
   }
 
   .b-dropdown-form {
-    padding: 4px;
+    padding: 8px;
+    label {
+      font-size: $font-size-base;
+      font-weight: $font-weight-normal;
+    }
   }
+}
+
+.submenu {
+  border-radius: 8px;
 }
