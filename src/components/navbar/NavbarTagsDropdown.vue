@@ -55,9 +55,8 @@
           :class="{ 'active': activeSubmenu === tagId }"
         >
           <TagEditMenu
+            :ref="`tagEditMenu-${tagId}`"
             :tag-id="tagId"
-            :initial-tag-name="tags[tagId].tagName"
-            :initial-tag-color="tags[tagId].color"
             @update-tag="closeSubmenu"
           />
         </div>
@@ -71,7 +70,6 @@ import TagButton from '../TagButton'
 import TagEditMenu from '../TagEditMenu'
 import { mapGetters, mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
-import getTextColor from '../../lib/getTextColor'
 
 export default {
   name: 'NavbarTagsDropdown',
@@ -112,18 +110,9 @@ export default {
       if (tagId) {
         const tag = this.tags[tagId]
         if (tag) {
-          // Initialize edit form with current values
-          this.newTagName = tag.tagName
-          this.newTagColor = tag.color
-          this.textColor = getTextColor(tag.color)
+          this.$refs[`tagEditMenu-${tagId}`][0].refreshTagNameAndColor()
         }
       }
-    },
-    newTagColor: {
-      handler (newVal) {
-        this.textColor = getTextColor(newVal)
-      },
-      immediate: true
     }
   },
 
@@ -196,15 +185,6 @@ export default {
 
 .tag-submenu.active {
   display: block;
-}
-
-.color-picker {
-  width: 100% !important;
-  box-sizing: border-box;
-}
-
-.tag-name-input {
-  color: white;
 }
 
 .submenu-indicator-wrapper {

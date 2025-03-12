@@ -47,7 +47,7 @@
 <script>
 import Sketch from 'vue-color/src/components/Sketch'
 import getTextColor from '../lib/getTextColor'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'TagEditMenu',
@@ -60,41 +60,27 @@ export default {
     tagId: {
       type: String,
       required: true
-    },
-    initialTagName: {
-      type: String,
-      required: true
-    },
-    initialTagColor: {
-      type: String,
-      required: true
     }
   },
   
   data () {
     return {
-      tagName: this.initialTagName,
-      tagColor: this.initialTagColor,
+      tagName: '',
+      tagColor: '#000000',
       textColor: '#FFFFFF'
     }
   },
-
-  mounted () {
-    // override the above event listener for the tag name input
-    this.$refs.tagNameInput.$el.addEventListener('mousedown', (event) => {
-      event.stopPropagation()
-    })
-    // NOTE: the input element, due to being withing draggable, cannot be highlighted
-    // orignally thought it was just in firefox for some reason (chrome works) but now it seems to be in chrome too
+  
+  computed: {
+    ...mapState([
+      'tags'
+    ]),
+    tag: function () {
+      return this.tags[this.tagId]
+    }
   },
   
   watch: {
-    initialTagName (newVal) {
-      this.tagName = newVal
-    },
-    initialTagColor (newVal) {
-      this.tagColor = newVal
-    },
     tagColor: {
       handler (newVal) {
         this.textColor = getTextColor(newVal)
@@ -103,11 +89,28 @@ export default {
     }
   },
   
+  mounted () {
+    this.refreshTagNameAndColor()
+
+    // override the above event listener for the tag name input
+    this.$refs.tagNameInput.$el.addEventListener('mousedown', (event) => {
+      event.stopPropagation()
+    })
+    // NOTE: the input element, due to being withing draggable, cannot be highlighted
+    // orignally thought it was just in firefox for some reason (chrome works) but now it seems to be in chrome too
+  },
+  
   methods: {
     ...mapActions([
       'updateTag',
       'deleteTag'
     ]),
+
+    refreshTagNameAndColor () {
+      this.tagName = this.tag.tagName
+      this.tagColor = this.tag.color
+      this.textColor = getTextColor(this.tagColor)
+    },
     
     async updateTagAction () {
       await this.updateTag({
