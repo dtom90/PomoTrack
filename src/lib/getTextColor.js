@@ -9,10 +9,10 @@ function getTextColor (bgColor) {
   const hue = hsl.h // Get the hue value (0-360 degrees)
   
   // RULE 1: SPECIFIC HUE RANGE RULE
-  // If hue is between 35 and 230
+  // If hue is between 35 and 200
   // AND lightness is between 49% and 75%
   // THEN: Use dark text
-  if (hue > 35 && hue < 230 &&
+  if (hue > 35 && hue < 200 &&
     lightness >= 49 && lightness <= 75) {
     return tinycolor({
       h: hsl.h,
