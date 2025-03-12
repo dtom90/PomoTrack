@@ -16,10 +16,10 @@ describe('delete tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
   })
 
   it('removes the first tag of 2 tags, second remains', () => {
@@ -28,22 +28,22 @@ describe('delete tags', () => {
       .should('have.focus').type(secondTagName + '{enter}')
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').first().click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').first().click()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
-    cy.get('#taskTags').contains(secondTagName).should('exist')
+    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
+    cy.get('#task-tag-list').contains(secondTagName).should('exist')
   })
 
   it('should keep tag removed on page reload', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.reload()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
   })
   
   it('deletes tag from all tasks', () => {
@@ -58,6 +58,6 @@ describe('delete tags', () => {
       // Assert
       cy.get('.tag-button').should('not.exist')
     })
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
   })
 })

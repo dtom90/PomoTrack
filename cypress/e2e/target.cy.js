@@ -50,7 +50,7 @@ describe('target', () => {
     cy.get('button > svg.fa-plus').click()
     cy.get('input[placeholder="add new tag"]')
       .should('have.focus').type('My Tag Name{enter}')
-    cy.get('#taskTags .tag.btn-group button').contains('My Tag Name').click()
+    cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {
       cy.get('label').contains('Daily Target:').should('be.visible')
@@ -61,7 +61,7 @@ describe('target', () => {
     cy.reload()
 
     // Assert
-    cy.get('#taskTags .tag.btn-group button').contains('My Tag Name').click()
+    cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {
       cy.get('input').should('have.value', '1')

@@ -1,5 +1,6 @@
 <template>
   <b-nav-item-dropdown
+    id="navbarTagsDropdown"
     ref="dropdown"
     text="Tags"
     no-caret

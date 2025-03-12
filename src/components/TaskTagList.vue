@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="task-tag-list">
     <TagButton
       v-for="tagId in taskTags"
       :key="tagId"

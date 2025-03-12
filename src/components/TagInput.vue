@@ -1,5 +1,6 @@
 <template>
   <b-dropdown
+    id="tagInputDropdown"
     ref="dropdown"
     :disabled="false"
     toggle-class="btn-light"
@@ -75,14 +76,14 @@ export default {
       this.filteredTags = this.availableTags(this.taskId, this.inputTagName)
     },
     
-    addTagById (tagId) {
-      this.addTaskTagById({ taskId: this.taskId, tagId })
+    async addTagById (tagId) {
+      await this.addTaskTagById({ taskId: this.taskId, tagId })
       this.resetInput()
     },
     
-    addTagByName () {
+    async addTagByName () {
       if (this.inputTagName && this.inputTagName.length) {
-        this.addTaskTagByName({ taskId: this.taskId, tagName: this.inputTagName })
+        await this.addTaskTagByName({ taskId: this.taskId, tagName: this.inputTagName })
         this.resetInput()
       }
     },
@@ -91,6 +92,7 @@ export default {
       this.inputTagName = ''
       this.tagInputChange()
       this.$nextTick(() => {
+        this.$refs.dropdown.show()
         setTimeout(() => {
           if (this.$refs.addTagInput) {
             this.$refs.addTagInput.focus()

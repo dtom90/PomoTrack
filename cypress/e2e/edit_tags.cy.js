@@ -27,7 +27,7 @@ describe('edit tags', () => {
 
   it('should show tag in Tags menu even if removed from task', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
@@ -40,7 +40,7 @@ describe('edit tags', () => {
 
   it('should show tag in Tags menu even if removed from task after refresh', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.reload()
@@ -74,9 +74,9 @@ describe('edit tags', () => {
 
     // Act
     cy.contains('.modal-dialog', 'Tags').within(() => {
-      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.move-btn')
-      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.move-btn')
-        .drag('.move-btn', { destination: '.tag' })
+      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.drag-handle')
+      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.drag-handle')
+        .drag('.drag-handle', { destination: '.tag' })
     })
     
     // Assert
@@ -92,9 +92,9 @@ describe('edit tags', () => {
 
     // Act
     cy.contains('.modal-dialog', 'Tags').within(() => {
-      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.move-btn')
-      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.move-btn')
-        .drag('.move-btn', { destination: '.tag' })
+      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.drag-handle')
+      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.drag-handle')
+        .drag('.drag-handle', { destination: '.tag' })
       cy.get('button').contains('OK').click()
     })
     
@@ -112,9 +112,9 @@ describe('edit tags', () => {
     
     // Act
     cy.contains('.modal-dialog', 'Tags').within(() => {
-      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.move-btn')
-      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.move-btn')
-        .drag('.move-btn', { destination: '.tag' })
+      // const firstElement = cy.get('.tag-button').contains(firstTagName).parents('.tag').find('.drag-handle')
+      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.drag-handle')
+        .drag('.drag-handle', { destination: '.tag' })
       
       // Assert
       cy.get('.tag').should('have.length', 3)
@@ -134,8 +134,8 @@ describe('edit tags', () => {
     
     // Act
     cy.contains('.modal-dialog', 'Tags').within(() => {
-      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.move-btn')
-        .drag('.move-btn', { destination: '.tag' })
+      cy.get('.tag-button').contains(secondTagName).parents('.tag').find('.drag-handle')
+        .drag('.drag-handle', { destination: '.tag' })
       
       // Assert
       cy.get('.tag').should('have.length', 3)
