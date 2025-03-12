@@ -91,7 +91,11 @@ export default {
       this.inputTagName = ''
       this.tagInputChange()
       this.$nextTick(() => {
-        this.$refs.addTagInput.focus()
+        setTimeout(() => {
+          if (this.$refs.addTagInput) {
+            this.$refs.addTagInput.focus()
+          }
+        }, 50)
       })
     }
   }

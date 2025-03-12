@@ -50,7 +50,7 @@ describe('reorder tasks', () => {
 
     // Assert
     cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
+    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
   })
 
   it('keeps incomplete archived task even after dragging', () => {
@@ -67,7 +67,7 @@ describe('reorder tasks', () => {
 
     // Assert
     cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
+    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
   })
   
   it('inserts new task at bottom of list by default', () => {
