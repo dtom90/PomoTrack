@@ -1,3 +1,5 @@
+/* eslint-disable brace-style */
+
 import tinycolor from 'tinycolor2'
 
 function getTextColor (bgColor) {

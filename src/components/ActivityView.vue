@@ -71,7 +71,7 @@
       
       <!-- Log -->
       <div id="task-log">
-        <br/>
+        <br>
         <Log
           v-for="([day, dayActivity]) in dailyActivity"
           :key="day"

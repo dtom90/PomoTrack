@@ -48,53 +48,18 @@
             </div>
           </div>
         </b-dropdown-item>
-          
+        
         <!-- Submenu -->
         <div
           class="tag-submenu submenu"
           :class="{ 'active': activeSubmenu === tagId }"
         >
-          <!-- Tag Edit Form -->
-          <b-dropdown-form @submit.prevent="updateTagSubmit(tagId)">
-            <b-input-group>
-              <b-form-input
-                :id="`tag-name-input-${tagId}`"
-                ref="tagNameInput"
-                v-model="newTagName"
-                title="Rename tag"
-                class="tag-name-input"
-                :style="`backgroundColor: ${newTagColor}; color: ${textColor}`"
-              />
-            </b-input-group>
-          </b-dropdown-form>
-            
-          <div class="dropdown-divider" />
-            
-          <sketch-picker
-            v-model="newTagColor"
-            class="color-picker"
-            @input="newTagColor = $event.hex"
+          <TagEditMenu
+            :tag-id="tagId"
+            :initial-tag-name="tags[tagId].tagName"
+            :initial-tag-color="tags[tagId].color"
+            @update-tag="closeSubmenu"
           />
-            
-          <div class="dropdown-divider" />
-            
-          <b-button
-            variant="primary"
-            class="w-100 mb-2"
-            @click="updateTagSubmit(tagId)"
-          >
-            Confirm
-          </b-button>
-
-          <b-button
-            :id="`delete-tag-btn-${tagId}`"
-            title="Delete tag"
-            variant="danger"
-            class="w-100"
-            @click="deleteTag({ tagId })"
-          >
-            Delete
-          </b-button>
         </div>
       </div>
     </draggable>
@@ -103,7 +68,7 @@
 
 <script>
 import TagButton from '../TagButton'
-import Sketch from 'vue-color/src/components/Sketch'
+import TagEditMenu from '../TagEditMenu'
 import { mapGetters, mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
 import getTextColor from '../../lib/getTextColor'
@@ -113,7 +78,7 @@ export default {
   
   components: {
     TagButton,
-    'sketch-picker': Sketch,
+    TagEditMenu,
     draggable
   },
   
@@ -121,10 +86,7 @@ export default {
     return {
       activeSubmenu: null,
       tagEdits: {},
-      newTagName: '',
-      newTagColor: '#FFFFFF',
-      isDragging: false,
-      textColor: '#FFFFFF'
+      isDragging: false
     }
   },
   
@@ -170,17 +132,6 @@ export default {
     this.$el.querySelector('.dropdown-menu').addEventListener('mousedown', (event) => {
       event.preventDefault()
     })
-    
-    // Add event listeners to all tag name inputs
-    this.$nextTick(() => {
-      // Select all tag name inputs using a class selector
-      const tagInputs = this.$el.querySelectorAll('.tag-name-input')
-      tagInputs.forEach(input => {
-        input.addEventListener('mousedown', (event) => {
-          event.stopPropagation()
-        })
-      })
-    })
   },
   
   methods: {
@@ -209,15 +160,6 @@ export default {
     
     manageTags () {
       this.$emit('manage-tags')
-    },
-    
-    async updateTagSubmit (tagId) {
-      await this.updateTag({
-        tagId: tagId,
-        tagName: this.newTagName,
-        color: this.newTagColor
-      })
-      this.closeSubmenu()
     },
     
     onDragEnd () {
