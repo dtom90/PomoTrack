@@ -25,7 +25,6 @@
       >
         <b-dropdown-item
           class="tag-dropdown-item"
-          @click.native.stop="toggleSubmenu(tagId)"
         >
           <div class="d-flex justify-content-between align-items-center w-100">
             <img
@@ -33,14 +32,14 @@
               alt="Add interval"
               class="drag-handle"
             >
-            <div class="flex-1">
+            <div class="flex-1" @click.stop="toggleSubmenu(tagId)">
               <TagButton
                 :tag="tags[tagId]"
                 :tag-id="tagId"
                 class="ml-3"
               />
             </div>
-            <div class="submenu-indicator-wrapper">
+            <div class="submenu-indicator-wrapper" @click.stop="toggleSubmenu(tagId)">
               <font-awesome-icon
                 icon="chevron-right"
                 class="submenu-indicator"
@@ -117,9 +116,11 @@ export default {
   },
 
   mounted () {
-    // Prevent clicking within the dropdown from dragging the tag button
-    this.$el.querySelector('.dropdown-menu').addEventListener('mousedown', (event) => {
-      event.preventDefault()
+    // Prevent clicking within the submenus from dragging the tag buttons
+    this.$el.querySelectorAll('.tag-submenu').forEach(submenu => {
+      submenu.addEventListener('mousedown', (event) => {
+        event.preventDefault()
+      })
     })
   },
   

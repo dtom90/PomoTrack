@@ -31,8 +31,8 @@ describe('delete tags', () => {
     cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').first().click()
 
     // Assert
-    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
-    cy.get('#task-tag-list').contains(secondTagName).should('exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(secondTagName).should('exist')
   })
 
   it('should keep tag removed on page reload', () => {
@@ -43,21 +43,21 @@ describe('delete tags', () => {
     cy.reload()
 
     // Assert
-    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
   })
   
   it('deletes tag from all tasks', () => {
     // Arrange
     cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
-    cy.contains('.modal-dialog', 'Tags').within(() => {
-      cy.get('.tag-button').contains(firstTagName).click()
+    cy.contains('#navbarTagsDropdown', 'Tags').within(() => {
+      cy.get('.tag').contains(firstTagName).click()
       
       // Act
-      cy.get('button > svg.fa-trash-can').click()
+      cy.contains('button', 'Delete').click()
       
       // Assert
       cy.get('.tag-button').should('not.exist')
     })
-    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
   })
 })
