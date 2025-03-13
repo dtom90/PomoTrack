@@ -1,6 +1,6 @@
 describe('create tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -16,7 +16,6 @@ describe('create tasks', () => {
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 1)
     cy.get('#selected-task-section').contains('My First Task')
     cy.get('#selected-task-section').contains('Tags:')
-    cy.get('#selected-task-section').contains('Notes:')
     cy.get('#selected-task-section').contains('25:00')
   })
 
@@ -47,7 +46,7 @@ describe('create tasks', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -58,7 +57,7 @@ describe('create tasks', () => {
 
   it('completes both tasks', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -69,22 +68,5 @@ describe('create tasks', () => {
     // Assert
     cy.get('#completed-task-list .task').first().contains('My Second Task')
     cy.get('#completed-task-list .task').last().contains('My First Task')
-  })
-
-  it('swaps order of completed tasks', () => {
-    // Arrange
-    cy.get('input[placeholder="enter new task"]')
-      .click()
-      .type('My Second Task{enter}')
-    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
-    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
-
-    // Act
-    cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
-    cy.get('select').select('Oldest')
-
-    // Assert
-    cy.get('#completed-task-list .task').first().contains('My First Task')
-    cy.get('#completed-task-list .task').last().contains('My Second Task')
   })
 })

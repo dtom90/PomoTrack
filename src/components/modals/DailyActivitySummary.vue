@@ -1,10 +1,11 @@
 <template>
   <div>
     <div class="d-flex">
-      <div class="flex-1 text-right">
+      <div class="flex-1 text-right align-self-center">
         <b-button
           v-show="selectedDay !== null"
           variant="light"
+          class="rounded-circle"
           @click="daysBack++"
         >
           <font-awesome-icon icon="chevron-left" />
@@ -14,32 +15,40 @@
         <h4>{{ selectedDayRelative }}</h4>
         <h6>{{ selectedDayDisplay }}</h6>
       </div>
-      <div class="flex-1 text-left">
+      <div class="flex-1 text-left align-self-center">
         <b-button
-          v-show="daysBack > 0"
+          :disabled="daysBack === 0"
           variant="light"
+          class="rounded-circle"
           @click="daysBack--"
         >
           <font-awesome-icon icon="chevron-right" />
         </b-button>
       </div>
     </div>
-    <br>
-    <table class="table">
-      <tr
+    <h5 class="my-3">
+      Tasks Worked On
+    </h5>
+    <div class="activity-summary">
+      <div
         v-for="task of selectedDayActivity"
         :key="task[0]"
+        class="d-flex align-items-top justify-content-between mb-3"
       >
-        <td class="d-flex align-items-center">
+        <div class="completed-section">
           <Checkbox
             :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
             :disabled="true"
           />
+        </div>
+        <div class="name-section">
           <span>{{ task[0] }}</span>
-        </td>
-        <td>{{ displayDuration(task[1]) }}</td>
-      </tr>
-    </table>
+        </div>
+        <div class="duration-section">
+          {{ displayDuration(task[1]) }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -108,6 +117,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../../styles/variables";
 
+.activity-summary {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.completed-section {
+  width: 115px;
+}
+
+.name-section {
+  width: 224px;
+}
+
+.duration-section {
+  width: 161px;
+  flex-wrap: nowrap;
+}
 </style>

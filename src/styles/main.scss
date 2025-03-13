@@ -1,14 +1,75 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-vue/src/index.scss";
+@import "variables";
+@import "fonts";
+@import "tags";
 
-.tag-close {
-  @include font-size($close-font-size);
-  font-weight: $close-font-weight;
-  line-height: 1;
+// Apply Poppins Regular to all text in the app
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: $font-size-base;
+  color: $dark-primary;
 }
 
-.dropdown-menu {
-  padding: 8px;
+.width-100 {
+  width: 100%;
+}
+
+.top-margin {
+  margin-top: 20px;
+}
+
+.bottom-margin {
+  margin-top: 20px;
+}
+
+h5 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-extra-bold;
+}
+
+h6 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+}
+
+.oval-border {
+  border-radius: 9999px !important;
+}
+
+.navbar {
+  background-color: $white !important;
+}
+
+.navbar-nav li.nav-item:hover,li.nav-item.show {
+  background-color: $dark-quaternary;
+  border-radius: 8px;
+}
+
+// Custom border-radius for all light buttons
+.btn-light {
+  border-radius: 8px;
+  border-color: transparent;
+  background-color: $white;
+}
+
+.btn-light:hover:not(:disabled) {
+  border-color: transparent;
+  background-color: $dark-quaternary;
+}
+
+.btn-light.active {
+  background-color: $white !important;
+}
+
+.btn-danger, .text-danger {
+  color: $error-red;
+}
+
+.btn-danger {
+  background-color: $white;
+  border-color: $error-red;
 }
 
 //noinspection CssInvalidPropertyValue
@@ -33,6 +94,69 @@
   flex: 1;
 }
 
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.flex-4 {
+  flex: 4;
+}
+
 table {
-  border-bottom: rgb(222, 226, 230) 1px solid;
+  color: $dark-primary;
+  td {
+    padding: 8px !important;
+  }
+}
+
+// Modal height override
+.modal-content {
+  height: 90vh;
+  max-height: 90vh;
+}
+
+.dropdown-menu {
+  border-radius: 8px;
+  width: 240px;
+  padding: 4px;
+
+  .dropdown-header {
+    padding: 8px;
+    color: $dark-primary;
+  }
+
+  .dropdown-item {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding-left: 16px !important;
+    padding-right: 12px !important;
+    color: $dark-secondary;
+  }
+
+  .dropdown-item:hover {
+    background-color: $dark-quaternary;
+    border-color: $dark-quaternary;
+  }
+
+  li.selected {
+    a {
+      background-color: #007aff26;
+    }
+  }
+
+  .b-dropdown-form {
+    padding: 8px;
+    label {
+      font-size: $font-size-base;
+      font-weight: $font-weight-normal;
+    }
+  }
+}
+
+.submenu {
+  border-radius: 8px;
 }

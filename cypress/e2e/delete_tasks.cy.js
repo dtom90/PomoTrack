@@ -1,6 +1,6 @@
 describe('delete tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -57,7 +57,7 @@ describe('delete tasks', () => {
   //     return true
   //   })
   //   cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()
-  //   cy.get('input[placeholder="enter new task"]')
+  //   cy.get('input[placeholder="Enter new task.."]')
   //     .click()
   //     .type('My Second Task{enter}')
   //   cy.get('#selected-task-container input[type="checkbox"][title="Mark task complete"]').click()

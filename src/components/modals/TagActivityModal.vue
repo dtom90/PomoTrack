@@ -2,11 +2,13 @@
   <b-modal
     id="activityModal"
     size="lg"
-    ok-only
+    hide-footer
+    scrollable
     @shown="isModalShown = true"
     @hidden="isModalShown = false"
   >
     <template v-slot:modal-title>
+      <span class="title-spacer" />
       <span id="activity-for">Activity for</span>
       <TagSettingsButton :tag-id="tempState.modalTagId" />
     </template>
@@ -59,5 +61,9 @@ export default {
 #activity-for {
   margin-top: 5px;
   margin-right: 5px;
+}
+
+.title-spacer {
+  width: 32px;
 }
 </style>

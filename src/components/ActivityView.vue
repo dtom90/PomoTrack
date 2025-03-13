@@ -11,40 +11,36 @@
           :options="chartTypeOptions"
           buttons
           button-variant="light"
+          class="chart-type-buttons"
           @change="onChartTypeChange"
         />
       </b-form-group>
+      
       <div
         v-if="!isTaskActivity"
         class="position-absolute"
         style="right: 0"
       >
-        <div class="dropdown">
-          <button
-            class="btn btn-light"
-            data-toggle="dropdown"
-          >
-            Set Target
-          </button>
-          <div class="dropdown-menu">
-            <label>{{ chartType }} Target:</label>
-            <div
-              class="input-group"
-            >
-              <input
+        <b-dropdown
+          no-caret
+          right
+          text="Set Target"
+          variant="light"
+        >
+          <b-dropdown-form>
+            <label>{{ chartType }} Target</label>
+            <b-input-group>
+              <b-form-input
                 v-model="target"
                 type="number"
                 min="0"
-                class="form-control"
-              >
-              <div class="input-group-append">
-                <span
-                  class="input-group-text"
-                >hours</span>
-              </div>
-            </div>
-          </div>
-        </div>
+              />
+              <b-input-group-append>
+                <b-input-group-text>hours</b-input-group-text>
+              </b-input-group-append>
+            </b-input-group>
+          </b-dropdown-form>
+        </b-dropdown>
       </div>
     </div>
     
@@ -58,33 +54,24 @@
     
     <br>
     
-    <!-- Log View Switch -->
-    <div
-      id="viewType"
-      class="d-flex justify-content-center"
-    >
-      <button
-        id="viewLogSwitch"
-        :class="'btn btn-light nav-link' + (logVisible ? ' active' : '')"
-        :title="(logVisible ? 'Hide' : 'Show') + ' activity log'"
-        @click="toggleLog"
+    <!-- Activity Data -->
+    <div>
+      <div
+        id="activity-log-title"
+        class="d-flex justify-content-center"
       >
         <span>Activity Log</span>
-      </button>
-    </div>
-    
-    <!-- Activity Data -->
-    <div
-      v-if="logVisible"
-      class="border"
-    >
+      </div>
+
       <!-- Dropdown to add interval manually -->
       <AddIntervalDropdown
+        v-if="isTaskActivity"
         :task-id="taskId"
       />
       
       <!-- Log -->
       <div id="task-log">
+        <br>
         <Log
           v-for="([day, dayActivity]) in dailyActivity"
           :key="day"
@@ -101,7 +88,7 @@
 <script>
 import Log from './Log'
 import ActivityChart from './ActivityChart'
-import AddIntervalDropdown from './dropdowns/AddIntervalDropdown'
+import AddIntervalDropdown from './AddIntervalDropdown.vue'
 import { mapState, mapActions } from 'vuex'
 import time from '../lib/time'
 
@@ -375,7 +362,8 @@ function monthlyChartData (that) {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/variables.scss';
 
 .view-select {
   margin-bottom: 20px;
@@ -385,13 +373,27 @@ function monthlyChartData (that) {
   padding: 20px;
 }
 
-#viewLogSwitch {
-  font-size: 1.25rem;
-  font-weight: 500;
+#activity-log-title {
+  font-size: $font-size-large;
+  font-weight: $font-weight-bold;
+  margin-bottom : 20px;
 }
 
 #task-log {
   margin-top: -38px;
 }
 
+</style>
+
+<style lang="scss">
+@import '../styles/variables.scss';
+
+.chart-type-buttons > .btn-light {
+  background-color: $dark-quaternary !important;
+}
+
+.chart-type-buttons > .btn-light.active {
+  background-color: white !important;
+  border-color: $dark-tertiary !important;
+}
 </style>

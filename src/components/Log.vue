@@ -19,7 +19,10 @@
         :key="index"
       >
         <template v-if="!event.completed">
-          <td v-if="event.task">
+          <td
+            v-if="event.task"
+            class="align-middle"
+          >
             <span>{{ event.task }}</span>
           </td>
           
@@ -127,7 +130,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../styles/variables";
 
 .log {
   margin-top: 32px;
@@ -143,5 +147,9 @@ export default {
 .btn-container {
   padding: 0;
   vertical-align: middle;
+}
+
+td {
+  font-size: $font-size-small;
 }
 </style>

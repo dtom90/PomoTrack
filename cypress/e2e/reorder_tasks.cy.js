@@ -1,9 +1,9 @@
 describe('reorder tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
   })
@@ -35,7 +35,7 @@ describe('reorder tasks', () => {
 
   it('keeps completed archived task even after dragging', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Archived Task{enter}')
     cy.get('#selected-task-container').within(() => {
@@ -50,12 +50,12 @@ describe('reorder tasks', () => {
 
     // Assert
     cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
+    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
   })
 
   it('keeps incomplete archived task even after dragging', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Archived Task{enter}')
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
@@ -67,14 +67,14 @@ describe('reorder tasks', () => {
 
     // Assert
     cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archiveModal').contains('My Archived Task').should('be.visible')
+    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
   })
   
   it('inserts new task at bottom of list by default', () => {
     // Arrange
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
 

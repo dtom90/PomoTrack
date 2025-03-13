@@ -1,6 +1,6 @@
 describe('target', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -12,7 +12,7 @@ describe('target', () => {
 
     // Act
     cy.get('#allActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
@@ -30,7 +30,7 @@ describe('target', () => {
     cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
@@ -50,10 +50,10 @@ describe('target', () => {
     cy.get('button > svg.fa-plus').click()
     cy.get('input[placeholder="add new tag"]')
       .should('have.focus').type('My Tag Name{enter}')
-    cy.get('#taskTags .tag.btn-group button').contains('My Tag Name').click()
+    cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
@@ -61,7 +61,7 @@ describe('target', () => {
     cy.reload()
 
     // Assert
-    cy.get('#taskTags .tag.btn-group button').contains('My Tag Name').click()
+    cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {
       cy.get('input').should('have.value', '1')

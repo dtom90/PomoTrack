@@ -3,7 +3,7 @@ describe('create tags', () => {
   const secondTagName = 'my second tag'
 
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -26,7 +26,7 @@ describe('create tags', () => {
 
   it('adds a tag to the first task after reload', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.reload()
@@ -47,15 +47,15 @@ describe('create tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
-    cy.get('#tagDropdownMenu > button').contains(firstTagName).click()
+    cy.get('#tagInputDropdown .dropdown-menu button').contains(firstTagName).click()
 
     // Assert
     cy.get('#selected-task-container').within(() => {
-      cy.get('#tagDropdownMenu > button').should('not.exist')
+      cy.get('#tagInputDropdown .dropdown-menu button').should('not.exist')
       cy.get('div.tag > button.tag-name').contains(firstTagName).should('be.visible')
     })
   })
@@ -75,7 +75,7 @@ describe('create tags', () => {
     })
   })
 
-  it('clicks the Tags button to show the Tags Modal', () => {
+  it('clicks the Tags button to show the Tags dropdown', () => {
     // Arrange
     cy.get('input[placeholder="add new tag"]')
       .should('have.focus').type(secondTagName + '{enter}')
@@ -84,8 +84,8 @@ describe('create tags', () => {
     cy.get('nav.navbar').get('a.nav-link').contains('Tags').click()
 
     // Assert
-    cy.get('div.modal-dialog').contains('Tags')
-    cy.get('div.modal-dialog').within(() => {
+    cy.get('#navbarTagsDropdown').contains('Tags')
+    cy.get('#navbarTagsDropdown').within(() => {
       cy.get('div.tag').eq(0).contains(firstTagName)
       cy.get('div.tag').eq(1).contains(secondTagName)
     })
@@ -101,15 +101,15 @@ describe('create tags', () => {
     cy.get('#activityModal').contains(firstTagName).should('be.visible')
   })
 
-  it('drags one task above the other in the Tags Modal', () => {
+  it('drags one task above the other in the Tags Menu', () => {
     // Arrange
     cy.get('input[placeholder="add new tag"]').should('have.focus').type(secondTagName + '{enter}')
     cy.get('nav.navbar').get('a.nav-link').contains('Tags').click()
 
     // Act
-    cy.get('div.modal-dialog').within(() => {
+    cy.get('#navbarTagsDropdown').within(() => {
       cy.get('div.tag').contains(secondTagName)
-        .closest('div.tag').drag('.move-btn')
+        .closest('div.tag').drag('.drag-handle')
     })
 
     // Assert
@@ -119,13 +119,15 @@ describe('create tags', () => {
 
   it('creates a second task then filters on tag', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.get('.dropdown-menu').contains(firstTagName).click()
+    cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
+      cy.get('button.tag-name').contains(firstTagName).click({ force: true })
+    })
 
     // Assert
     cy.get('#incomplete-task-list').contains('My First Task')
@@ -135,10 +137,12 @@ describe('create tags', () => {
   it('adds tag to new task when filtering on tag', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.get('.dropdown-menu').contains(firstTagName).click()
+    cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
+      cy.get('button.tag-name').contains(firstTagName).click({ force: true })
+    })
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -152,15 +156,17 @@ describe('create tags', () => {
   it('removes then adds tag again, should have only one tag after reload', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.get('.dropdown-menu').contains(firstTagName).click()
-    cy.get('input[placeholder="enter new task"]')
+    cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
+      cy.get('button.tag-name').contains(firstTagName).click({ force: true })
+    })
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
     cy.get('button > svg.fa-plus').click()
-    cy.get('#tagDropdownMenu > button').contains(firstTagName).click()
+    cy.get('#tagInputDropdown .dropdown-menu button').contains(firstTagName).click({ force: true })
     cy.reload()
 
     // Assert
@@ -173,11 +179,13 @@ describe('create tags', () => {
   it('adds then removes tag from filter, new task should not have tag', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.get('.dropdown-menu').contains(firstTagName).click()
-    cy.get('.dropdown-menu div.tag.btn-group button > svg.fa-xmark').click()
+    cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
+      cy.get('button.tag-name').contains(firstTagName).click({ force: true })
+      cy.get('button.tag-name').contains(firstTagName).click({ force: true })
+    })
 
     // Act
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 

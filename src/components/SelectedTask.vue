@@ -1,34 +1,27 @@
 <template>
   <div
-    v-show="selectedTask"
+    v-show="selectedTask && !selectedTask.archived"
     id="selected-task-container"
-    class="border"
   >
     <template v-if="selectedTask">
       <!--  Title Section  -->
       <div
         id="title-section"
-        class="d-flex justify-content-between"
+        class="d-flex justify-content-between align-items-lg-center"
       >
+        <!--  Checkbox  -->
+        <div>
+          <Checkbox
+            size="large"
+            :checked="checked"
+            :task-id="selectedTask.id"
+          />
+        </div>
+
         <div
           id="checkbox-name-container"
           class="d-flex align-items-center justify-content-center flex-grow-1"
         >
-          <div
-            v-if="!editingName"
-            id="menu-counterbalance"
-            style="width: 28px;"
-          />
-          
-          <!--  Checkbox  -->
-          <div>
-            <Checkbox
-              :checked="checked"
-              :task-id="selectedTask.id"
-              style="margin-left: 20px"
-            />
-          </div>
-          
           <!--  Task Name  -->
           <div
             v-if="!editingName"
@@ -42,8 +35,8 @@
               v-if="selectedTask.archived"
               class="archive-badge"
             >
-              Archived
-            </b-badge>&nbsp;
+              Archived&nbsp;
+            </b-badge>
             <span>{{ selectedTask.name }}</span>
           </div>
           
@@ -63,125 +56,106 @@
               @blur="saveName()"
             />
           </b-input-group>
-          
-          <div
-            v-if="!editingName"
-            id="checkbox-counterbalance"
-            style="width: 55.19px;"
-          />
         </div>
         
         <!-- Menu Options -->
+        <TaskMenu
+          :task-id="selectedTask.id"
+          :is-archived="selectedTask.archived"
+        />
+      </div>
+      
+      <!-- Countdown Timer -->
+      <div id="countdown-section">
+        <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
+          <Timer
+            :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
+          />
+        </div>
+        
+        <!-- Continue Timer Here -->
         <div
-          ref="taskMenu"
-          class="dropdown"
+          v-if="selectedTask && !selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
+          class="d-flex flex-column align-items-center"
+          style="color: darkred"
         >
+          <div>Continue Here</div>
           <button
-            class="btn btn-light"
-            title="Task options"
-            data-toggle="dropdown"
+            id="continue-here-btn"
+            type="button"
+            class="btn btn-light btn-lg"
+            style="color: darkred"
+            title="Continue Timer Here"
+            @click="continueTimerHere"
           >
-            <font-awesome-icon icon="ellipsis-vertical" />
+            <font-awesome-icon icon="play" />
           </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <div
-              id="selected-task-menu"
-            >
-              <b-button
-                block
-                variant="archive-color"
-                title="Archive task"
-                @click="archiveTask({taskId: selectedTask.id})"
-              >
-                <span v-if="!selectedTask.archived">
-                  <font-awesome-icon icon="download" />
-                  <span>&nbsp;&nbsp;Archive</span>
-                </span>
-                <span v-if="selectedTask.archived">
-                  <font-awesome-icon icon="upload" />
-                  <span>&nbsp;&nbsp;Unarchive</span>
-                </span>
-              </b-button>
-            </div>
-          </div>
         </div>
       </div>
       
-      <!-- Tags Section -->
-      <TagList
-        :tag-list="taskTags"
-        :task-id="selectedTask.id"
-        :remove-tag="removeTag"
-      />
-      
-      <!-- Notes Section -->
-      <div
-        id="notes-section"
-        class="d-flex align-items-center"
-        style="max-width: 100%"
-      >
-        <span id="notes-label">Notes: </span>
-        
-        <!-- Display Mode -->
-        <!-- eslint-disable vue/no-v-html -->
-        <span
-          v-if="!editingNotes"
-          id="display-notes"
-          @click="editNotes"
-          v-html="displayNotes"
-        />
-        <!-- eslint-enable vue/no-v-html -->
-        
-        <!-- Editing Mode -->
-        <b-input-group
-          v-if="editingNotes"
+      <div id="tags-and-notes-section">
+        <!-- Notes Section -->
+        <div
+          id="notes-section"
+          class="d-flex align-items-center"
         >
-          <b-form-textarea
-            ref="notesInput"
-            v-model="selectedTask.notes"
-            placeholder="enter notes"
-            :rows="selectedTask.notes.split('\n').length"
-            @blur="saveNotes"
-            @keydown.enter="handleNotesEnter"
+          <!-- Display Mode -->
+          <!-- eslint-disable vue/no-v-html -->
+          <span
+            v-if="selectedTask.notes && !editingNotes"
+            id="display-notes"
+            class="notes-input-and-display"
+            @click="editNotes"
+            v-html="displayNotes"
           />
-        </b-input-group>
+          <!-- eslint-enable vue/no-v-html -->
+          
+          <!-- Editing Mode -->
+          <b-input-group
+            v-if="editingNotes || !selectedTask.notes"
+          >
+            <b-form-textarea
+              ref="notesInput"
+              v-model="selectedTask.notes"
+              placeholder="Enter notes here.."
+              :rows="selectedTask.notes.split('\n').length"
+              class="notes-input-and-display"
+              no-resize
+              @click="editNotes"
+              @blur="saveNotes"
+              @keydown.enter="handleNotesEnter"
+            />
+          </b-input-group>
+        </div>
+        
+        <!-- Tags Section -->
+        <div
+          id="tags-section"
+          class="d-flex align-items-top"
+        >
+          <label
+            v-if="taskTags"
+            id="tags-label"
+          >
+            <span>Tags:</span>
+          </label>
+          <TaskTagList :task-id="selectedTask.id" />
+          
+          <!-- Tag Input -->
+          <div
+            v-if="taskTags"
+            id="new-tag-section"
+          >
+            <TagInput :task-id="selectedTask.id" />
+          </div>
+        </div>
       </div>
     </template>
     
-    <!-- Countdown Timer -->
-    <div>
-      <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
-        <Countdown
-          :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
-          class="top-margin"
-        />
-      </div>
-    </div>
-    
     <template v-if="selectedTask">
-      <!-- Continue Timer Here -->
-      <div
-        v-if="!selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
-        class="d-flex flex-column align-items-center"
-        style="color: darkred"
-      >
-        <div>Continue Here</div>
-        <button
-          id="continue-here-btn"
-          type="button"
-          class="btn btn-light btn-lg"
-          style="color: darkred"
-          title="Continue Timer Here"
-          @click="continueTimerHere"
-        >
-          <font-awesome-icon icon="play" />
-        </button>
-      </div>
-      
       <!-- Activity View -->
       <ActivityView
         id="taskActivity"
-        class="border-top top-margin"
         :task-id="selectedTask.id"
         :label="selectedTask.name"
         :log="selectedTask.log"
@@ -193,12 +167,14 @@
 
 <script>
 import Checkbox from './Checkbox'
-import TagList from './TagList'
+import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
+import TaskMenu from './TaskMenu.vue'
+import TagInput from './TagInput.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import Countdown from './Countdown.vue'
+import Timer from './Timer.vue'
 
 marked.setOptions({
   breaks: true
@@ -220,10 +196,12 @@ export default {
   name: 'SelectedTask',
   
   components: {
-    Countdown,
+    Timer,
     Checkbox,
-    TagList,
-    ActivityView
+    TaskTagList,
+    ActivityView,
+    TaskMenu,
+    TagInput
   },
   
   props: {
@@ -237,10 +215,7 @@ export default {
     possibleEdit: true,
     editingName: false,
     editingNotes: false,
-    newTaskName: null,
-    newTag: '',
-    tagOptions: [],
-    showTagInput: false
+    newTaskName: null
   }),
   
   computed: {
@@ -249,7 +224,8 @@ export default {
       'tasks',
       'tempState',
       'tagOrder',
-      'selectedTaskID'
+      'selectedTaskID',
+      'tags'
     ]),
     
     ...mapGetters([
@@ -284,7 +260,6 @@ export default {
       'updateTaskName',
       'updateTaskNotes',
       'startTask',
-      'archiveTask',
       'removeTaskTag'
     ]),
     
@@ -292,9 +267,6 @@ export default {
       if (this.possibleEdit) {
         this.newTaskName = this.selectedTask.name
         this.editingName = true
-        this.$refs.taskMenu.classList.remove('show')
-        this.$refs.taskMenu.querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
-        this.$refs.taskMenu.querySelector('.dropdown-menu').classList.remove('show')
         this.$nextTick(() => this.$refs.taskNameInput.focus())
       }
       this.possibleEdit = true
@@ -305,20 +277,6 @@ export default {
         await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
       }
       this.editingName = false
-    },
-    
-    addTagButton () {
-      this.showTagInput = !this.showTagInput
-      if (this.showTagInput) {
-        this.$nextTick(() => {
-          this.$refs.addTagInput.focus()
-        })
-      }
-    },
-    
-    removeTag ({ tagId }) {
-      this.removeTaskTag({ taskId: this.selectedTask.id, tagId })
-      this.$forceUpdate()
     },
     
     editNotes () {
@@ -350,77 +308,80 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+$vertical-spacing: 30px;
+
 #selected-task-container {
-  overflow-y: auto;
-  border-radius: 0.25rem;
   flex: 1;
-}
-
-#title-section {
-  margin-top: 20px;
-}
-
-#checkbox-name-section {
-  margin-left: 20px;
-  flex: 1;
-}
-
-#task-name-container {
-  margin: 8px;
-}
-
-.task-name {
-  font-weight: 600;
-  font-size: xx-large;
-  text-align: center;
-}
-
-#selected-task-menu {
-  justify-content: space-evenly;
-}
-
-#notes-section {
-  padding: 15px 10px 10px;
-}
-
-#notes-label {
-  padding-right: 15px;
-}
-
-#display-notes {
-  padding: 10px;
-  border: #e2e6ea 1px solid;
-  border-radius: 5px;
-  font-size: 16px;
-  flex: 1;
-  min-width: 0;
-  min-height: 38px;
-  overflow: visible;
-  overflow-wrap: break-word;
-}
-
-.dropdown > button {
-  margin: 8px;
-}
-
-.dropdown-menu {
-
-  .selected-task-menu {
-    margin: 8px;
+  
+  > * {
+    margin-bottom: $vertical-spacing;
   }
 }
 
-$play-btn-size: 75px;
-
-#play-btn {
-  width: $play-btn-size;
-  height: $play-btn-size;
-  font-size: 28px;
-  border-radius: $play-btn-size;
+#title-section {
+  .task-name {
+    min-height: 50px;
+    line-height: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+  }
+  
+  #selected-task-menu {
+    justify-content: space-evenly;
+  }
 }
 
-.top-margin {
-  margin-top: 20px;
+#countdown-section {
+  $play-btn-size: 75px;
+  
+  #play-btn {
+    width: $play-btn-size;
+    height: $play-btn-size;
+    font-size: 28px;
+    border-radius: $play-btn-size;
+  }
+}
+
+#tags-and-notes-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  > div {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  #notes-section {
+    
+    .notes-input-and-display {
+      outline: none !important;
+      box-shadow: none !important;
+      border: 0;
+      padding: 0;
+      min-height: 48px;
+    }
+    
+    #display-notes {
+      flex: 1;
+      min-width: 0;
+      overflow: visible;
+      overflow-wrap: break-word;
+    }
+    margin-bottom: 10px;
+  }
+  
+  #tags-section {
+    
+    #tags-label {
+      padding-right: 15px;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
 }
 </style>
 

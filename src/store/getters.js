@@ -36,6 +36,8 @@ const getters = {
   archivedTasks (state) {
     return state.tasks.filter(t => t.archived)
   },
+
+  sortedTagList: state => Object.values(state.tags).sort((a, b) => state.tagOrder.indexOf(a) - state.tagOrder.indexOf(b)),
   
   unselectedTags: state => Object.keys(state.tags).filter(tag => !state.settings.selectedTagIds.includes(tag)),
   

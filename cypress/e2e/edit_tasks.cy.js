@@ -1,6 +1,6 @@
 describe('create tasks', () => {
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })
@@ -46,7 +46,7 @@ describe('create tasks', () => {
 
   it('edits the task name by clicking the name then switches to another task', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#selected-task-container').contains('My Second Task').click()
@@ -62,7 +62,7 @@ describe('create tasks', () => {
 
   it('edits the task notes by clicking the field and saves by hitting {enter}', () => {
     // Arrange
-    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+    cy.get('textarea[placeholder="Enter notes here.."]').click()
 
     // Act
     cy.get('#notes-section textarea').type('My notes{enter}')
@@ -74,11 +74,11 @@ describe('create tasks', () => {
   
   it('edits the task notes and saves by clicking outside', () => {
     // Arrange
-    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+    cy.get('textarea[placeholder="Enter notes here.."]').click()
 
     // Act
     cy.get('#notes-section textarea').type('My notes')
-    cy.get('#notes-section').contains('Notes:').click()
+    cy.contains('Tags:').click()
 
     // Assert
     cy.reload()
@@ -87,11 +87,11 @@ describe('create tasks', () => {
   
   it('creates a newline in notes by hitting {shift}+{enter}', () => {
     // Arrange
-    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+    cy.get('textarea[placeholder="Enter notes here.."]').click()
 
     // Act
     cy.get('#notes-section textarea').type('My notes{shift}{enter}More notes on a new line')
-    cy.get('#notes-section').contains('Notes:').click()
+    cy.contains('Tags:').click()
 
     // Assert
     cy.get('#notes-section #display-notes').contains('My notes')
@@ -100,10 +100,10 @@ describe('create tasks', () => {
   
   it('edits the task notes then switches to another task', () => {
     // Arrange
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
-    cy.get('span').contains('Notes:').closest('div').find('#display-notes').click()
+    cy.get('textarea[placeholder="Enter notes here.."]').click()
     
     // Act
     cy.get('#notes-section textarea').type('My notes{enter}')

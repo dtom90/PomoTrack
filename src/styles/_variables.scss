@@ -1,20 +1,26 @@
 $navbar-height: 56px;
-$main-section-margin-top: 15px;
-$top-offset: calc(#{$navbar-height} + #{$main-section-margin-top});
+$top-offset: $navbar-height;
 
-$archive-color: #654321;
+$font-size-xs: 12px;
+$font-size-small: 14px;
+$font-size-base: 16px;
+$font-size-large: 20px;
+$font-size-xl: 24px;
+$font-size-xxl: 32px;
+$font-size-xxxl: 48px;
+$font-size-xxxxl: 64px;
 
-.archive-badge {
-  background-color: $archive-color;
-}
+$font-weight-normal: 400;
+$font-weight-bold: 500;
+$font-weight-extra-bold: 600;
 
-.btn-archive-color {
-  background-color: $archive-color !important;
-  color: white !important;
-  border-color: $archive-color !important;
-}
-.btn-archive-color:hover {
-  background-color: #7B5544 !important;
-  color: white !important;
-  border-color: #7B5544 !important;
-}
+$checkbox-size-small: 16px;
+$checkbox-size: 20px;
+$checkbox-large-size: 24px;
+
+$dark-primary: #37352F;
+$dark-secondary: #9A9996;
+$dark-tertiary: #DEDEDE;
+$dark-quaternary: #F1F1F0;
+$white: #FFFFFF;
+$error-red: #D92D20;

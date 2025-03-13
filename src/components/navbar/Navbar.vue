@@ -15,24 +15,16 @@
         is-nav
       >
         <b-navbar-nav class="ml-auto">
+          <NavbarTagsDropdown />
+          
+          <NavbarArchiveDropdown />
+
           <b-nav-item v-b-modal.allActivityModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="chart-simple" />
+            <span>
               All Activity
             </span>
           </b-nav-item>
-          <b-nav-item v-b-modal.tagModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="tag" />
-              Tags
-            </span>
-          </b-nav-item>
-          <b-nav-item v-b-modal.archiveModal>
-            <span class="text-nowrap">
-              <font-awesome-icon icon="trash-can" />
-              Archive
-            </span>
-          </b-nav-item>
+          
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>
@@ -41,13 +33,18 @@
 </template>
 
 <script>
-import time from '../lib/time'
-import NavbarOptionsDropdown from './dropdowns/NavbarOptionsDropdown'
+import time from '../../lib/time'
+import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
+import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
+import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Navbar',
   
   components: {
+    NavbarArchiveDropdown,
+    NavbarTagsDropdown,
     NavbarOptionsDropdown
   },
   
@@ -61,6 +58,10 @@ export default {
   },
   
   computed: {
+    ...mapGetters([
+      'sortedTagList'
+    ]),
+    
     displayTime () {
       return this.displayTimeHuman(this.currentDate)
     }
@@ -80,9 +81,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../../styles/variables";
 
 .navbar-brand {
   z-index: 2;
+  font-size: $font-size-base;
 }
 
 .navbar-brand, .navbar-menu, .navbar-toggler {
@@ -95,5 +98,15 @@ export default {
 
 #navbarMenuOptions {
   z-index: 4;
+}
+
+// Add global font size for all elements in the navbar
+nav {
+  font-size: $font-size-base;
+}
+
+// Ensure time display also uses the same font size
+#time-container {
+  font-size: $font-size-base;
 }
 </style>

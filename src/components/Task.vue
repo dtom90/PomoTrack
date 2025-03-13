@@ -4,31 +4,27 @@
     :class="'task draggable-item list-group-item list-group-item-action form-check'+active"
     @click="selectTask({ taskId: task.id })"
   >
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-start ">
       <Checkbox
         :checked="checked"
         :task-id="task.id"
       />
-      <b-badge
-        v-if="task.archived"
-        class="archive-badge"
-      >
-        Archvied
-      </b-badge>&nbsp;
-      <span class="task-name">{{ task.name }}</span>
-      <font-awesome-icon
+      <div class="task-name-and-tags-wrapper">
+        <div class="task-name">
+          {{ task.name }}
+        </div>
+        <div class="d-flex flex-wrap">
+          <TaskTagList
+            :task-id="task.id"
+            mini
+          />
+        </div>
+      </div>
+      <TimerDial
         v-if="displayCountdownIndicator"
-        id="indicatorIcon"
-        icon="clock"
+        :size="20"
+        :circle-thickness="4"
       />
-    </div>
-    <div class="d-flex flex-wrap">
-      <span
-        v-for="tagId in taskTags"
-        :key="tagId"
-        class="badge mini-tag"
-        :style="{backgroundColor: tags[tagId].color}"
-      >&nbsp;&nbsp;</span>
     </div>
   </li>
 </template>
@@ -36,11 +32,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Checkbox from './Checkbox'
+import TaskTagList from './TaskTagList.vue'
+import TimerDial from './TimerDial.vue'
 
 export default {
   
   name: 'Task',
-  components: { Checkbox },
+  components: { TaskTagList, Checkbox, TimerDial },
   props: {
     task: {
       type: Object,
@@ -93,25 +91,36 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+.task {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border: none;
+  border-radius: 8px !important;
+  color: $dark-primary !important;
+}
+
+.task.active, .task:hover {
+  background-color: $dark-quaternary;
+}
+
+.task.active {
+  font-weight: $font-weight-bold;
+}
+
+.task-name-and-tags-wrapper {
+  margin-left: 12px;
+  flex: 1;
+}
+
 .task-name {
   flex: 1;
   text-align: left;
-}
-
-#indicatorIcon {
-  color: red;
-  width: 2rem;
-  height: 2rem;
-}
-
-.badge:empty {
-  display: inline-block !important;
-}
-
-.mini-tag {
-  width: 50px !important;
-  height: 10px !important;
-  margin-top: 10px;
-  margin-right: 10px;
+  line-height: 21px;
+  min-height: $checkbox-size;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }
 </style>

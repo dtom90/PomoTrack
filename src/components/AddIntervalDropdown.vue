@@ -5,9 +5,9 @@
     <b-dropdown
       id="add-interval-dropdown"
       ref="addIntervalDropdown"
-      right
+      dropright
+      boundary="viewport"
       variant="light"
-      toggle-class="text-decoration-none"
       no-caret
       @show="dropdownWillShow"
       @shown="dropdownShown = true"
@@ -15,7 +15,10 @@
       @hidden="dropdownShown = false"
     >
       <template v-slot:button-content>
-        <font-awesome-icon :icon="dropdownShown ? 'times' : 'plus'" />
+        <img
+          src="/icons/add-to-bottom.svg"
+          alt="Add interval"
+        >
       </template>
       <b-dropdown-form @submit="addIntervalButtonClicked">
         <b-form-group>
@@ -61,7 +64,7 @@
         
         <b-btn
           variant="primary"
-          style="width: 258px"
+          class="w-100"
           :disabled="durationMinutes <= 0"
           @click="addIntervalButtonClicked"
         >
@@ -74,7 +77,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import time from '../../lib/time'
+import time from '../lib/time'
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker'
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
 
@@ -202,6 +205,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+  #add-interval-dropdown {
+    .dropdown-menu {
+      width: 260px !important;
+    }
+  }
 </style>

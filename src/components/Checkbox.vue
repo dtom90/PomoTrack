@@ -1,14 +1,38 @@
 <template>
-  <div class="checkbox-container">
-    <input
-      :checked="checked"
-      :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
-      type="checkbox"
-      :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
-      :disabled="disabled"
-      @change="onCheckboxClick"
+  <div class="d-flex align-items-center">
+    <div
+      v-if="checked || !disabled"
+      :class="[
+        'checkbox-container',
+        {
+          'checkbox-large': size === 'large' && !disabled,
+          'checkbox-small': disabled
+        }
+      ]"
     >
-    <span class="check-custom" />
+      <input
+        :checked="checked"
+        :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
+        type="checkbox"
+        :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
+        :disabled="disabled"
+        @change="onCheckboxClick"
+      >
+      <span class="check-custom" />
+    </div>
+    <img
+      v-if="!checked && disabled"
+      src="/icons/incomplete.svg"
+      alt="incomplete"
+      class="incomplete-checkbox"
+      :class="{ 'incomplete-checkbox-small': disabled }"
+    >
+    <span
+      v-if="disabled"
+      class="task-checkbox-label ml-2"
+    >
+      {{ checked ? 'Completed' : 'Incomplete' }}
+    </span>
   </div>
 </template>
 
@@ -33,6 +57,11 @@ export default {
     taskId: {
       type: String,
       default: null
+    },
+    size: {
+      type: String,
+      default: 'small',
+      validator: value => ['small', 'large'].includes(value)
     }
   },
   
@@ -50,29 +79,64 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_variables.scss";
+
+$incomplete-size: 24px;
+
 /* Adapted from https://hackernoon.com/hacking-custom-checkboxes-and-radios-5d48230440d */
-
-$checkbox-size: 2.2rem;
-
 .checkbox-container {
   position: relative;
   min-width: $checkbox-size;
   width: $checkbox-size;
   height: $checkbox-size;
-  margin-right: 20px;
+
+  > * {
+    position: absolute;
+    left: 0;
+    width: $checkbox-size;
+    height: $checkbox-size;
+  }
+  
+  &.checkbox-large {
+    min-width: $checkbox-large-size;
+    width: $checkbox-large-size;
+    height: $checkbox-large-size;
+    
+    > * {
+      width: $checkbox-large-size;
+      height: $checkbox-large-size;
+    }
+  }
+  
+  &.checkbox-small {
+    min-width: $checkbox-size-small;
+    width: $checkbox-size-small;
+    height: $checkbox-size-small;
+    
+    > * {
+      width: $checkbox-size-small;
+      height: $checkbox-size-small;
+    }
+  }
 }
 
-.checkbox-container > * {
-  position: absolute;
-  left: 0;
-  width: $checkbox-size;
-  height: $checkbox-size;
+.incomplete-checkbox {
+  width: $incomplete-size;
+  height: $incomplete-size;
+  
+  &.incomplete-checkbox-small {
+    width: $checkbox-size-small;
+    height: $checkbox-size-small;
+  }
 }
 
 /* Styles for hiding the native checkbox */
 .task-checkbox {
   z-index: 2;
   opacity: 0;
+}
+
+.task-checkbox.enabled-checkbox {
   cursor: pointer;
 }
 

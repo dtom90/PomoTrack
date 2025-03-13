@@ -3,7 +3,7 @@ describe('delete tags', () => {
   const secondTagName = 'my second tag'
 
   beforeEach(() => {
-    cy.get('input[placeholder="enter new task"]')
+    cy.get('input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -16,10 +16,10 @@ describe('delete tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#task-tag-list').contains(firstTagName).should('not.exist')
   })
 
   it('removes the first tag of 2 tags, second remains', () => {
@@ -28,36 +28,36 @@ describe('delete tags', () => {
       .should('have.focus').type(secondTagName + '{enter}')
 
     // Act
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').first().click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').first().click()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
-    cy.get('#taskTags').contains(secondTagName).should('exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(secondTagName).should('exist')
   })
 
   it('should keep tag removed on page reload', () => {
     // Arrange
-    cy.get('#taskTags div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
 
     // Act
     cy.reload()
 
     // Assert
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
   })
   
   it('deletes tag from all tasks', () => {
     // Arrange
     cy.get('.navbar-nav').get('a.nav-link').contains('Tags').click()
-    cy.contains('.modal-dialog', 'Tags').within(() => {
-      cy.get('.tag-button').contains(firstTagName).click()
+    cy.contains('#navbarTagsDropdown', 'Tags').within(() => {
+      cy.get('.tag').contains(firstTagName).click()
       
       // Act
-      cy.get('button > svg.fa-trash-can').click()
+      cy.contains('button', 'Delete').click()
       
       // Assert
       cy.get('.tag-button').should('not.exist')
     })
-    cy.get('#taskTags').contains(firstTagName).should('not.exist')
+    cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
   })
 })
