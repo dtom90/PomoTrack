@@ -7,10 +7,10 @@ describe('interval updates', () => {
   
   it('should display start and end times in manual interval panel', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
+    cy.contains('Activity Log').scrollIntoView()
 
     // Act
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view img[alt="Add interval"]').click()
 
     // Assert
     cy.get('#add-interval-dropdown .dropdown-menu').within(() => {
@@ -22,10 +22,10 @@ describe('interval updates', () => {
 
   it('should manually add an interval', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
+    cy.contains('Activity Log').scrollIntoView()
 
     // Act
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view img[alt="Add interval"]').click()
     cy.get('.activity-view button').contains('Add Interval').click()
 
     // Assert
@@ -36,10 +36,10 @@ describe('interval updates', () => {
 
   it('should not alter timer after adding interval', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
+    cy.contains('Activity Log').scrollIntoView()
 
     // Act
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view img[alt="Add interval"]').click()
     cy.get('.activity-view button').contains('Add Interval').click()
 
     // Assert
@@ -49,10 +49,10 @@ describe('interval updates', () => {
   it('should keep running interval at top when manually adding during running interval', () => {
     // Arrange
     cy.get('#countdown-container button > svg.fa-play').click()
-    cy.get('button').contains('Activity Log').click()
+    cy.contains('Activity Log').scrollIntoView()
     
     // Act
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.get('.activity-view img[alt="Add interval"]').click()
     cy.get('.activity-view button').contains('Add Interval').click()
     
     // Assert
@@ -66,8 +66,8 @@ describe('interval updates', () => {
 
   it('should manually delete an interval', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.contains('Activity Log').scrollIntoView()
+    cy.get('.activity-view img[alt="Add interval"]').click()
     cy.get('.activity-view button').contains('Add Interval').click()
 
     // Act
@@ -82,11 +82,11 @@ describe('interval updates', () => {
 
   it('should manually delete an interval after page reload', () => {
     // Arrange
-    cy.get('button').contains('Activity Log').click()
-    cy.get('.activity-view button > svg.fa-plus').click()
+    cy.contains('Activity Log').scrollIntoView()
+    cy.get('.activity-view img[alt="Add interval"]').click()
     cy.get('.activity-view button').contains('Add Interval').click()
     cy.reload()
-    cy.get('button').contains('Activity Log').click()
+    cy.contains('Activity Log').scrollIntoView()
 
     // Act
     cy.get('tr').last().within(() => {

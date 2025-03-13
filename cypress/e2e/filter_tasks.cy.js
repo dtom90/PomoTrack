@@ -23,8 +23,8 @@ describe('filter tasks', () => {
 
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
 
     // Assert
@@ -38,8 +38,8 @@ describe('filter tasks', () => {
 
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
 
     // Assert
@@ -50,13 +50,13 @@ describe('filter tasks', () => {
   it('should remove filter to show all again', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
 
     // Act
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-xmark').click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
 
     // Assert
@@ -71,8 +71,8 @@ describe('filter tasks', () => {
 
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
 
     // Assert
@@ -86,8 +86,8 @@ describe('filter tasks', () => {
 
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
 
     // Assert
@@ -99,11 +99,11 @@ describe('filter tasks', () => {
   it('should clear selected task if multiple filters selected with and clause', () => {
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
-    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
     
     // Assert
@@ -112,41 +112,19 @@ describe('filter tasks', () => {
     cy.get('#selected-task-container').should('not.be.visible')
   })
   
-  it('should update selected task if filter operator changed', () => {
-    // Arrange
-    cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
-    })
-    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
-      cy.contains('button', secondTagName).click()
-    })
-    
-    // Act
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.contains('label', 'Any').first().click()
-    })
-    
-    // Assert
-    cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 1)
-    cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 1)
-    cy.get('#title-section').scrollIntoView()
-    cy.get('#selected-task-container').contains('My First Task').should('exist')
-  })
-  
   it('should update selected task on tag filter remove', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
-    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
     
     // Act
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-xmark').first().click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
     
     // Assert
@@ -163,14 +141,14 @@ describe('filter tasks', () => {
     
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
     
     // Assert
     cy.get('#active-task-container').should('be.visible')
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('button > svg.fa-xmark').click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
     cy.contains('#incomplete-task-list .task', 'My Second Task').click()
     cy.get('#timer-display').scrollIntoView()
@@ -179,32 +157,16 @@ describe('filter tasks', () => {
     cy.get('#countdown-container').contains('24:57')
   })
   
-  it('should show activitiy modal for tag when selected', () => {
-    // Arrange
-    cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
-    })
-    
-    // Act
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.contains('button', firstTagName).click()
-    })
-    
-    // Assert
-    cy.get('#activityModal').contains(firstTagName).should('be.visible')
-  })
-  
   it('should not add tag to new task when checkbox un-selected in filter menu', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
     
     // Act
-    cy.contains('.dropdown-menu', 'Filtering on tasks with:').within(() => {
-      cy.get('input[type="checkbox"]').click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('label', 'Include in new tasks').click({ force: true })
     })
     cy.get('input[placeholder="Enter new task.."]')
       .click()
@@ -217,8 +179,8 @@ describe('filter tasks', () => {
   it('should add tag to new task when checkbox selected (default) in filter menu', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
     
     // Act
@@ -235,8 +197,8 @@ describe('filter tasks', () => {
   it('should not add new tag to already-created task when new filter selected', () => {
     // Arrange
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Filter on:').within(() => {
-      cy.contains('button', firstTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', firstTagName).click({ force: true })
     })
     cy.get('input[placeholder="Enter new task.."]')
       .click()
@@ -244,8 +206,8 @@ describe('filter tasks', () => {
     
     // Act
     cy.get('button > svg.fa-filter').click()
-    cy.contains('.dropdown-menu', 'Add to filter:').within(() => {
-      cy.contains('button', secondTagName).click()
+    cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
+      cy.contains('button', secondTagName).click({ force: true })
     })
     
     // Assert

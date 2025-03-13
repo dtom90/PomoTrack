@@ -22,6 +22,16 @@
           @click="clearAllTags"
         >Clear All</a>
       </div>
+
+      <div class="d-flex align-items-center">
+        <b-form-checkbox
+          v-if="settings.selectedTagIds.length"
+          v-model="addSelectedTags"
+          class="mt-2"
+        >
+          Include in new tasks
+        </b-form-checkbox>
+      </div>
     </b-dropdown-header>
 
     <b-dropdown-divider />
@@ -99,18 +109,13 @@ export default {
     }
   },
   
-  watch: {
-    addSelectedTags (newValue) {
-      this.updateAddSelectedTags(newValue)
-    }
-  },
-  
   methods: {
     ...mapActions([
       'addTagFilter',
       'removeTagFilter',
       'selectTask',
-      'removeAllTagFilters'
+      'removeAllTagFilters',
+      'updateSetting'
     ]),
 
     itemClicked (tagId) {
@@ -151,10 +156,6 @@ export default {
       }
     },
     
-    updateAddSelectedTags (value) {
-      this.updateSetting({ key: 'addSelectedTags', value })
-    },
-
     clearAllTags () {
       this.removeAllTagFilters()
     }

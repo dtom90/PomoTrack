@@ -267,9 +267,6 @@ export default {
       if (this.possibleEdit) {
         this.newTaskName = this.selectedTask.name
         this.editingName = true
-        this.$refs.taskMenu.classList.remove('show')
-        this.$refs.taskMenu.querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
-        this.$refs.taskMenu.querySelector('.dropdown-menu').classList.remove('show')
         this.$nextTick(() => this.$refs.taskNameInput.focus())
       }
       this.possibleEdit = true

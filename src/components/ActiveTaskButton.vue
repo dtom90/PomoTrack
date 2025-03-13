@@ -1,5 +1,8 @@
 <template v-if="activeTask">
-  <div class="d-flex justify-content-center align-items-center">
+  <div
+    id="active-task-container"
+    class="d-flex justify-content-center align-items-center"
+  >
     <button
       id="active-task-button"
       class="btn btn-light border d-flex justify-content-center align-items-center oval-border"

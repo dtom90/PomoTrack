@@ -12,7 +12,7 @@ describe('target', () => {
 
     // Act
     cy.get('#allActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
@@ -30,7 +30,7 @@ describe('target', () => {
     cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
@@ -53,7 +53,7 @@ describe('target', () => {
     cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {
-      cy.get('label').contains('Daily Target:').should('be.visible')
+      cy.get('label').contains('Daily Target').should('be.visible')
       cy.get('input').type('1')
     })
 
