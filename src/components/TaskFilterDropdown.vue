@@ -37,15 +37,15 @@
     <b-dropdown-divider />
 
     <b-dropdown-item
-      v-for="tag in sortedTagList"
-      :key="tag.id"
-      :class="unselectedTags.includes(tag.id) ? '' : 'selected'"
-      @click.native.stop="itemClicked(tag.id)"
+      v-for="tagId in tagOrder"
+      :key="tagId"
+      :class="unselectedTags.includes(tagId) ? '' : 'selected'"
+      @click.native.stop="itemClicked(tagId)"
     >
       <TagButton
-        :tag="tag"
-        :tag-id="tag.id"
-        :unselected="unselectedTags.includes(tag.id)"
+        :tag="tags[tagId]"
+        :tag-id="tagId"
+        :unselected="unselectedTags.includes(tagId)"
       />
     </b-dropdown-item>
   </b-dropdown>
@@ -72,13 +72,13 @@ export default {
   computed: {
     ...mapGetters([
       'unselectedTags',
-      'sortedTagList',
       'incompleteTasks',
       'completedTasksFiltered'
     ]),
     
     ...mapState([
       'tags',
+      'tagOrder',
       'tasks',
       'selectedTask',
       'settings'

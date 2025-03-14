@@ -32,14 +32,20 @@
               alt="Add interval"
               class="drag-handle"
             >
-            <div class="flex-1" @click.stop="toggleSubmenu(tagId)">
+            <div
+              class="flex-1"
+              @click.stop="toggleSubmenu(tagId)"
+            >
               <TagButton
                 :tag="tags[tagId]"
                 :tag-id="tagId"
                 class="ml-3"
               />
             </div>
-            <div class="submenu-indicator-wrapper" @click.stop="toggleSubmenu(tagId)">
+            <div
+              class="submenu-indicator-wrapper"
+              @click.stop="toggleSubmenu(tagId)"
+            >
               <font-awesome-icon
                 icon="chevron-right"
                 class="submenu-indicator"
@@ -67,7 +73,7 @@
 <script>
 import TagButton from '../TagButton'
 import TagEditMenu from '../TagEditMenu'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
 
 export default {
@@ -88,9 +94,6 @@ export default {
   },
   
   computed: {
-    ...mapGetters([
-      'sortedTagList'
-    ]),
     ...mapState([
       'tags'
     ]),
