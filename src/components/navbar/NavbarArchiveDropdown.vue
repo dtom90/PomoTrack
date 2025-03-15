@@ -20,10 +20,7 @@
         >
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
-              <Checkbox
-                :checked="task.completed !== null"
-                :disabled="true"
-              />
+              <CompleteStatus :completed="task.completed !== null" />
               <span class="ml-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">
@@ -72,11 +69,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Checkbox from '../Checkbox.vue'
+import CompleteStatus from '@/components/CompleteStatus.vue'
+
 export default {
   name: 'NavbarArchiveDropdown',
   
-  components: { Checkbox },
+  components: { CompleteStatus },
   
   data () {
     return {
