@@ -206,3 +206,13 @@ table {
 fieldset[data-v-1c1a6e76].form-group:has(#secondReminderMinutes) {
   margin-bottom: 0 !important;
 }
+
+// New tag section plus button padding
+#new-tag-section {
+  padding-top: 4px;
+}
+
+// Task tag list width
+#task-tag-list {
+  max-width: 224px;
+}
