@@ -40,6 +40,13 @@ h6 {
 
 .navbar {
   background-color: $white !important;
+  padding: 10px 24px !important;
+
+  .nav-link,
+  .navbar-brand,
+  #time-container {
+    color: #37352F !important;
+  }
 }
 
 .navbar-nav li.nav-item:hover,li.nav-item.show {

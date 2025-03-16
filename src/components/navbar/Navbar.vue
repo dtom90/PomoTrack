@@ -109,4 +109,12 @@ nav {
 #time-container {
   font-size: $font-size-base;
 }
+
+// Add padding to navbar items
+::v-deep {
+  .nav-link,
+  .dropdown-toggle {
+    padding: 4px 12px !important;
+  }
+}
 </style>
