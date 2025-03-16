@@ -50,8 +50,6 @@ export default {
     
     cssProps () {
       const arcAngle = this.progress * 100 // Grows counterclockwise as timer decreases
-      console.log('progress', this.progress)
-      console.log('arcAngle', arcAngle)
       
       // Determine the countdown color based on disabled state
       const countdownColor = this.disabled

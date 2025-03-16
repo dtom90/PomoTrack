@@ -18,13 +18,21 @@ Vue.config.productionTip = false
 
 Vue.prototype.$appVersion = packageInfo.version
 
-new Vue({
-  store,
-  mounted () {
-    if (isElectron()) {
-      persistStorage()
-    }
-    this.$store.dispatch('loadInitialData')
-  },
-  render: h => h(App)
-}).$mount('#app')
+async function initApp () {
+  const app = new Vue({
+    store,
+    render: h => h(App)
+  })
+  
+  if (isElectron()) {
+    persistStorage()
+  }
+  
+  // Wait for data to load before mounting
+  await store.dispatch('loadInitialData')
+  
+  // Mount the app after data is loaded
+  app.$mount('#app')
+}
+
+initApp()
