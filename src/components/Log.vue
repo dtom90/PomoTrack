@@ -44,18 +44,19 @@
           >
             <div
               :ref="`intervalMenu${index}`"
-              class="dropright"
+              class="dropdown"
             >
               <button
-                class="btn btn-light interval-menu-btn"
+                class="btn btn-light interval-menu-btn dropdown-toggle"
                 data-toggle="dropdown"
                 data-boundary="viewport"
+                aria-haspopup="true"
               >
                 <font-awesome-icon icon="ellipsis-vertical" />
               </button>
               <div
-                class="dropdown-menu"
-                style="padding: 0;"
+                class="dropdown-menu dropdown-menu-right"
+                style="padding: 0; min-width: 120px;"
               >
                 <button
                   class="btn btn-danger"
@@ -147,6 +148,21 @@ export default {
 .btn-container {
   padding: 0;
   vertical-align: middle;
+  
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-menu {
+    margin: 0;
+    padding: 0;
+    right: auto !important;
+    left: 14px !important;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
 }
 
 td {
