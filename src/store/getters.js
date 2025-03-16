@@ -1,4 +1,6 @@
 const getters = {
+  anyTasks: state => state.tasks.length > 0,
+  
   getTaskById: state => (taskId) => {
     return state.tasks.find(t => t.id === taskId)
   },

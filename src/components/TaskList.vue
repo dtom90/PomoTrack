@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="task-list-container">
     <!-- TaskList Title Section -->
     <div class="title-section">
       <!-- TaskList Title -->
@@ -74,7 +74,7 @@
     
     <!-- Completed Tasks -->
     <ul
-      v-if="isCompletedList"
+      v-if="isCompletedList && completedTaskList.length > 0"
       id="completed-task-list"
       class="list-group scroll-list"
     >
@@ -84,6 +84,19 @@
         :task="task"
       />
     </ul>
+    
+    <!-- Empty State for Completed Tasks -->
+    <div
+      v-if="isCompletedList && completedTaskList.length === 0"
+      class="empty-state-container"
+    >
+      <img
+        src="/icons/empty-white-box.svg"
+        alt="Empty Archive"
+        class="mb-2"
+      >
+      <span class="text-muted text-center">Completed tasks will appear here</span>
+    </div>
   </div>
 </template>
 
@@ -206,6 +219,12 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
+.task-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .title-section {
   display: flex;
   align-items: center;
@@ -221,8 +240,7 @@ export default {
 
 .title-section > button,
 .dropdown-menu > button,
-.dropdown-menu > .form-check,
-{
+.dropdown-menu > .form-check {
   margin-bottom: 0.5rem;
 }
 
@@ -269,6 +287,26 @@ export default {
   background-color: #e9ecef;
 }
 
+/* Empty state styling */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #6c757d;
+  flex-grow: 1;
+}
+
+.empty-state-icon {
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-state-text {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
 </style>
 
 <style>

@@ -1,9 +1,8 @@
 <template>
   <div
-    v-show="selectedTask && !selectedTask.archived"
     id="selected-task-container"
   >
-    <template v-if="selectedTask">
+    <template>
       <!--  Title Section  -->
       <div
         id="title-section"
@@ -12,6 +11,13 @@
         <!--  Checkbox  -->
         <div>
           <Checkbox
+            v-if="isEmptyState"
+            size="large"
+            :checked="false"
+            :disabled="true"
+          />
+          <Checkbox
+            v-if="selectedTask"
             size="large"
             :checked="checked"
             :task-id="selectedTask.id"
@@ -31,18 +37,12 @@
             @mousemove="possibleEdit = false"
             @mouseup="editName"
           >
-            <b-badge
-              v-if="selectedTask.archived"
-              class="archive-badge"
-            >
-              Archived&nbsp;
-            </b-badge>
-            <span>{{ selectedTask.name }}</span>
+            <span>{{ selectedTask && selectedTask.name }}</span>
           </div>
           
           <!--  Task Field (when editing)  -->
           <b-input-group
-            v-if="editingName"
+            v-if="editingName || isEmptyState"
             class="input-group flex-grow-1"
             @submit.prevent="saveName()"
           >
@@ -50,8 +50,8 @@
               id="task-name-input"
               ref="taskNameInput"
               v-model="newTaskName"
-              placeholder="enter task name"
-              class="task-name"
+              placeholder="Enter new task.."
+              class="task-name border-0"
               @keyup.enter="saveName()"
               @blur="saveName()"
             />
@@ -60,16 +60,20 @@
         
         <!-- Menu Options -->
         <TaskMenu
-          :task-id="selectedTask.id"
-          :is-archived="selectedTask.archived"
+          v-if="selectedTask || isEmptyState"
+          :task-id="selectedTask && selectedTask.id"
+          :is-archived="selectedTask && selectedTask.archived"
         />
       </div>
+    </template>
       
+    <template>
       <!-- Countdown Timer -->
       <div id="countdown-section">
-        <div v-show="selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id)">
+        <div v-show="isEmptyState || (selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id))">
           <Timer
             :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
+            :disabled="isEmptyState"
           />
         </div>
         
@@ -93,7 +97,10 @@
         </div>
       </div>
       
-      <div id="tags-and-notes-section">
+      <div
+        v-if="selectedTask"
+        id="tags-and-notes-section"
+      >
         <!-- Notes Section -->
         <div
           id="notes-section"
@@ -229,11 +236,16 @@ export default {
     ]),
     
     ...mapGetters([
-      'selectedTask'
+      'selectedTask',
+      'anyTasks'
     ]),
+
+    isEmptyState () {
+      return !this.anyTasks
+    },
     
     checked () {
-      return this.selectedTask.completed !== null
+      return this.selectedTask && this.selectedTask.completed !== null
     },
     
     taskTags () {
@@ -257,6 +269,7 @@ export default {
   methods: {
     
     ...mapActions([
+      'addTask',
       'updateTaskName',
       'updateTaskNotes',
       'startTask',
@@ -273,7 +286,16 @@ export default {
     },
     
     async saveName () {
-      if (this.newTaskName.trim().length) {
+      if (!this.newTaskName || !this.newTaskName.trim().length) {
+        this.editingName = false
+        return
+      }
+      
+      if (this.isEmptyState) {
+        // Create new task
+        await this.addTask({ name: this.newTaskName })
+      } else {
+        // Update existing task
         await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
       }
       this.editingName = false

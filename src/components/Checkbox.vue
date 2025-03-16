@@ -1,12 +1,10 @@
 <template>
   <div class="d-flex align-items-center">
     <div
-      v-if="checked || !disabled"
       :class="[
         'checkbox-container',
         {
           'checkbox-large': size === 'large' && !disabled,
-          'checkbox-small': disabled
         }
       ]"
     >
@@ -90,17 +88,6 @@ export default {
     > * {
       width: $checkbox-large-size;
       height: $checkbox-large-size;
-    }
-  }
-  
-  &.checkbox-small {
-    min-width: $checkbox-size-small;
-    width: $checkbox-size-small;
-    height: $checkbox-size-small;
-    
-    > * {
-      width: $checkbox-size-small;
-      height: $checkbox-size-small;
     }
   }
 }

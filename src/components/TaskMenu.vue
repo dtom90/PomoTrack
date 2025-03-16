@@ -1,6 +1,7 @@
 <template>
   <div ref="taskMenu">
     <b-dropdown
+      :disabled="!taskId"
       right
       variant="light"
       no-caret
@@ -36,7 +37,7 @@ export default {
   props: {
     taskId: {
       type: String,
-      required: true
+      default: null
     },
     isArchived: {
       type: Boolean,

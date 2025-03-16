@@ -59,7 +59,7 @@
               alt="Empty Archive"
               class="mb-2"
             >
-            <span class="text-muted">Archived Tasks will appear here</span>
+            <span class="text-muted">Archived tasks will appear here</span>
           </div>
         </div>
       </b-dropdown-item>
