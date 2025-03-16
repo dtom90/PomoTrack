@@ -3,7 +3,7 @@ describe('create tags', () => {
   const secondTagName = 'my second tag'
 
   beforeEach(() => {
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -26,7 +26,7 @@ describe('create tags', () => {
 
   it('adds a tag to the first task after reload', () => {
     // Arrange
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.reload()
@@ -47,7 +47,7 @@ describe('create tags', () => {
     // (No specific arrangement needed for this test)
 
     // Act
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -119,7 +119,7 @@ describe('create tags', () => {
 
   it('creates a second task then filters on tag', () => {
     // Arrange
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -142,7 +142,7 @@ describe('create tags', () => {
     })
 
     // Act
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -159,7 +159,7 @@ describe('create tags', () => {
     cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
       cy.get('button.tag-name').contains(firstTagName).click({ force: true })
     })
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 
@@ -185,7 +185,7 @@ describe('create tags', () => {
     })
 
     // Act
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
 

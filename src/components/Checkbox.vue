@@ -1,12 +1,10 @@
 <template>
   <div class="d-flex align-items-center">
     <div
-      v-if="checked || !disabled"
       :class="[
         'checkbox-container',
         {
           'checkbox-large': size === 'large' && !disabled,
-          'checkbox-small': disabled
         }
       ]"
     >
@@ -20,19 +18,6 @@
       >
       <span class="check-custom" />
     </div>
-    <img
-      v-if="!checked && disabled"
-      src="/icons/incomplete.svg"
-      alt="incomplete"
-      class="incomplete-checkbox"
-      :class="{ 'incomplete-checkbox-small': disabled }"
-    >
-    <span
-      v-if="disabled"
-      class="task-checkbox-label ml-2"
-    >
-      {{ checked ? 'Completed' : 'Incomplete' }}
-    </span>
   </div>
 </template>
 
@@ -81,8 +66,6 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
-$incomplete-size: 24px;
-
 /* Adapted from https://hackernoon.com/hacking-custom-checkboxes-and-radios-5d48230440d */
 .checkbox-container {
   position: relative;
@@ -107,27 +90,6 @@ $incomplete-size: 24px;
       height: $checkbox-large-size;
     }
   }
-  
-  &.checkbox-small {
-    min-width: $checkbox-size-small;
-    width: $checkbox-size-small;
-    height: $checkbox-size-small;
-    
-    > * {
-      width: $checkbox-size-small;
-      height: $checkbox-size-small;
-    }
-  }
-}
-
-.incomplete-checkbox {
-  width: $incomplete-size;
-  height: $incomplete-size;
-  
-  &.incomplete-checkbox-small {
-    width: $checkbox-size-small;
-    height: $checkbox-size-small;
-  }
 }
 
 /* Styles for hiding the native checkbox */
@@ -142,20 +104,20 @@ $incomplete-size: 24px;
 
 /* Styles for the basic appearance of the custom checkbox */
 .check-custom {
-  border: 2px solid #969696;
+  border: 2px solid $checkbox-border;
   border-radius: 50%;
 }
 
 /* Styles for the hover state of the custom checkbox */
 .enabled-checkbox:hover ~ .check-custom {
-  border-color: #b0d5ff;
-  box-shadow: 0 0 0 2px rgba(23, 133, 255, 0.25);
+  border-color: $primary-blue-light;
+  box-shadow: 0 0 0 2px rgba($primary-blue, 0.25);
 }
 
 /* Styles for the checked state of the custom checkbox */
 .task-checkbox:checked ~ .check-custom {
-  border-color: #1785ff;
-  background: #1785ff url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSIyMCA2IDkgMTcgNCAxMiI+PC9wb2x5bGluZT48L3N2Zz4=) center no-repeat;
+  border-color: $primary-blue;
+  background: $primary-blue url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSIyMCA2IDkgMTcgNCAxMiI+PC9wb2x5bGluZT48L3N2Zz4=) center no-repeat;
   background-size: 75%;
 }
 </style>

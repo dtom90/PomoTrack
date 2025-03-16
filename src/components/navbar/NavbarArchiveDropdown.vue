@@ -20,14 +20,11 @@
         >
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
-              <Checkbox
-                :checked="task.completed !== null"
-                :disabled="true"
-              />
+              <CompleteStatus :completed="task.completed !== null" />
               <span class="ml-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">
-              <div class="task-item-wrapper">
+              <div class="submenu-button-wrapper">
                 <b-button
                   variant="light"
                   class="task-dropdown-item"
@@ -38,7 +35,7 @@
                 
                 <!-- Submenu -->
                 <div
-                  class="task-submenu"
+                  class="submenu task-submenu"
                   :class="{ 'active': activeSubmenu === task.id }"
                 >
                   <b-dropdown-item @click="unarchiveTask(task.id)">
@@ -62,7 +59,7 @@
               alt="Empty Archive"
               class="mb-2"
             >
-            <span class="text-muted">Archived Tasks will appear here</span>
+            <span class="text-muted">Archived tasks will appear here</span>
           </div>
         </div>
       </b-dropdown-item>
@@ -72,11 +69,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Checkbox from '../Checkbox.vue'
+import CompleteStatus from '@/components/CompleteStatus.vue'
+
 export default {
   name: 'NavbarArchiveDropdown',
   
-  components: { Checkbox },
+  components: { CompleteStatus },
   
   data () {
     return {
@@ -121,29 +119,9 @@ export default {
 </script>
 
 <style scoped>
-.task-item-wrapper {
-  position: relative;
-}
-
 .task-submenu {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  display: none;
   min-width: 10rem;
-  padding: 0.5rem;
-  margin: 0;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-  z-index: 1000;
   text-align: left;
-}
-
-.task-submenu.active {
-  display: block;
 }
 
 .empty-archive-state {
@@ -154,6 +132,8 @@ export default {
 
 <style>
 #archive-dropdown {
+  /*noinspection CssUnusedSymbol*/
+  
   .dropdown-menu {
     width: 500px !important;
   }

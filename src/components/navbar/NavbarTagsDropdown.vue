@@ -21,7 +21,7 @@
       <div
         v-for="tagId in tagOrder"
         :key="tagId"
-        class="tag-item-wrapper"
+        class="submenu-button-wrapper"
       >
         <b-dropdown-item
           class="tag-dropdown-item"
@@ -32,14 +32,20 @@
               alt="Add interval"
               class="drag-handle"
             >
-            <div class="flex-1" @click.stop="toggleSubmenu(tagId)">
+            <div
+              class="flex-1"
+              @click.stop="toggleSubmenu(tagId)"
+            >
               <TagButton
                 :tag="tags[tagId]"
                 :tag-id="tagId"
                 class="ml-3"
               />
             </div>
-            <div class="submenu-indicator-wrapper" @click.stop="toggleSubmenu(tagId)">
+            <div
+              class="submenu-indicator-wrapper"
+              @click.stop="toggleSubmenu(tagId)"
+            >
               <font-awesome-icon
                 icon="chevron-right"
                 class="submenu-indicator"
@@ -50,7 +56,7 @@
         
         <!-- Submenu -->
         <div
-          class="tag-submenu submenu"
+          class="submenu tag-submenu"
           :class="{ 'active': activeSubmenu === tagId }"
         >
           <TagEditMenu
@@ -67,7 +73,7 @@
 <script>
 import TagButton from '../TagButton'
 import TagEditMenu from '../TagEditMenu'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
 
 export default {
@@ -88,9 +94,6 @@ export default {
   },
   
   computed: {
-    ...mapGetters([
-      'sortedTagList'
-    ]),
     ...mapState([
       'tags'
     ]),
@@ -161,31 +164,12 @@ export default {
 </script>
 
 <style scoped>
-.tag-item-wrapper {
-  position: relative;
-}
-
 .drag-handle {
   cursor: move;
 }
 
 .tag-submenu {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  display: none;
   min-width: 16rem;
-  padding: 0.5rem;
-  margin: 0;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-  z-index: 1000;
-}
-
-.tag-submenu.active {
-  display: block;
 }
 
 .submenu-indicator-wrapper {

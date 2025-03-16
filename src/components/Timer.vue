@@ -7,13 +7,13 @@
       id="dial-section"
       class="width-100 d-flex justify-content-center"
     >
-      <TimerDial>
+      <TimerDial :disabled="disabled">
         <p
           v-if="!editing"
           id="timer-display"
           @click="onTimerClick"
         >
-          {{ displayCountdownTime }}
+          {{ disabled ? '00:00' : displayCountdownTime }}
         </p>
         
         <div class="d-flex justify-content-center">
@@ -64,7 +64,7 @@
           variant="light"
           class="mx-2 circular-button"
           title="Skip current interval"
-          :disabled="editing"
+          :disabled="disabled || editing"
           size="sm"
           @click="onSkipTimerClick"
         >
@@ -75,7 +75,7 @@
           id="play-pause-btn"
           variant="light"
           class="mx-2 circular-button"
-          :disabled="editing"
+          :disabled="disabled || editing"
           :title="playPauseTitle"
           size="lg"
           @click="toggleTimer"
@@ -92,6 +92,7 @@
           no-caret
           dropright
           boundary="viewport"
+          :disabled="disabled"
         >
           <template #button-content>
             <font-awesome-icon icon="gear" />
@@ -162,6 +163,10 @@ export default {
     taskId: {
       type: String,
       default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   
@@ -271,7 +276,7 @@ export default {
     ]),
     
     onTimerClick () {
-      if (this.tempState.running) {
+      if (this.disabled || this.tempState.running) {
         return
       }
       this.editing = true

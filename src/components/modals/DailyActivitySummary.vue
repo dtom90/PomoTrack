@@ -36,10 +36,7 @@
         class="d-flex align-items-top justify-content-between mb-3"
       >
         <div class="completed-section">
-          <Checkbox
-            :checked="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0"
-            :disabled="true"
-          />
+          <CompleteStatus :completed="completedTasks.filter(completedTask => completedTask.name === task[0]).length > 0" />
         </div>
         <div class="name-section">
           <span>{{ task[0] }}</span>
@@ -55,11 +52,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import time, { dayjs } from '../../lib/time'
-import Checkbox from '@/components/Checkbox'
+import CompleteStatus from '@/components/CompleteStatus.vue'
 
 export default {
   name: 'DailyActivitySummary',
-  components: { Checkbox },
+  components: { CompleteStatus },
   mixins: [time],
   
   data () {

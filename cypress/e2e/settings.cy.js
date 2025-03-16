@@ -39,7 +39,7 @@ describe('notifications', () => {
       cy.stub(win, 'alert').as('AlertStub')
     })
     
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
   })

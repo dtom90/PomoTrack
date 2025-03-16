@@ -27,6 +27,10 @@ export default {
     circleThickness: {
       type: Number,
       default: 18
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   
@@ -47,10 +51,15 @@ export default {
     cssProps () {
       const arcAngle = this.progress * 100 // Grows counterclockwise as timer decreases
       
+      // Determine the countdown color based on disabled state
+      const countdownColor = this.disabled
+        ? 'var(--dark-quaternary)'
+        : (this.tempState.active ? 'var(--error-red)' : 'darkseagreen')
+      
       return {
         '--rotation-factor': this.progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.tempState.active ? 'var(--error-red)' : 'darkseagreen',
+        '--countdown-color': countdownColor,
         '--dial-size': `${this.size}px`,
         '--circle-thickness': `${this.circleThickness}px`
       }
@@ -67,6 +76,7 @@ export default {
   width: var(--dial-size);
   height: var(--dial-size);
   --error-red: #{$error-red};
+  --dark-quaternary: #{$dark-quaternary};
 }
 
 .gray-outer-circle {

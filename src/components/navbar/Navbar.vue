@@ -37,7 +37,6 @@ import time from '../../lib/time'
 import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
 import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
 import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'Navbar',
@@ -58,9 +57,6 @@ export default {
   },
   
   computed: {
-    ...mapGetters([
-      'sortedTagList'
-    ]),
     
     displayTime () {
       return this.displayTimeHuman(this.currentDate)

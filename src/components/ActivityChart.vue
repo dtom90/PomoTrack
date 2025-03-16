@@ -22,6 +22,7 @@ import ChartPluginDataLabels from 'chartjs-plugin-datalabels'
 import ChartPluginAnnotation from 'chartjs-plugin-annotation'
 import { displayChartDuration, displayChartDurationNewline } from '../lib/time'
 import cloneDeep from 'lodash.clonedeep'
+import getTextColor from '../lib/getTextColor'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale, ChartPluginDataLabels, ChartPluginAnnotation)
 
@@ -58,7 +59,6 @@ const defaultChartOptions = {
       anchor: 'end',
       align: 'start',
       clip: true,
-      color: 'white',
       formatter: displayChartDurationNewline
     },
     annotation: {
@@ -149,6 +149,7 @@ export default {
 
   mounted () {
     this.chartOptions = chartOptions(this.target, true)
+    this.chartOptions.plugins.datalabels.color = getTextColor(this.chartData.datasets[0].backgroundColor)
     this.updateWith()
     this.$nextTick(() => {
       this.scrollRight()
