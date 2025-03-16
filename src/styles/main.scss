@@ -157,6 +157,55 @@ table {
   }
 }
 
+.navbar .dropdown,
+.navbar .b-nav-dropdown,
+.navbar .nav-item.dropdown,
+.navbar .b-nav-item-dropdown {
+  position: relative !important;
+}
+
+.navbar .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  left: auto !important; /* Preserves natural horizontal position */
+  right: auto !important; /* Prevents right-alignment issues */
+  transform: none !important;
+  float: left !important; /* Helps with horizontal alignment */
+  max-width: 500px !important;
+}
+
+/* Right-aligned dropdown options */
+.navbar .dropdown-menu.dropdown-menu-right {
+  left: auto !important; 
+  right: 0 !important;
+  transform: translateX(0) !important; /* Prevent any transform shifting */
+  
+  /* This is critical for proper button alignment */
+  position: absolute !important;
+  top: 100% !important;
+  width: max-content !important;
+}
+
+.submenu-button-wrapper {
+  position: relative !important;
+  overflow: visible !important;
+}
+
 .submenu {
   border-radius: 8px;
+  position: absolute !important;
+  top: 0;
+  left: 100%;
+  display: none;
+  padding: 0.5rem;
+  margin: 0;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+  z-index: 1000;
+}
+
+.submenu.active {
+  display: block;
 }
