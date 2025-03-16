@@ -42,6 +42,20 @@ h6 {
   background-color: $white !important;
   padding: 10px 24px !important;
 
+  .nav-item {
+    position: relative !important;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    left: auto !important;
+    right: 0 !important;
+    transform: none !important;
+    margin-top: 1px !important;
+    min-width: 240px;
+    top: 100% !important;
+  }
+
   .nav-link,
   .navbar-brand,
   #time-container {
@@ -137,6 +151,7 @@ table {
   border-radius: 8px;
   width: 240px;
   padding: 4px;
+  margin: 0;
 
   .dropdown-header {
     padding: 8px;

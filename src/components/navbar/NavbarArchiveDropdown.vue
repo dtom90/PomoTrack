@@ -122,6 +122,10 @@ export default {
 .task-submenu {
   min-width: 10rem;
   text-align: left;
+
+  .dropdown-item {
+    color: #37352F !important;
+  }
 }
 
 .empty-archive-state {
@@ -136,6 +140,14 @@ export default {
   
   .dropdown-menu {
     width: 500px !important;
+  }
+
+  .dropdown-item {
+    color: #37352F !important;
+  }
+
+  .text-wrap {
+    color: #37352F !important;
   }
 }
 </style>
