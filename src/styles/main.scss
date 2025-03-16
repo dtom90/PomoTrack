@@ -47,6 +47,12 @@ h6 {
   #time-container {
     color: #37352F !important;
   }
+
+  #navbarTagsDropdown {
+    .nav-link {
+      color: #37352F !important;
+    }
+  }
 }
 
 .navbar-nav li.nav-item:hover,li.nav-item.show {
@@ -139,8 +145,8 @@ table {
 
   .dropdown-item {
     border: 1px solid transparent;
-    border-radius: 8px;
-    padding-left: 16px !important;
+    border-radius: 6px;
+    padding-left: 12px !important;
     padding-right: 12px !important;
     color: $dark-secondary;
   }
