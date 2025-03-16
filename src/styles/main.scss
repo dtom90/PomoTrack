@@ -201,3 +201,8 @@ table {
 .submenu {
   border-radius: 8px;
 }
+
+// Timer settings fieldset padding override
+fieldset[data-v-1c1a6e76].form-group:has(#secondReminderMinutes) {
+  margin-bottom: 0 !important;
+}
