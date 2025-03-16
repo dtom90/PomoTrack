@@ -131,15 +131,19 @@ export default {
   left: 100%;
   display: none;
   min-width: 10rem;
-  padding: 0.5rem;
+  padding: 4px;
   margin: 0;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
+  border-radius: 8px;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
   z-index: 1000;
   text-align: left;
+
+  .dropdown-item {
+    color: #37352F !important;
+  }
 }
 
 .task-submenu.active {
@@ -156,6 +160,14 @@ export default {
 #archive-dropdown {
   .dropdown-menu {
     width: 500px !important;
+  }
+
+  .dropdown-item {
+    color: #37352F !important;
+  }
+
+  .text-wrap {
+    color: #37352F !important;
   }
 }
 </style>
