@@ -88,6 +88,7 @@
     <!-- Empty State for Completed Tasks -->
     <div
       v-if="isCompletedList && completedTaskList.length === 0"
+      id="completed-task-list"
       class="empty-state-container"
     >
       <img

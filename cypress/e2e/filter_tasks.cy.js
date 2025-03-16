@@ -3,13 +3,13 @@ describe('filter tasks', () => {
   const secondTagName = 'tag b'
   
   beforeEach(() => {
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My First Task{enter}')
     cy.get('button > svg.fa-plus').click()
     cy.get('input[placeholder="add new tag"]')
       .should('have.focus').type(firstTagName + '{enter}')
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
@@ -93,7 +93,7 @@ describe('filter tasks', () => {
     // Assert
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 0)
     cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 0)
-    cy.get('#selected-task-container').should('not.be.visible')
+    cy.get('#selected-task-container').should('not.contain.text')
   })
   
   it('should clear selected task if multiple filters selected with and clause', () => {
@@ -109,7 +109,7 @@ describe('filter tasks', () => {
     // Assert
     cy.contains('#incomplete-task-list .task', 'My First Task').should('have.length', 0)
     cy.contains('#incomplete-task-list .task', 'My Second Task').should('have.length', 0)
-    cy.get('#selected-task-container').should('not.be.visible')
+    cy.get('#selected-task-container').should('not.contain.text')
   })
   
   it('should update selected task on tag filter remove', () => {
@@ -168,7 +168,7 @@ describe('filter tasks', () => {
     cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
       cy.contains('label', 'Include in new tasks').click({ force: true })
     })
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     
@@ -184,7 +184,7 @@ describe('filter tasks', () => {
     })
     
     // Act
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     
@@ -200,7 +200,7 @@ describe('filter tasks', () => {
     cy.contains('.dropdown-menu', 'Filter by Tag').within(() => {
       cy.contains('button', firstTagName).click({ force: true })
     })
-    cy.get('input[placeholder="Enter new task.."]')
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Third Task{enter}')
     
