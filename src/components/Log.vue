@@ -43,7 +43,6 @@
             class="btn-container"
           >
             <b-dropdown
-              :ref="`intervalMenu${index}`"
               dropright
               boundary="viewport"
               variant="light"
@@ -116,9 +115,6 @@ export default {
     },
   
     deleteInterval ({ log, index }) {
-      this.$refs[`intervalMenu${index}`][0].classList.remove('show')
-      this.$refs[`intervalMenu${index}`][0].querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
-      this.$refs[`intervalMenu${index}`][0].querySelector('.dropdown-menu').classList.remove('show')
       this.deleteIntervalButtonClicked({ logId: log.id })
     }
   }

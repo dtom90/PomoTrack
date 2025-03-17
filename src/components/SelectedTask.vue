@@ -169,7 +169,6 @@ import Checkbox from './Checkbox'
 import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
 import TaskMenu from './TaskMenu.vue'
-import TagInput from './TagInput.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -199,8 +198,7 @@ export default {
     Checkbox,
     TaskTagList,
     ActivityView,
-    TaskMenu,
-    TagInput
+    TaskMenu
   },
   
   props: {

@@ -11,7 +11,10 @@
       :remove-tag="mini ? null : removeTag"
       :class="mini ? 'tag-button-mini' : 'tag-button'"
     />
-    <TagInput v-if="!mini" :task-id="taskId" />
+    <TagInput
+      v-if="!mini"
+      :task-id="taskId"
+    />
   </div>
 </template>
 

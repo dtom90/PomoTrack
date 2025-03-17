@@ -20,7 +20,7 @@
       type="text"
       class="mb-2 w-100"
       placeholder="add new tag"
-      @input="tagInputChange"
+      @input="updateTagOptions"
       @keyup.enter="addTagByName"
     />
     
@@ -72,7 +72,7 @@ export default {
       'addTaskTagByName'
     ]),
     
-    tagInputChange () {
+    updateTagOptions () {
       this.filteredTags = this.availableTags(this.taskId, this.inputTagName)
     },
     
@@ -90,7 +90,7 @@ export default {
     
     resetInput () {
       this.inputTagName = ''
-      this.tagInputChange()
+      this.updateTagOptions()
       this.$nextTick(() => {
         this.$refs.dropdown.show()
         setTimeout(() => {
