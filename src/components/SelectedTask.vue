@@ -147,14 +147,6 @@
             <span>Tags:</span>
           </label>
           <TaskTagList :task-id="selectedTask.id" />
-          
-          <!-- Tag Input -->
-          <div
-            v-if="taskTags"
-            id="new-tag-section"
-          >
-            <TagInput :task-id="selectedTask.id" />
-          </div>
         </div>
       </div>
     </template>
@@ -405,6 +397,12 @@ $vertical-spacing: 30px;
     }
   }
 }
+
+// New tag section plus button padding
+#new-tag-section {
+  padding-top: 4px;
+}
+
 </style>
 
 <style>

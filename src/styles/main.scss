@@ -42,24 +42,11 @@ h6 {
   background-color: $white !important;
   padding: 10px 24px !important;
 
-  .nav-item {
-    position: relative !important;
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    left: auto !important;
-    right: 0 !important;
-    transform: none !important;
-    margin-top: 1px !important;
-    min-width: 240px;
-    top: 100% !important;
-  }
-
   .nav-link,
   .navbar-brand,
-  #time-container {
-    color: #37352F !important;
+  #time-container,
+  #navbarTagsDropdown .nav-link {
+    color: $dark-primary !important;
     opacity: 0.7;
     transition: opacity 0.2s ease;
 
@@ -67,28 +54,16 @@ h6 {
       opacity: 1;
     }
   }
-
-  #navbarTagsDropdown {
-    .nav-link {
-      color: #37352F !important;
-      opacity: 0.7;
-      transition: opacity 0.2s ease;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
 }
 
 .navbar-nav li.nav-item:hover,li.nav-item.show {
   background-color: $dark-quaternary;
-  border-radius: 8px;
+  border-radius: $border-radius-base;
 }
 
 // Custom border-radius for all light buttons
 .btn-light {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   border-color: transparent;
   background-color: $white;
 }
@@ -191,7 +166,7 @@ table {
 
 // Dropdown menu styles for all dropdowns in the app 
 .dropdown-menu {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   width: 240px;
   padding: 4px;
   margin: 0;
@@ -203,9 +178,13 @@ table {
 
   .dropdown-item {
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: $border-radius-hover;
     padding-left: 12px !important;
     padding-right: 12px !important;
+    color: $dark-primary;
+  }
+
+  .dropdown-item[disabled] {
     color: $dark-secondary;
   }
 
@@ -264,7 +243,7 @@ table {
 }
 
 .submenu {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   position: absolute !important;
   top: 0;
   left: 100%;
@@ -280,19 +259,4 @@ table {
 
 .submenu.active {
   display: block;
-}
-
-// Timer settings fieldset padding override
-fieldset[data-v-1c1a6e76].form-group:has(#secondReminderMinutes) {
-  margin-bottom: 0 !important;
-}
-
-// New tag section plus button padding
-#new-tag-section {
-  padding-top: 4px;
-}
-
-// Task tag list width
-#task-tag-list {
-  max-width: 224px;
 }

@@ -80,7 +80,5 @@ export default {
 </script>
 
 <style scoped>
-.time-format-checkbox {
-  color: #37352F;
-}
+
 </style>

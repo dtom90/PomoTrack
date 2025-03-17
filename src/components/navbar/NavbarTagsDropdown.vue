@@ -163,7 +163,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../../styles/variables";
+
 .drag-handle {
   cursor: move;
 }
@@ -177,5 +179,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: $dark-secondary;
 }
 </style>

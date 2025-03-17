@@ -105,5 +105,7 @@ export default {
 </script>
 
 <style scoped>
-
+#tagInputDropdown {
+  margin-top: 8px;
+}
 </style>
