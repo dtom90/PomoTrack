@@ -49,7 +49,7 @@ describe('target', () => {
     // Arrange
     cy.get('button > svg.fa-plus').click()
     cy.get('input[placeholder="add new tag"]')
-      .should('have.focus').type('My Tag Name{enter}')
+      .should('have.focus').type('My Tag Name{enter}{esc}')
     cy.get('#task-tag-list .tag.btn-group button').contains('My Tag Name').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#tagActivity .dropdown-menu').within(() => {

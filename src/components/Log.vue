@@ -42,30 +42,24 @@
             v-if="!event.task && !event.completed"
             class="btn-container"
           >
-            <div
-              :ref="`intervalMenu${index}`"
-              class="dropright"
+            <b-dropdown
+              dropright
+              boundary="viewport"
+              variant="light"
+              toggle-class="interval-menu-btn"
+              no-caret
             >
-              <button
-                class="btn btn-light interval-menu-btn"
-                data-toggle="dropdown"
-                data-boundary="viewport"
-              >
+              <template #button-content>
                 <font-awesome-icon icon="ellipsis-vertical" />
-              </button>
-              <div
-                class="dropdown-menu"
-                style="padding: 0;"
+              </template>
+              <b-dropdown-item
+                variant="danger"
+                class="text-danger p-0"
+                @click="deleteInterval({ log: event, index })"
               >
-                <button
-                  class="btn btn-danger"
-                  style="width: 100%"
-                  @click="deleteInterval({ log: event, index })"
-                >
-                  Delete Interval
-                </button>
-              </div>
-            </div>
+                Delete Interval
+              </b-dropdown-item>
+            </b-dropdown>
           </td>
         </template>
         
@@ -121,9 +115,6 @@ export default {
     },
   
     deleteInterval ({ log, index }) {
-      this.$refs[`intervalMenu${index}`][0].classList.remove('show')
-      this.$refs[`intervalMenu${index}`][0].querySelector('button[data-toggle="dropdown"]').setAttribute('aria-expanded', 'false')
-      this.$refs[`intervalMenu${index}`][0].querySelector('.dropdown-menu').classList.remove('show')
       this.deleteIntervalButtonClicked({ logId: log.id })
     }
   }

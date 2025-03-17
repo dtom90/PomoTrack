@@ -475,4 +475,15 @@ $circle-thickness: 18px;
   background-color: $white;
   border: 1px solid $dark-tertiary;
 }
+
+// Timer settings form spacing
+#countdown-settings-dropdown {
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+  
+  fieldset .form-group:last-child {
+    margin-bottom: 0;
+  }
+}
 </style>

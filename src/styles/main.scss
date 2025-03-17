@@ -40,16 +40,30 @@ h6 {
 
 .navbar {
   background-color: $white !important;
+  padding: 10px 24px !important;
+
+  .nav-link,
+  .navbar-brand,
+  #time-container,
+  #navbarTagsDropdown .nav-link {
+    color: $dark-primary !important;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .navbar-nav li.nav-item:hover,li.nav-item.show {
   background-color: $dark-quaternary;
-  border-radius: 8px;
+  border-radius: $border-radius-base;
 }
 
 // Custom border-radius for all light buttons
 .btn-light {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   border-color: transparent;
   background-color: $white;
 }
@@ -113,16 +127,49 @@ table {
   }
 }
 
-// Modal height override
+// Modals
 .modal-content {
   height: 90vh;
   max-height: 90vh;
 }
 
+.modal-header .close {
+  padding: 0;
+  margin: 0;
+  height: 24px;
+  width: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+.close-icon {
+  width: 15px;
+  height: 15px;
+  background-image: url('/icons/x.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Add a global style block to override Bootstrap Vue's default styles */
+.modal-header .close {
+  opacity: 1 !important;
+}
+
+.modal-header .close:hover,
+.modal-header .close:focus,
+.modal-header .close:active {
+  opacity: 1 !important;
+}
+
+// Dropdown menu styles for all dropdowns in the app 
 .dropdown-menu {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   width: 240px;
   padding: 4px;
+  margin: 0;
 
   .dropdown-header {
     padding: 8px;
@@ -131,9 +178,13 @@ table {
 
   .dropdown-item {
     border: 1px solid transparent;
-    border-radius: 8px;
-    padding-left: 16px !important;
+    border-radius: $border-radius-hover;
+    padding-left: 12px !important;
     padding-right: 12px !important;
+    color: $dark-primary;
+  }
+
+  .dropdown-item[disabled] {
     color: $dark-secondary;
   }
 
@@ -192,7 +243,7 @@ table {
 }
 
 .submenu {
-  border-radius: 8px;
+  border-radius: $border-radius-base;
   position: absolute !important;
   top: 0;
   left: 100%;

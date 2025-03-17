@@ -147,14 +147,6 @@
             <span>Tags:</span>
           </label>
           <TaskTagList :task-id="selectedTask.id" />
-          
-          <!-- Tag Input -->
-          <div
-            v-if="taskTags"
-            id="new-tag-section"
-          >
-            <TagInput :task-id="selectedTask.id" />
-          </div>
         </div>
       </div>
     </template>
@@ -177,7 +169,6 @@ import Checkbox from './Checkbox'
 import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView'
 import TaskMenu from './TaskMenu.vue'
-import TagInput from './TagInput.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -207,8 +198,7 @@ export default {
     Checkbox,
     TaskTagList,
     ActivityView,
-    TaskMenu,
-    TagInput
+    TaskMenu
   },
   
   props: {
@@ -405,6 +395,12 @@ $vertical-spacing: 30px;
     }
   }
 }
+
+// New tag section plus button padding
+#new-tag-section {
+  padding-top: 4px;
+}
+
 </style>
 
 <style>

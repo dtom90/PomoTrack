@@ -18,7 +18,10 @@
       > Enable Notifications
     </b-dropdown-item-button>
     <b-dropdown-item-button>
-      <b-form-checkbox v-model="timeFormat24">
+      <b-form-checkbox
+        v-model="timeFormat24"
+        class="time-format-checkbox"
+      >
         Use 24-hour Clock
       </b-form-checkbox>
     </b-dropdown-item-button>

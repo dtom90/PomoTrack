@@ -11,7 +11,11 @@
       <div class="title-spacer" />
       <span>All Activity</span>
     </template>
-
+    
+    <template v-slot:modal-header-close>
+      <span class="close-icon" />
+    </template>
+    
     <DailyActivitySummary />
     <ActivityView
       v-if="isModalShown"

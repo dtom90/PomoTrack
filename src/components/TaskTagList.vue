@@ -11,17 +11,22 @@
       :remove-tag="mini ? null : removeTag"
       :class="mini ? 'tag-button-mini' : 'tag-button'"
     />
+    <TagInput
+      v-if="!mini"
+      :task-id="taskId"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import TagButton from './TagButton.vue'
-
+import TagInput from './TagInput.vue'
 export default {
   name: 'TaskTagList',
   components: {
-    TagButton
+    TagButton,
+    TagInput
   },
   props: {
     taskId: {
@@ -79,6 +84,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// #task-tag-list {
+//   max-width: 224px;
+// }
+
 .tag-button-mini {
   margin-right: 4px;
   margin-top: 4px;
