@@ -12,6 +12,11 @@
       <span id="activity-for">Activity for</span>
       <TagSettingsButton :tag-id="tempState.modalTagId" />
     </template>
+    
+    <template v-slot:modal-header-close>
+      <span class="close-icon" />
+    </template>
+    
     <ActivityView
       v-if="tempState.modalTagId && isModalShown"
       id="tagActivity"

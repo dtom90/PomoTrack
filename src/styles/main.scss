@@ -152,10 +152,41 @@ table {
   }
 }
 
-// Modal height override
+// Modals
 .modal-content {
   height: 90vh;
   max-height: 90vh;
+}
+
+.modal-header .close {
+  padding: 0;
+  margin: 0;
+  height: 24px;
+  width: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+.close-icon {
+  width: 15px;
+  height: 15px;
+  background-image: url('/icons/x.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Add a global style block to override Bootstrap Vue's default styles */
+.modal-header .close {
+  opacity: 1 !important;
+}
+
+.modal-header .close:hover,
+.modal-header .close:focus,
+.modal-header .close:active {
+  opacity: 1 !important;
 }
 
 // Dropdown menu styles for all dropdowns in the app 
