@@ -42,31 +42,25 @@
             v-if="!event.task && !event.completed"
             class="btn-container"
           >
-            <div
+            <b-dropdown
               :ref="`intervalMenu${index}`"
-              class="dropdown"
+              dropright
+              boundary="viewport"
+              variant="light"
+              toggle-class="interval-menu-btn"
+              no-caret
             >
-              <button
-                class="btn btn-light interval-menu-btn dropdown-toggle"
-                data-toggle="dropdown"
-                data-boundary="viewport"
-                aria-haspopup="true"
-              >
+              <template #button-content>
                 <font-awesome-icon icon="ellipsis-vertical" />
-              </button>
-              <div
-                class="dropdown-menu dropdown-menu-right"
-                style="padding: 0; min-width: 120px;"
+              </template>
+              <b-dropdown-item
+                variant="danger"
+                class="text-danger p-0"
+                @click="deleteInterval({ log: event, index })"
               >
-                <button
-                  class="btn btn-danger"
-                  style="width: 100%"
-                  @click="deleteInterval({ log: event, index })"
-                >
-                  Delete Interval
-                </button>
-              </div>
-            </div>
+                Delete Interval
+              </b-dropdown-item>
+            </b-dropdown>
           </td>
         </template>
         
@@ -148,21 +142,6 @@ export default {
 .btn-container {
   padding: 0;
   vertical-align: middle;
-  
-  .dropdown {
-    position: relative;
-  }
-
-  .dropdown-menu {
-    margin: 0;
-    padding: 0;
-    right: auto !important;
-    left: 14px !important;
-  }
-
-  .dropdown-toggle::after {
-    display: none;
-  }
 }
 
 td {
