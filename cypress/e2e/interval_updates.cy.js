@@ -34,6 +34,22 @@ describe('interval updates', () => {
     })
   })
 
+  it('should add an interval when hitting enter', () => {
+    // Arrange
+    cy.contains('Activity Log').scrollIntoView()
+
+    // Act
+    cy.get('.activity-view img[alt="Add interval"]').click()
+    cy.get('.activity-view fieldset').contains('Duration:').within(() => {
+      cy.get('input').type('{enter}')
+    })
+
+    // Assert
+    cy.get('tr').last().within(() => {
+      cy.get('td').contains('Time Spent: 25 minutes')
+    })
+  })
+
   it('should not alter timer after adding interval', () => {
     // Arrange
     cy.contains('Activity Log').scrollIntoView()
