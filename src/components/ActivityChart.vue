@@ -139,6 +139,7 @@ export default {
     
     chartData: function (newChartData, oldChartData) {
       this.updateWith()
+      this.chartOptions.plugins.datalabels.color = getTextColor(newChartData.datasets[0].backgroundColor)
       if (newChartData.datasets[0].label !== oldChartData.datasets[0].label) {
         this.$nextTick(() => {
           this.scrollRight()

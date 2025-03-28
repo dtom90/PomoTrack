@@ -20,7 +20,7 @@
           alt="Add interval"
         >
       </template>
-      <b-dropdown-form @submit="addIntervalButtonClicked">
+      <b-dropdown-form @keydown.enter="addIntervalButtonClicked">
         <b-form-group>
           Started:
           <VueCtkDateTimePicker
