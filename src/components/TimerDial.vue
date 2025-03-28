@@ -1,14 +1,15 @@
 <template>
-  <div
-    class="dial-container"
-    :style="cssProps"
-  >
-    <div class="red-arc-reducer" />
-    <div class="gray-outer-circle" />
-    <div
-      class="white-inner-circle d-flex justify-content-center align-items-center"
-    >
-      <slot />
+  <div id="color-scheme">
+    <div :style="cssProps">
+      <div class="dial-container">
+        <div class="red-arc-reducer" />
+        <div class="gray-outer-circle" />
+        <div
+        class="white-inner-circle d-flex justify-content-center align-items-center"
+      >
+          <slot />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -71,12 +72,15 @@ export default {
 <style scoped lang="scss">
 @import "../styles/_variables.scss";
 
-.dial-container {
-  position: relative;
-  width: var(--dial-size);
-  height: var(--dial-size);
+#color-scheme {
   --error-red: #{$error-red};
   --dark-quaternary: #{$dark-quaternary};
+}
+
+.dial-container {
+  position: relative;
+  width: var(--dial-size) !important;
+  height: var(--dial-size) !important;
 }
 
 .gray-outer-circle {
