@@ -27,7 +27,7 @@
       </div>
     </div>
     <h5 class="my-3">
-      Tasks Worked On
+      Total Time: {{ displayDuration(totalTime) }}
     </h5>
     <div class="activity-summary">
       <div
@@ -109,6 +109,15 @@ export default {
         sum[task.task] = task.task in sum ? sum[task.task] + task.timeSpent : task.timeSpent
         return sum
       }, {})).sort((a, b) => b[1] - a[1])
+    },
+    
+    totalTime () {
+      if (this.selectedDay === null) {
+        return 0
+      }
+      return this.selectedDayActivity.reduce((sum, task) => {
+        return sum + task[1]
+      }, 0)
     }
   }
 }
