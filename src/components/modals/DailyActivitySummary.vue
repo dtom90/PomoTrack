@@ -79,8 +79,8 @@ export default {
       'completedTasks'
     ]),
     
-    filteredActivity() {
-      return this.tagId 
+    filteredActivity () {
+      return this.tagId
         ? this.allActivity.filter(activity => activity.tagId === this.tagId)
         : this.allActivity
     },
