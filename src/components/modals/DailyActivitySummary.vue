@@ -59,6 +59,14 @@ export default {
   components: { CompleteStatus },
   mixins: [time],
   
+  props: {
+    tagId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
+  
   data () {
     return {
       daysBack: 0
@@ -71,12 +79,18 @@ export default {
       'completedTasks'
     ]),
     
+    filteredActivity() {
+      return this.tagId 
+        ? this.allActivity.filter(activity => activity.tagId === this.tagId)
+        : this.allActivity
+    },
+    
     selectedDay () {
       let daysBack = -1
       let day = null
-      for (let i = this.allActivity.length - 1; i >= 0; i--) {
-        if (day === null || dayjs(this.allActivity[i].started).isBefore(day, 'day')) {
-          day = dayjs(this.allActivity[i].started)
+      for (let i = this.filteredActivity.length - 1; i >= 0; i--) {
+        if (day === null || dayjs(this.filteredActivity[i].started).isBefore(day, 'day')) {
+          day = dayjs(this.filteredActivity[i].started)
           daysBack++
         }
         if (daysBack === this.daysBack) {
@@ -106,7 +120,7 @@ export default {
       if (this.selectedDay === null) {
         return []
       }
-      const selectedDayTasks = this.allActivity.filter(log => {
+      const selectedDayTasks = this.filteredActivity.filter(log => {
         return log.started && dayjs(log.started).dayOfYear() === this.selectedDay.dayOfYear() &&
           dayjs(log.started).year() === this.selectedDay.year()
       })

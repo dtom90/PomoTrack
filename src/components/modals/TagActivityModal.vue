@@ -17,6 +17,10 @@
       <span class="close-icon" />
     </template>
     
+    <DailyActivitySummary
+      v-if="tempState.modalTagId && isModalShown"
+      :tag-id="tempState.modalTagId"
+    />
     <ActivityView
       v-if="tempState.modalTagId && isModalShown"
       id="tagActivity"
@@ -29,15 +33,17 @@
 </template>
 
 <script>
-import ActivityView from '../ActivityView'
 import { mapState, mapGetters } from 'vuex'
 import TagSettingsButton from '../TagSettingsButton'
+import DailyActivitySummary from './DailyActivitySummary'
+import ActivityView from '../ActivityView'
 
 export default {
   name: 'TagActivityModal',
   
   components: {
     TagSettingsButton,
+    DailyActivitySummary,
     ActivityView
   },
   

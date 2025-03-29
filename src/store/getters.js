@@ -60,9 +60,9 @@ const getters = {
   
   allActivity: state => state.tasks
     .map(task => {
-      const logEvents = task.log.map(event => Object.assign({ task: task.name }, event))
+      const logEvents = task.log.map(event => Object.assign({ task: task.name, tagId: task.tags[0] }, event))
       if (task.completed) {
-        logEvents.unshift({ task: task.name, completed: task.completed })
+        logEvents.unshift({ task: task.name, tagId: task.tags[0], completed: task.completed })
       }
       return logEvents
     }).flat().sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
