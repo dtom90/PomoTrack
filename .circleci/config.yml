@@ -6,6 +6,32 @@ orbs:
   windows: circleci/windows@5
 
 jobs:
+  
+  check-version:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - run:
+          name: Check if version is greater than master
+          command: |
+            # Get current branch version
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            
+            # Fetch master branch
+            git fetch origin master
+            
+            # Get master branch version
+            MASTER_VERSION=$(git show origin/master:package.json | node -p "require(JSON.parse(require('fs').readFileSync(0, 'utf-8'))).version")
+            
+            # Compare versions using node semver comparison
+            if node -e "process.exit(require('semver').gt('$CURRENT_VERSION', '$MASTER_VERSION') ? 0 : 1)"; then
+              echo "Version $CURRENT_VERSION is greater than master version $MASTER_VERSION"
+            else
+              echo "Error: Version $CURRENT_VERSION must be greater than master version $MASTER_VERSION"
+              exit 1
+            fi
+
   test-basic:
     docker:
       - image: cimg/base:stable
@@ -16,6 +42,7 @@ jobs:
       - run:
           name: Run packages audit and lint
           command: ./docker/test_basic.sh
+
   test-cypress:
     docker:
       - image: cimg/base:stable
@@ -188,6 +215,12 @@ workflows:
   version: 2
   test:
     jobs:
+      - check-version:
+          filters:
+            branches:
+              ignore:
+                - master
+                - gh-pages
       - test-basic:
           filters:
             branches:
