@@ -74,7 +74,7 @@ export default {
     selectedDay () {
       let daysBack = -1
       let day = null
-      for (let i = this.allActivity.length - 1; i > 0; i--) {
+      for (let i = this.allActivity.length - 1; i >= 0; i--) {
         if (day === null || dayjs(this.allActivity[i].started).isBefore(day, 'day')) {
           day = dayjs(this.allActivity[i].started)
           daysBack++
@@ -90,7 +90,12 @@ export default {
       if (this.selectedDay === null) {
         return 'No Activity Yet'
       }
-      return this.selectedDay.day() === dayjs().day() ? 'Today' : this.selectedDay.day() === dayjs().day() - 1 ? 'Yesterday' : null
+      if (this.selectedDay.isToday()) {
+        return 'Today'
+      } else if (this.selectedDay.isYesterday()) {
+        return 'Yesterday'
+      }
+      return null
     },
     
     selectedDayDisplay () {
