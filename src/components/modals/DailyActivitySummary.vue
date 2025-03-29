@@ -27,7 +27,7 @@
       </div>
     </div>
     <h5 class="my-3">
-      Tasks Worked On
+      Total Time: {{ displayDuration(totalTime) }}
     </h5>
     <div class="activity-summary">
       <div
@@ -59,6 +59,14 @@ export default {
   components: { CompleteStatus },
   mixins: [time],
   
+  props: {
+    tagId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
+  
   data () {
     return {
       daysBack: 0
@@ -71,12 +79,18 @@ export default {
       'completedTasks'
     ]),
     
+    filteredActivity () {
+      return this.tagId
+        ? this.allActivity.filter(activity => activity.tagId === this.tagId)
+        : this.allActivity
+    },
+    
     selectedDay () {
       let daysBack = -1
       let day = null
-      for (let i = this.allActivity.length - 1; i > 0; i--) {
-        if (day === null || dayjs(this.allActivity[i].started).isBefore(day, 'day')) {
-          day = dayjs(this.allActivity[i].started)
+      for (let i = this.filteredActivity.length - 1; i >= 0; i--) {
+        if (day === null || dayjs(this.filteredActivity[i].started).isBefore(day, 'day')) {
+          day = dayjs(this.filteredActivity[i].started)
           daysBack++
         }
         if (daysBack === this.daysBack) {
@@ -90,7 +104,12 @@ export default {
       if (this.selectedDay === null) {
         return 'No Activity Yet'
       }
-      return this.selectedDay.day() === dayjs().day() ? 'Today' : this.selectedDay.day() === dayjs().day() - 1 ? 'Yesterday' : null
+      if (this.selectedDay.isToday()) {
+        return 'Today'
+      } else if (this.selectedDay.isYesterday()) {
+        return 'Yesterday'
+      }
+      return null
     },
     
     selectedDayDisplay () {
@@ -101,7 +120,7 @@ export default {
       if (this.selectedDay === null) {
         return []
       }
-      const selectedDayTasks = this.allActivity.filter(log => {
+      const selectedDayTasks = this.filteredActivity.filter(log => {
         return log.started && dayjs(log.started).dayOfYear() === this.selectedDay.dayOfYear() &&
           dayjs(log.started).year() === this.selectedDay.year()
       })
@@ -109,6 +128,15 @@ export default {
         sum[task.task] = task.task in sum ? sum[task.task] + task.timeSpent : task.timeSpent
         return sum
       }, {})).sort((a, b) => b[1] - a[1])
+    },
+    
+    totalTime () {
+      if (this.selectedDay === null) {
+        return 0
+      }
+      return this.selectedDayActivity.reduce((sum, task) => {
+        return sum + task[1]
+      }, 0)
     }
   }
 }
