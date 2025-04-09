@@ -81,7 +81,7 @@ export default {
     
     filteredActivity () {
       return this.tagId
-        ? this.allActivity.filter(activity => activity.tagId === this.tagId)
+        ? this.allActivity.filter(activity => activity.tagIds.includes(this.tagId))
         : this.allActivity
     },
     
