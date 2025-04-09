@@ -125,12 +125,12 @@
               ref="notesInput"
               v-model="selectedTask.notes"
               placeholder="Enter notes here.."
-              :rows="selectedTask.notes.split('\n').length"
               class="notes-input-and-display"
               no-resize
               @click="editNotes"
               @blur="saveNotes"
               @keydown.enter="handleNotesEnter"
+              @input="adjustTextareaHeight"
             />
           </b-input-group>
         </div>
@@ -241,7 +241,7 @@ export default {
     taskTags () {
       return this.selectedTask.tags
     },
-    
+
     displayNotes () {
       return marked(DOMPurify.sanitize(this.selectedTask.notes), { renderer })
     }
@@ -295,6 +295,7 @@ export default {
       this.editingNotes = true
       this.$nextTick(() => {
         this.$refs.notesInput.focus()
+        this.adjustTextareaHeight()
       })
     },
     
@@ -312,6 +313,14 @@ export default {
     
     async continueTimerHere () {
       await this.startTask({ taskId: this.selectedTask.id })
+    },
+    
+    adjustTextareaHeight (event) {
+      const textarea = this.$refs.notesInput.$el
+      // Reset height to auto to get the correct scrollHeight
+      textarea.style.height = 'auto'
+      // Set the height to match the content
+      textarea.style.height = textarea.scrollHeight + 'px'
     }
   }
 }
@@ -375,6 +384,7 @@ $vertical-spacing: 30px;
       border: 0;
       padding: 0;
       min-height: 48px;
+      overflow-y: hidden; // Hide scrollbar when expanding
     }
     
     #display-notes {

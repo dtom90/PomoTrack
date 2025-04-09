@@ -6,6 +6,19 @@ orbs:
   windows: circleci/windows@5
 
 jobs:
+  
+  check-version:
+    docker:
+      - image: cimg/node:18.20.5
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn add semver
+      - run:
+          name: Check if version is greater than master
+          command: ./docker/check-version.sh
+
   test-basic:
     docker:
       - image: cimg/base:stable
@@ -16,6 +29,7 @@ jobs:
       - run:
           name: Run packages audit and lint
           command: ./docker/test_basic.sh
+
   test-cypress:
     docker:
       - image: cimg/base:stable
@@ -188,6 +202,12 @@ workflows:
   version: 2
   test:
     jobs:
+      - check-version:
+          filters:
+            branches:
+              ignore:
+                - master
+                - gh-pages
       - test-basic:
           filters:
             branches:
