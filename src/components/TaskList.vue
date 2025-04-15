@@ -169,16 +169,16 @@ export default {
     incompleteTaskList: {
       get () {
         let incompleteTasks = this.settings.selectedTagIds.length > 0
-          ? (
-            this.settings.filterOperator === 'and'
-              ? this.incompleteTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-              : this.incompleteTasks.filter(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-          )
+          ? this.incompleteTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
           : this.incompleteTasks
         incompleteTasks = incompleteTasks.filter(t => !t.archived)
+        // eslint-disable-next-line no-console
+        console.log('get incompleteTaskList', incompleteTasks)
         return incompleteTasks
       },
       set (newIncompleteTaskOrder) {
+        // eslint-disable-next-line no-console
+        console.log('set incompleteTaskList', newIncompleteTaskOrder)
         this.reorderIncompleteTasks({ newIncompleteTaskOrder })
       }
     },
