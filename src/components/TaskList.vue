@@ -54,6 +54,7 @@
       v-if="!isCompletedList"
       id="incomplete-task-list"
       v-model="incompleteTaskList"
+      :force-fallback="isInElectron"
       class="list-group"
       ghost-class="draggable-ghost"
       :animation="200"
@@ -106,6 +107,7 @@ import Task from './Task.vue'
 import TaskFilterDropdown from './TaskFilterDropdown.vue'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
+import isElectron from '../lib/isElectron'
 
 export default {
   
@@ -129,7 +131,8 @@ export default {
     isFilterMenuOpen: false,
     sortingOptions: ['Recent', 'Oldest'],
     sortOrder: 'Recent',
-    isDragging: false
+    isDragging: false,
+    isInElectron: isElectron()
   }),
   
   computed: {
@@ -172,13 +175,9 @@ export default {
           ? this.incompleteTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
           : this.incompleteTasks
         incompleteTasks = incompleteTasks.filter(t => !t.archived)
-        // eslint-disable-next-line no-console
-        console.log('get incompleteTaskList', incompleteTasks)
         return incompleteTasks
       },
       set (newIncompleteTaskOrder) {
-        // eslint-disable-next-line no-console
-        console.log('set incompleteTaskList', newIncompleteTaskOrder)
         this.reorderIncompleteTasks({ newIncompleteTaskOrder })
       }
     },
@@ -307,6 +306,10 @@ export default {
 .empty-state-text {
   font-size: 1rem;
   margin-bottom: 0;
+}
+
+#incomplete-task-list {
+  user-select: none;
 }
 </style>
 
