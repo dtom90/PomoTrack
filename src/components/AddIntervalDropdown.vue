@@ -208,7 +208,7 @@ export default {
 <style>
   #add-interval-dropdown {
     .dropdown-menu {
-      width: 260px !important;
+      width: 270px !important;
     }
   }
 </style>
