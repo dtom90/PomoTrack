@@ -61,16 +61,11 @@
       @start="isDragging = true"
       @end="isDragging = false"
     >
-      <transition-group
-        type="transition"
-        :name="!isDragging ? 'flip-list' : ''"
-      >
-        <Task
-          v-for="task in incompleteTaskList"
-          :key="task.id"
-          :task="task"
-        />
-      </transition-group>
+      <Task
+        v-for="task in incompleteTaskList"
+        :key="task.id"
+        :task="task"
+      />
     </draggable>
     
     <!-- Completed Tasks -->
