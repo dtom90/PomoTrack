@@ -170,12 +170,17 @@ export default {
           ? this.incompleteTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
           : this.incompleteTasks
         incompleteTasks = incompleteTasks.filter(t => !t.archived)
+        // eslint-disable-next-line no-console
+        console.log('get incompleteTaskList', incompleteTasks)
         return incompleteTasks
       },
       set (newIncompleteTaskOrder) {
+        // eslint-disable-next-line no-console
+        console.log('set incompleteTaskList', newIncompleteTaskOrder)
         this.reorderIncompleteTasks({ newIncompleteTaskOrder })
       }
     },
+
     completedTaskList () {
       let completedTasks = this.completedTasksFiltered
       completedTasks = completedTasks.filter(t => !t.archived)
