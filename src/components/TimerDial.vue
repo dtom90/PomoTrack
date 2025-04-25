@@ -5,8 +5,8 @@
         <div class="red-arc-reducer" />
         <div class="gray-outer-circle" />
         <div
-        class="white-inner-circle d-flex justify-content-center align-items-center"
-      >
+          class="white-inner-circle d-flex justify-content-center align-items-center"
+        >
           <slot />
         </div>
       </div>
