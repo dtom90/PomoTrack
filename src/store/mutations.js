@@ -4,11 +4,10 @@ import initialState from './initialState'
 
 const mutations = {
   
-  setState (state, { tasks, tags, taskTagMaps, logs, settings }) {
+  setState (state, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }) {
     state.tasks = tasks
     state.tasks.forEach(task => {
       task.tags = []
-      task.log = []
     })
     state.tags = {}
     state.tagOrder = []
@@ -22,24 +21,22 @@ const mutations = {
         task.tags.push(taskTagMap.tagId)
       }
     }
-    for (const task of state.tasks) {
-      task.log = logs.filter(log => log.taskId === task.id)
-      if (task.log.length > 0) {
-        task.log.sort((a, b) => a.started - b.started)
-      }
-    }
     for (const key of Object.keys(initialState.settings)) {
       const setting = settings.find(s => s.key === key)
       state.settings[key] = setting ? setting.value : initialState.settings[key]
     }
+    state.selectedTaskLogs = selectedTaskLogs
   },
   
   setTasks (state, { tasks }) {
     state.tasks = tasks
   },
+
+  setSelectedTaskLogs (state, { selectedTaskLogs }) {
+    state.selectedTaskLogs = selectedTaskLogs
+  },
   
   addTask (state, { task }) {
-    task.log = []
     state.tasks.push(task)
   },
   
@@ -62,44 +59,33 @@ const mutations = {
   startTask (state, { log }) {
     const task = state.tasks.find(t => t.id === log.taskId)
     if (task) {
-      task.log = [...task.log, log]
       state.tempState.activeTaskID = task.id
       state.tempState.running = true
+      state.selectedTaskLogs.push(log)
     }
   },
   
-  updateLog (state, { log }) {
-    const taskIndex = state.tasks.findIndex(t => t.id === log.taskId)
-    if (taskIndex !== -1) {
-      const task = state.tasks[taskIndex]
-      const logIndex = task.log.findIndex(l => l.id === log.id)
-      if (logIndex >= 0) {
-        const newLog = [...task.log]
-        newLog[logIndex] = log
-        task.log = newLog
-        Vue.set(state.tasks, taskIndex, { ...task, log: newLog })
-        if (log.stopped === null) {
-          state.tempState.running = true
-        } else {
-          state.tempState.running = false
-          state.tempState.activeTaskID = null
-        }
+  updateLog (state, { taskId, log }) {
+    if (taskId !== state.settings.selectedTaskID) return
+    const logIndex = state.selectedTaskLogs.findIndex(l => l.id === log.id)
+    if (logIndex >= 0) {
+      Vue.set(state.selectedTaskLogs, logIndex, log)
+      if (log.stopped === null) {
+        state.tempState.running = true
       } else {
-        Vue.set(state.tasks, taskIndex, { ...task, log: [...task.log, log] })
+        state.tempState.running = false
+        state.tempState.activeTaskID = null
       }
+    } else {
+      state.selectedTaskLogs.push(log)
     }
   },
   
   deleteInterval (state, { taskId, logId }) {
-    const taskIndex = state.tasks.findIndex(t => t.id === taskId)
-    if (taskIndex === -1) return
-    const task = state.tasks[taskIndex]
-    const logIndex = task.log.findIndex(log => log.id === logId)
+    if (taskId !== state.settings.selectedTaskID) return
+    const logIndex = state.selectedTaskLogs.findIndex(l => l.id === logId)
     if (logIndex === -1) return
-    
-    const newLog = [...task.log]
-    newLog.splice(logIndex, 1)
-    Vue.set(state.tasks, taskIndex, { ...task, log: newLog })
+    Vue.delete(state.selectedTaskLogs, logIndex)
   },
   
   addTaskTag (state, { taskId, tag, isNewTag }) {

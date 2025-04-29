@@ -11,6 +11,7 @@
     "url": "https://davidthomason.com/"
   },
   "scripts": {
+    "install": "yarn --ignore-scripts",
     "packages:audit": "/bin/bash -c 'yarn audit --groups dependencies; [[ $? -ge 8 ]] && exit 1 || exit 0'",
     "packages:fix": "npm_config_yes=true npx yarn-audit-fix",
     "lint": "vue-cli-service lint src/ cypress/ --no-fix",

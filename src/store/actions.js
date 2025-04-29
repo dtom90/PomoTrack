@@ -16,7 +16,13 @@ const actions = {
         await dexieDb.logs.put(log)
       }
     }
-    commit('setState', { tasks, tags, taskTagMaps, logs, settings })
+    let selectedTaskLogs = []
+    for (const setting of settings) {
+      if (setting.key === 'selectedTaskID' && setting.value) {
+        selectedTaskLogs = await dexieDb.logs.where('taskId').equals(setting.value).toArray()
+      }
+    }
+    commit('setState', { tasks, tags, taskTagMaps, settings, selectedTaskLogs })
   },
 
   async addTask ({ state, commit, dispatch }, { name }) {
@@ -123,12 +129,12 @@ const actions = {
   
   async updateTaskTimer ({ state, commit }, { taskId }) {
     const task = state.tasks.find(t => t.id === taskId)
-    if (task && task.log.length > 0) {
+    if (task) {
       const runningLog = await dexieDb.logs.where('taskId').equals(taskId).and(log => log.stopped == null).first()
       if (runningLog) {
         runningLog.timeSpent = Date.now() - runningLog.started
         await dexieDb.logs.put(runningLog)
-        commit('updateLog', { log: runningLog })
+        commit('updateLog', { taskId, log: runningLog })
       }
     }
   },
@@ -139,7 +145,7 @@ const actions = {
       runningLog.stopped = Date.now()
       runningLog.timeSpent = runningLog.stopped - runningLog.started
       await dexieDb.logs.put(runningLog)
-      commit('updateLog', { log: runningLog })
+      commit('updateLog', { taskId: runningLog.taskId, log: runningLog })
     }
   },
   
@@ -194,11 +200,11 @@ const actions = {
         timeSpent: timeSpent
       }
       await dexieDb.logs.add(log)
-      commit('updateLog', { log })
+      commit('updateLog', { taskId, log })
     }
   },
   
-  async deleteInterval ({ state, commit }, { logId }) {
+  async deleteInterval ({ commit }, { logId }) {
     const log = await dexieDb.logs.get(logId)
     await dexieDb.logs.delete(logId)
     commit('deleteInterval', { taskId: log.taskId, logId })
@@ -284,7 +290,7 @@ const actions = {
     commit('updateTagOrder', { reorderedTags })
   },
   
-  async removeTaskTag ({ state, commit }, { taskId, tagId }) {
+  async removeTaskTag ({ commit }, { taskId, tagId }) {
     await dexieDb.taskTagMap
       .where('taskId').equals(taskId)
       .and(taskTagMap => taskTagMap.tagId === tagId)
@@ -295,7 +301,7 @@ const actions = {
     commit('updateTask', { taskId, taskUpdates: { tags: newTagIds } })
   },
   
-  async deleteTag ({ state, commit }, { tagId }) {
+  async deleteTag ({ commit }, { tagId }) {
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
     if (confirm(`Are you sure you want to delete the tag "${tag.tagName}"?\nAll tasks with this tag will lose the tag.`)) {
       await dexieDb.taskTagMap.where('tagId').equals(tagId).delete()
@@ -304,8 +310,10 @@ const actions = {
     }
   },
   
-  async selectTask ({ state, dispatch }, { taskId }) {
+  async selectTask ({ dispatch, commit }, { taskId }) {
     await dispatch('updateSetting', { key: 'selectedTaskID', value: taskId })
+    const selectedTaskLogs = await dexieDb.logs.where('taskId').equals(taskId).toArray()
+    commit('setSelectedTaskLogs', { selectedTaskLogs })
   },
   
   async addTagFilter ({ state, dispatch }, { tagId }) {

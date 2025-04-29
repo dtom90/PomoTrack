@@ -64,7 +64,7 @@
       <Task
         v-for="task in incompleteTaskList"
         :key="task.id"
-        :task="task"
+        :task-id="task.id"
       />
     </draggable>
     

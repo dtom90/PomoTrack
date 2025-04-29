@@ -157,7 +157,7 @@
         id="taskActivity"
         :task-id="selectedTask.id"
         :label="selectedTask.name"
-        :log="selectedTask.log"
+        :log="selectedTaskLogs"
       />
     </template>
     <br>
@@ -222,6 +222,7 @@ export default {
       'tempState',
       'tagOrder',
       'selectedTaskID',
+      'selectedTaskLogs',
       'tags'
     ]),
     

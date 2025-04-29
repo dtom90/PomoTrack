@@ -3,6 +3,7 @@ const initialState = {
   tags: {},
   tagOrder: [],
   totalTarget: {},
+  selectedTaskLogs: [],
   
   tempState: {
     activeTaskID: null,
