@@ -4,7 +4,7 @@ import initialState from './initialState'
 
 const mutations = {
   
-  setState (state, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }) {
+  loadInitialData (state, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }) {
     state.tasks = tasks
     state.tasks.forEach(task => {
       task.tags = []
@@ -26,6 +26,26 @@ const mutations = {
       state.settings[key] = setting ? setting.value : initialState.settings[key]
     }
     state.selectedTaskLogs = selectedTaskLogs
+  },
+  
+  loadAllActivity (state, { logs }) {
+    // Add task name and tags to each log
+    const logsWithTaskDetails = logs.map(l => {
+      const task = state.tasks.find(t => t.id === l.taskId)
+      return Object.assign({ task: task.name, tagIds: task.tags }, l)
+    })
+    // Add completed tasks as events
+    for (const task of state.tasks.filter(t => t.completed)) {
+      logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
+    }
+    logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
+    state.allActivity = logsWithTaskDetails
+    console.log('state.allActivity', state.allActivity)
+  },
+  
+  unloadAllActivity (state) {
+    state.allActivity = null
+    console.log('state.allActivity', state.allActivity)
   },
   
   setTasks (state, { tasks }) {

@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import time, { dayjs } from '../../lib/time'
 import CompleteStatus from '@/components/CompleteStatus.vue'
 
@@ -74,8 +74,11 @@ export default {
   },
   
   computed: {
+    ...mapState([
+      'allActivity'
+    ]),
+    
     ...mapGetters([
-      'allActivity',
       'completedTasks'
     ]),
     
@@ -124,6 +127,7 @@ export default {
         return log.started && dayjs(log.started).dayOfYear() === this.selectedDay.dayOfYear() &&
           dayjs(log.started).year() === this.selectedDay.year()
       })
+      console.log('selectedDayTasks', selectedDayTasks)
       return Object.entries(selectedDayTasks.reduce((sum, task) => {
         sum[task.task] = task.task in sum ? sum[task.task] + task.timeSpent : task.timeSpent
         return sum

@@ -4,8 +4,8 @@
     size="lg"
     hide-footer
     scrollable
-    @shown="isModalShown = true"
-    @hidden="isModalShown = false"
+    @shown="onModalShown"
+    @hidden="onModalHidden"
   >
     <template v-slot:modal-title>
       <div class="title-spacer" />
@@ -16,19 +16,20 @@
       <span class="close-icon" />
     </template>
     
-    <DailyActivitySummary />
-    <ActivityView
-      v-if="isModalShown"
-      id="allActivity"
-      label="All Activity"
-      :log="allActivity"
-    />
+    <div v-if="isModalShown && allActivity !== null">
+      <DailyActivitySummary />
+      <ActivityView
+        id="allActivity"
+        label="All Activity"
+        :log="allActivity"
+      />
+    </div>
   </b-modal>
 </template>
 
 <script>
 import ActivityView from '../ActivityView'
-import { mapGetters } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
 
 export default {
@@ -44,9 +45,28 @@ export default {
   }),
   
   computed: {
-    ...mapGetters([
+    ...mapState([
       'allActivity'
     ])
+  },
+  
+  methods: {
+    ...mapActions([
+      'loadAllActivity'
+    ]),
+    ...mapMutations([
+      'unloadAllActivity'
+    ]),
+    
+    onModalShown() {
+      this.isModalShown = true
+      this.loadAllActivity()
+    },
+
+    onModalHidden() {
+      this.isModalShown = false
+      this.unloadAllActivity()
+    }
   }
 }
 </script>

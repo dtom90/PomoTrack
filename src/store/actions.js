@@ -22,7 +22,12 @@ const actions = {
         selectedTaskLogs = await dexieDb.logs.where('taskId').equals(setting.value).toArray()
       }
     }
-    commit('setState', { tasks, tags, taskTagMaps, settings, selectedTaskLogs })
+    commit('loadInitialData', { tasks, tags, taskTagMaps, settings, selectedTaskLogs })
+  },
+
+  async loadAllActivity ({ commit }) {
+    const logs = await dexieDb.logs.orderBy('started').reverse().toArray()
+    commit('loadAllActivity', { logs })
   },
 
   async addTask ({ state, commit, dispatch }, { name }) {
