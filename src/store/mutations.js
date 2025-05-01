@@ -39,7 +39,7 @@ const mutations = {
       logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
     }
     logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
-    state.allActivity = logsWithTaskDetails
+    state.modalActivity = logsWithTaskDetails
   },
   
   loadTagActivity (state, { logs }) {
@@ -53,11 +53,7 @@ const mutations = {
       logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
     }
     logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
-    state.tagActivity = logsWithTaskDetails
-  },
-  
-  unloadAllActivity (state) {
-    state.allActivity = null
+    state.modalActivity = logsWithTaskDetails
   },
   
   setTasks (state, { tasks }) {

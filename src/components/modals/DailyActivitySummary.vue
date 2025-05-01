@@ -60,8 +60,8 @@ export default {
   mixins: [time],
   
   props: {
-    tagId: {
-      type: String,
+    filteredActivity: {
+      type: Array,
       required: false,
       default: null
     }
@@ -83,11 +83,11 @@ export default {
       'completedTasks'
     ]),
     
-    filteredActivity () {
-      return this.tagId
-        ? this.tagActivity
-        : this.allActivity
-    },
+    // filteredActivity () {
+    //   return this.tagId
+    //     ? this.tagActivity
+    //     : this.allActivity
+    // },
     
     selectedDay () {
       let daysBack = -1

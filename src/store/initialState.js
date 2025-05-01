@@ -4,8 +4,7 @@ const initialState = {
   tagOrder: [],
   totalTarget: {},
   selectedTaskLogs: [],
-  allActivity: null,
-  tagActivity: null,
+  modalActivity: null,
   
   tempState: {
     activeTaskID: null,
