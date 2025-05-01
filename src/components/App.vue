@@ -71,7 +71,7 @@
     </div>
     
     <!-- Modals -->
-    <AllActivityModal />
+    <ActivityModal />
   </div>
 </template>
 
@@ -80,7 +80,7 @@ import Navbar from './navbar/Navbar.vue'
 import TaskList from './TaskList'
 import ActiveTaskButtonButton from './ActiveTaskButton.vue'
 import SelectedTask from './SelectedTask'
-import { AllActivityModal } from './modals'
+import ActivityModal from './ActivityModal.vue'
 
 import { mapState } from 'vuex'
 import $ from 'jquery'
@@ -98,7 +98,7 @@ export default {
     Navbar,
     TaskList,
     SelectedTask,
-    AllActivityModal
+    ActivityModal
   },
   
   data () {

@@ -43,13 +43,13 @@
 </template>
 
 <script>
-import ActivityView from '../ActivityView'
 import { mapState, mapActions } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
-import TagSettingsButton from '@/components/TagSettingsButton.vue'
+import ActivityView from './ActivityView'
+import TagSettingsButton from './TagSettingsButton.vue'
 
 export default {
-  name: 'AllActivityModal',
+  name: 'ActivityModal',
   
   components: {
     TagSettingsButton,
