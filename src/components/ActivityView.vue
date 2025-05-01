@@ -363,7 +363,7 @@ function monthlyChartData (that) {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/variables.scss';
+@import '../styles/variables';
 
 .view-select {
   margin-bottom: 20px;

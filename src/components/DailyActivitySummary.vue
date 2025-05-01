@@ -51,7 +51,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import time, { dayjs } from '../../lib/time'
+import time, { dayjs } from '../lib/time'
 import CompleteStatus from '@/components/CompleteStatus.vue'
 
 export default {
@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../../styles/variables";
+@import "../styles/variables";
 
 .activity-summary {
   padding-left: 100px;

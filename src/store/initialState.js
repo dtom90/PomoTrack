@@ -2,7 +2,6 @@ const initialState = {
   tasks: [],
   tags: {},
   tagOrder: [],
-  totalTarget: {},
   selectedTaskLogs: [],
   modalActivity: null,
   
@@ -32,10 +31,7 @@ const initialState = {
     addSelectedTags: true,
     
     // Navbar settings
-    timeFormat24: false,
-    DailyTarget: null,
-    WeeklyTarget: null,
-    MonthlyTarget: null
+    timeFormat24: false
   }
 }
 

@@ -28,41 +28,7 @@ const mutations = {
     state.selectedTaskLogs = selectedTaskLogs
   },
   
-  loadAllActivity (state, { logs }) {
-    // Add task name and tags to each log
-    const logsWithTaskDetails = logs.map(l => {
-      const task = state.tasks.find(t => t.id === l.taskId)
-      return Object.assign({ task: task.name, tagIds: task.tags }, l)
-    })
-    // Add completed tasks as events
-    for (const task of state.tasks.filter(t => t.completed)) {
-      logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
-    }
-    logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
-    state.modalActivity = logsWithTaskDetails
-  },
-  
-  loadTagActivity (state, { logs }) {
-    // Add task name and tags to each log
-    const logsWithTaskDetails = logs.map(l => {
-      const task = state.tasks.find(t => t.id === l.taskId)
-      return Object.assign({ task: task.name, tagIds: task.tags }, l)
-    })
-    // Add completed tasks as events
-    for (const task of state.tasks.filter(t => t.completed)) {
-      logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
-    }
-    logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
-    state.modalActivity = logsWithTaskDetails
-  },
-  
-  setTasks (state, { tasks }) {
-    state.tasks = tasks
-  },
-
-  setSelectedTaskLogs (state, { selectedTaskLogs }) {
-    state.selectedTaskLogs = selectedTaskLogs
-  },
+  /** Tasks **/
   
   addTask (state, { task }) {
     state.tasks.push(task)
@@ -75,6 +41,10 @@ const mutations = {
     }
   },
   
+  setTasks (state, { tasks }) {
+    state.tasks = tasks
+  },
+  
   updateTasks (state, { tasksToUpdate }) {
     tasksToUpdate.forEach(taskUpdate => {
       const index = state.tasks.findIndex(t => t.id === taskUpdate.id)
@@ -83,6 +53,8 @@ const mutations = {
       }
     })
   },
+  
+  /** Logs **/
   
   startTask (state, { log }) {
     const task = state.tasks.find(t => t.id === log.taskId)
@@ -115,6 +87,26 @@ const mutations = {
     if (logIndex === -1) return
     Vue.delete(state.selectedTaskLogs, logIndex)
   },
+  
+  setSelectedTaskLogs (state, { selectedTaskLogs }) {
+    state.selectedTaskLogs = selectedTaskLogs
+  },
+  
+  setModalActivity (state, { logs }) {
+    // Add task name and tags to each log
+    const logsWithTaskDetails = logs.map(l => {
+      const task = state.tasks.find(t => t.id === l.taskId)
+      return Object.assign({ task: task.name, tagIds: task.tags }, l)
+    })
+    // Add completed tasks as events
+    for (const task of state.tasks.filter(t => t.completed)) {
+      logsWithTaskDetails.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
+    }
+    logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
+    state.modalActivity = logsWithTaskDetails
+  },
+  
+  /** Tags **/
   
   addTaskTag (state, { taskId, tag, isNewTag }) {
     if (isNewTag) {
@@ -150,14 +142,7 @@ const mutations = {
     $('#activityModal').modal('hide')
   },
   
-  overwriteState (state, newState) {
-    const r = confirm('WARNING: Loading state from this file will COMPLETELY OVERWRITE your current data with the data provided in this file. Are you ABSOLUTELY sure that you want to do this?')
-    if (r === true) {
-      Object.keys(state).forEach(key => {
-        state[key] = newState[key]
-      })
-    }
-  },
+  /** Temp state and Settings **/
   
   updateTempState (state, { key, value }) {
     state.tempState[key] = value
@@ -166,6 +151,8 @@ const mutations = {
   updateSetting (state, { key, value }) {
     state.settings[key] = value
   },
+  
+  /** Notifications **/
   
   saveNotification (state, { notification }) {
     state.tempState.notificationList.push(notification)

@@ -27,14 +27,14 @@ const actions = {
 
   async loadAllActivity ({ commit }) {
     const logs = await dexieDb.logs.orderBy('started').reverse().toArray()
-    commit('loadAllActivity', { logs })
+    commit('setModalActivity', { logs })
   },
 
   async loadTagActivity ({ state, commit }) {
     const taskMaps = await dexieDb.taskTagMap.where('tagId').equals(state.tempState.modalTagId).toArray()
     const taskIds = taskMaps.map(taskMap => taskMap.taskId)
     const logs = await dexieDb.logs.where('taskId').anyOf(taskIds).toArray()
-    commit('loadTagActivity', { logs })
+    commit('setModalActivity', { logs })
   },
 
   async addTask ({ state, commit, dispatch }, { name }) {
