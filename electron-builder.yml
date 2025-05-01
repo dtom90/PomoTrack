@@ -1,6 +1,9 @@
 appId: app.pomotrack
 productName: PomoTrack
 publish: github
+directories:
+  app: dist_electron
+  output: dist_electron/release
 mac:
   category: public.app-category.productivity
   hardenedRuntime: true
@@ -21,8 +24,3 @@ win:
       arch:
         - x64
 afterSign: scripts/notarize.js
-files:
-  - "dist_electron/bundled/**/*"
-  - "background.js"
-  - "node_modules/**/*"
-  - "package.json"

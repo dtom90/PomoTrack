@@ -61,11 +61,6 @@ const webpackConfig = {
           '@babel/plugin-proposal-private-property-in-object'
         ]
       })
-  },
-  pluginOptions: {
-    electronBuilder: {
-      preload: 'src/preload.js'
-    }
   }
 }
 
