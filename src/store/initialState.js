@@ -5,6 +5,7 @@ const initialState = {
   totalTarget: {},
   selectedTaskLogs: [],
   allActivity: null,
+  tagActivity: null,
   
   tempState: {
     activeTaskID: null,

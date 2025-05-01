@@ -30,6 +30,13 @@ const actions = {
     commit('loadAllActivity', { logs })
   },
 
+  async loadTagActivity ({ state, commit }) {
+    const taskMaps = await dexieDb.taskTagMap.where('tagId').equals(state.tempState.modalTagId).toArray()
+    const taskIds = taskMaps.map(taskMap => taskMap.taskId)
+    const logs = await dexieDb.logs.where('taskId').anyOf(taskIds).toArray()
+    commit('loadTagActivity', { logs })
+  },
+
   async addTask ({ state, commit, dispatch }, { name }) {
     const taskName = name.trim()
     if (taskName) {
