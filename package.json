@@ -3,7 +3,7 @@
   "displayName": "PomoTrack",
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "private": true,
   "description": "An app for productive developers",
   "author": {
@@ -11,7 +11,7 @@
     "url": "https://davidthomason.com/"
   },
   "scripts": {
-    "install": "yarn --ignore-scripts",
+    "install:ignore-scripts": "yarn --ignore-scripts",
     "packages:audit": "/bin/bash -c 'yarn audit --groups dependencies; [[ $? -ge 8 ]] && exit 1 || exit 0'",
     "packages:fix": "npm_config_yes=true npx yarn-audit-fix",
     "lint": "vue-cli-service lint src/ cypress/ --no-fix",
@@ -26,10 +26,11 @@
     "cy:run": "cypress run -b chrome",
     "test:prod:build:e2e": "yarn run web:dev && yarn run cy:run",
     "electron:dev": "vue-cli-service electron:serve",
-    "electron:build:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false vue-cli-service electron:build --dir --mac",
-    "electron:build:win": "vue-cli-service electron:build --dir --windows",
-    "electron:release:mac": "vue-cli-service electron:build --mac",
-    "electron:release:win": "vue-cli-service electron:build --windows",
+    "electron:build:vue": "vue-cli-service build --dest dist_electron/bundled",
+    "electron:build:mac": "yarn electron:build:vue && electron-builder --mac --dir",
+    "electron:build:win": "yarn electron:build:vue && electron-builder --win --dir",
+    "electron:release:mac": "yarn electron:build:vue && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
+    "electron:release:win": "yarn electron:build:vue && electron-builder --win",
     "electron:serve": "electron dist_electron/bundled",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
