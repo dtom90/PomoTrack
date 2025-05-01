@@ -58,12 +58,12 @@ export default {
       'unloadAllActivity'
     ]),
     
-    onModalShown() {
+    onModalShown () {
       this.isModalShown = true
       this.loadAllActivity()
     },
 
-    onModalHidden() {
+    onModalHidden () {
       this.isModalShown = false
       this.unloadAllActivity()
     }

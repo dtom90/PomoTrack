@@ -47,7 +47,7 @@ const getters = {
     return Object.values(state.tags)
       .filter(tag => !task.tags.includes(tag.id) && tag.tagName.startsWith(newTagName))
       .sort((a, b) => state.tagOrder.indexOf(a) - state.tagOrder.indexOf(b))
-  },
+  }
 }
 
 export default getters

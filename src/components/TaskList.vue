@@ -77,7 +77,7 @@
       <Task
         v-for="task in completedTaskList"
         :key="task.id"
-        :task="task"
+        :task-id="task.id"
       />
     </ul>
     

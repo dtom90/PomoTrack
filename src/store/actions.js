@@ -324,8 +324,12 @@ const actions = {
   
   async selectTask ({ dispatch, commit }, { taskId }) {
     await dispatch('updateSetting', { key: 'selectedTaskID', value: taskId })
-    const selectedTaskLogs = await dexieDb.logs.where('taskId').equals(taskId).toArray()
-    commit('setSelectedTaskLogs', { selectedTaskLogs })
+    if (taskId) {
+      const selectedTaskLogs = await dexieDb.logs.where('taskId').equals(taskId).toArray()
+      commit('setSelectedTaskLogs', { selectedTaskLogs })
+    } else {
+      commit('setSelectedTaskLogs', { selectedTaskLogs: [] })
+    }
   },
   
   async addTagFilter ({ state, dispatch }, { tagId }) {

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TagSettingsButton from '../TagSettingsButton'
 import DailyActivitySummary from './DailyActivitySummary'
 import ActivityView from '../ActivityView'
