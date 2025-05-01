@@ -158,7 +158,7 @@ jobs:
           command: |
             set +e
             pip install setuptools
-            yarn
+            yarn run install:ignore-scripts
       - run:
           name: Reset xcode selection
           command: sudo xcode-select -r
