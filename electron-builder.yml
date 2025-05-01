@@ -21,3 +21,8 @@ win:
       arch:
         - x64
 afterSign: scripts/notarize.js
+files:
+  - "dist_electron/bundled/**/*"
+  - "background.js"
+  - "node_modules/**/*"
+  - "package.json"
