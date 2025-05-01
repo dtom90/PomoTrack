@@ -47,25 +47,7 @@ const getters = {
     return Object.values(state.tags)
       .filter(tag => !task.tags.includes(tag.id) && tag.tagName.startsWith(newTagName))
       .sort((a, b) => state.tagOrder.indexOf(a) - state.tagOrder.indexOf(b))
-  },
-  
-  tagActivity: state => tag => state.tasks.filter(task => task.tags.includes(tag))
-    .map(task => {
-      const logEvents = task.log.map(event => Object.assign({ task: task.name }, event))
-      if (task.completed) {
-        logEvents.unshift({ task: task.name, completed: task.completed })
-      }
-      return logEvents
-    }).flat().sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed)),
-  
-  allActivity: state => state.tasks
-    .map(task => {
-      const logEvents = task.log.map(event => Object.assign({ task: task.name, tagIds: task.tags }, event))
-      if (task.completed) {
-        logEvents.unshift({ task: task.name, tagIds: task.tags, completed: task.completed })
-      }
-      return logEvents
-    }).flat().sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
+  }
 }
 
 export default getters

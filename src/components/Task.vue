@@ -1,13 +1,13 @@
 <template>
   <!--  Task List Group Item Wrapper  -->
   <li
-    :class="'task draggable-item list-group-item list-group-item-action form-check'+active"
-    @click="selectTask({ taskId: task.id })"
+    :class="['task', 'draggable-item', 'list-group-item', 'list-group-item-action', 'form-check', { active: active }]"
+    @click="selectTask({ taskId: taskId })"
   >
     <div class="d-flex align-items-start ">
       <Checkbox
         :checked="checked"
-        :task-id="task.id"
+        :task-id="taskId"
       />
       <div class="task-name-and-tags-wrapper">
         <div class="task-name">
@@ -15,7 +15,7 @@
         </div>
         <div class="d-flex flex-wrap">
           <TaskTagList
-            :task-id="task.id"
+            :task-id="taskId"
             mini
           />
         </div>
@@ -40,16 +40,9 @@ export default {
   name: 'Task',
   components: { TaskTagList, Checkbox, TimerDial },
   props: {
-    task: {
-      type: Object,
-      default: function () {
-        return {
-          id: 1,
-          name: 'new task 1',
-          createdDate: Date.now(),
-          completed: false
-        }
-      }
+    taskId: {
+      type: String,
+      required: true
     }
   },
   
@@ -59,23 +52,28 @@ export default {
       'tags',
       'tagOrder',
       'tempState',
-      'settings'
+      'settings',
+      'tasks'
     ]),
+
+    // Find the task object from the store using taskId
+    task () {
+      return this.tasks.find(t => t.id === this.taskId)
+    },
     
     active () {
-      return this.settings.selectedTaskID === this.task.id ? ' active' : ''
+      // Use taskId directly if task might not be found immediately
+      return this.settings.selectedTaskID === this.taskId
     },
     
     checked () {
-      return this.task.completed !== null
-    },
-    
-    taskTags () {
-      return this.task.tags.slice().sort((a, b) => this.tagOrder.indexOf(a) - this.tagOrder.indexOf(b))
+      // Ensure task exists before accessing properties
+      return this.task ? this.task.completed !== null : false
     },
     
     displayCountdownIndicator () {
-      return this.tempState.activeTaskID === this.task.id
+      // Use taskId directly
+      return this.tempState.activeTaskID === this.taskId
     }
   },
   

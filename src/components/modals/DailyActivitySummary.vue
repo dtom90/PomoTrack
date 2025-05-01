@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import time, { dayjs } from '../../lib/time'
 import CompleteStatus from '@/components/CompleteStatus.vue'
 
@@ -74,14 +74,18 @@ export default {
   },
   
   computed: {
-    ...mapGetters([
+    ...mapState([
       'allActivity',
+      'tagActivity'
+    ]),
+    
+    ...mapGetters([
       'completedTasks'
     ]),
     
     filteredActivity () {
       return this.tagId
-        ? this.allActivity.filter(activity => activity.tagIds.includes(this.tagId))
+        ? this.tagActivity
         : this.allActivity
     },
     
