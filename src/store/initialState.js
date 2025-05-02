@@ -31,7 +31,10 @@ const initialState = {
     addSelectedTags: true,
     
     // Navbar settings
-    timeFormat24: false
+    timeFormat24: false,
+    DailyTarget: null,
+    WeeklyTarget: null,
+    MonthlyTarget: null
   }
 }
 
