@@ -213,7 +213,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 .task-list-container {
   display: flex;
@@ -230,8 +230,8 @@ export default {
 .title {
   flex: 1;
   text-align: left;
-  font-size: $font-size-large;
-  font-weight: $font-weight-bold;
+  font-size: variables.$font-size-large;
+  font-weight: variables.$font-weight-bold;
 }
 
 .title-section > button,

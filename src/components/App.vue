@@ -143,7 +143,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $horiz-spacing: 24px;
 
@@ -154,12 +154,12 @@ body {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: $dark-primary;
+  color: variables.$dark-primary;
 }
 
 #main-section {
-  font-size: $font-size-base;
-  height: calc(100vh - #{$top-offset})
+  font-size: variables.$font-size-base;
+  height: calc(100vh - #{variables.$top-offset})
 }
 
 h3, h4, h5, h6 {
@@ -205,7 +205,7 @@ h3, h4, h5, h6 {
 .b-sidebar {
   display: block;
   position: absolute;
-  top: $top-offset;
+  top: variables.$top-offset;
   height: 100%;
   z-index: 100 !important;
 }

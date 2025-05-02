@@ -365,7 +365,7 @@ function monthlyChartData (that) {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/variables';
+@use '../styles/variables';
 
 .view-select {
   margin-bottom: 20px;
@@ -376,8 +376,8 @@ function monthlyChartData (that) {
 }
 
 #activity-log-title {
-  font-size: $font-size-large;
-  font-weight: $font-weight-bold;
+  font-size: variables.$font-size-large;
+  font-weight: variables.$font-weight-bold;
   margin-bottom : 20px;
 }
 
@@ -388,14 +388,14 @@ function monthlyChartData (that) {
 </style>
 
 <style lang="scss">
-@import '../styles/variables.scss';
+@use '../styles/variables';
 
 .chart-type-buttons > .btn-light {
-  background-color: $dark-quaternary !important;
+  background-color: variables.$dark-quaternary !important;
 }
 
 .chart-type-buttons > .btn-light.active {
   background-color: white !important;
-  border-color: $dark-tertiary !important;
+  border-color: variables.$dark-tertiary !important;
 }
 </style>

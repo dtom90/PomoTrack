@@ -25,7 +25,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $status-icon-size: 24px;
 
@@ -34,8 +34,8 @@ $status-icon-size: 24px;
   height: $status-icon-size;
   
   &.status-icon-small {
-    width: $checkbox-size-small;
-    height: $checkbox-size-small;
+    width: variables.$checkbox-size-small;
+    height: variables.$checkbox-size-small;
   }
 }
 </style>

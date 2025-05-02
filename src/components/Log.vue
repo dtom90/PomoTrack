@@ -108,7 +108,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/variables";
+@use "../styles/variables";
 
 .log {
   margin-top: 32px;
@@ -127,6 +127,6 @@ export default {
 }
 
 td {
-  font-size: $font-size-small;
+  font-size: variables.$font-size-small;
 }
 </style>

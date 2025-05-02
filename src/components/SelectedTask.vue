@@ -328,7 +328,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $vertical-spacing: 30px;
 
@@ -347,8 +347,8 @@ $vertical-spacing: 30px;
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-bold;
   }
   
   #selected-task-menu {

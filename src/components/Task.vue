@@ -87,7 +87,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 .task {
   padding-top: 12px;
@@ -96,15 +96,15 @@ export default {
   padding-right: 8px;
   border: none;
   border-radius: 8px !important;
-  color: $dark-primary !important;
+  color: variables.$dark-primary !important;
 }
 
 .task.active, .task:hover {
-  background-color: $dark-quaternary;
+  background-color: variables.$dark-quaternary;
 }
 
 .task.active {
-  font-weight: $font-weight-bold;
+  font-weight: variables.$font-weight-bold;
 }
 
 .task-name-and-tags-wrapper {
@@ -116,7 +116,7 @@ export default {
   flex: 1;
   text-align: left;
   line-height: 21px;
-  min-height: $checkbox-size;
+  min-height: variables.$checkbox-size;
   display: flex;
   align-items: center;
   margin-bottom: 4px;

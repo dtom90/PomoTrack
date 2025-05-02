@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 #active-task-button {
   padding: 0.5rem;
@@ -61,16 +61,16 @@ export default {
 }
 
 #active-task-name-and-time {
-  font-weight: $font-weight-bold;
+  font-weight: variables.$font-weight-bold;
   margin-left: 10px;
   text-align: left;
 }
 
 #active-task-name {
-  font-size: $font-size-base;
+  font-size: variables.$font-size-base;
 }
 
 #active-task-time {
-  font-size: $font-size-large;
+  font-size: variables.$font-size-large;
 }
 </style>

@@ -26,7 +26,10 @@
         <b-dropdown-item
           class="tag-dropdown-item"
         >
-          <div @click.stop="toggleSubmenu(tagId)" class="d-flex justify-content-between align-items-center w-100">
+          <div
+            class="d-flex justify-content-between align-items-center w-100"
+            @click.stop="toggleSubmenu(tagId)"
+          >
             <img
               src="/icons/dots-6-vertical.svg"
               alt="Drag Tag"
@@ -162,7 +165,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../../styles/variables";
+@use "../../styles/variables";
 
 .drag-handle {
   cursor: move;
@@ -177,6 +180,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: $dark-secondary;
+  color: variables.$dark-secondary;
+}
+
+.submenu-indicator {
+  display: inline-block;
+  margin-left: 8px;
+  color: variables.$dark-secondary;
 }
 </style>

@@ -70,11 +70,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 #color-scheme {
-  --error-red: #{$error-red};
-  --dark-quaternary: #{$dark-quaternary};
+  --error-red: $variables.error-red;
+  --dark-quaternary: $variables.dark-quaternary;
 }
 
 .dial-container {
@@ -90,7 +90,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: $dark-quaternary var(--circle-thickness) solid;
+  border: variables.$dark-quaternary var(--circle-thickness) solid;
 }
 
 .red-arc-reducer {
