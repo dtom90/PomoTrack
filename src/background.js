@@ -1,11 +1,11 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, shell, ipcMain, dialog } from 'electron'
+import { app, protocol, BrowserWindow, shell, ipcMain, dialog, net } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
+import { pathToFileURL } from 'url'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -24,7 +24,17 @@ function sendStatusToWindow (text) {
 }
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'app',
+    privileges: {
+      secure: true,
+      standard: true,
+      supportFetchAPI: true,
+      corsEnabled: true
+    }
+  }
+])
 
 function createWindow () {
   // Create the browser window.
@@ -33,29 +43,28 @@ function createWindow () {
     height: 600,
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true, // Enable context isolation for security
-      enableRemoteModule: false, // Disable remote module for security
+      contextIsolation: true,
+      enableRemoteModule: false,
       preload: path.join(__dirname, 'preload.js')
     }
   })
-  
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
-    createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
     autoUpdater.checkForUpdates()
   }
-  
+
   // Open links in the default browser window
   win.webContents.on('new-window', (event, url) => {
     event.preventDefault()
     shell.openExternal(url)
   })
-  
+
   win.on('closed', () => {
     win = null
   })
@@ -120,7 +129,7 @@ autoUpdater.on('update-downloaded', (info) => {
     title: 'Update Ready',
     message: 'The update has been downloaded. Do you want to install it now?'
   })
-  
+
   if (result === 0) {
     log.info('autoUpdater.quitAndInstall...')
     autoUpdater.quitAndInstall()
@@ -153,18 +162,45 @@ app.on('ready', async () => {
     try {
       await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Vue Devtools failed to install:', e.toString())
+      log.error('Vue Devtools failed to install:', e.toString())
     }
   }
   ipcMain.handle('checkForUpdates', checkForUpdates)
+
+  // --- Add protocol handler ---
+  protocol.handle('app', (request) => {
+    // 1. Extract the path from the URL (e.g., 'index.html' or 'js/app.js')
+    //    request.url will be like 'app://./index.html'
+    //    +3 gets rid of '://', slice(1) gets rid of the leading '.'
+    const urlPath = new URL(request.url).pathname.slice(1)
+
+    // Check for directory traversal attempts
+    const safePath = path.normalize(urlPath)
+    if (safePath.startsWith('..') || path.isAbsolute(safePath)) {
+      log.warn(`Blocked potentially unsafe path request: ${urlPath}`)
+      return new Response('Bad Request', { status: 400 })
+    }
+
+    const filePath = path.join(__dirname, safePath) // __dirname points to app root in production
+
+    // 2. Use net.fetch to load the local file
+    //    pathToFileURL converts the system path to a file:// URL for fetch
+    return net.fetch(pathToFileURL(filePath).toString())
+      .catch((error) => {
+        // Basic error handling for file not found etc.
+        log.error(`Failed to fetch ${filePath}: ${error}`)
+        return new Response('Not Found', { status: 404 })
+      })
+  })
+  // --- End protocol handler ---
+
   createWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
-    process.on('message', data => {
+    process.on('message', (data) => {
       if (data === 'graceful-exit') {
         app.quit()
       }
