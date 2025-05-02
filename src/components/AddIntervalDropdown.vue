@@ -22,6 +22,7 @@
       </template>
       <b-dropdown-form @keydown.enter="addIntervalButtonClicked">
         <b-form-group>
+          <font-awesome-icon :icon="startLockIcon" />
           Started:
           <VueCtkDateTimePicker
             :value="startTime"
@@ -32,6 +33,7 @@
         </b-form-group>
         
         <b-form-group>
+          <font-awesome-icon :icon="durationLockIcon" />
           Duration:
           <b-input-group>
             <b-form-input
@@ -53,6 +55,7 @@
         </b-form-group>
         
         <b-form-group>
+          <font-awesome-icon :icon="stopLockIcon" />
           Stopped:
           <VueCtkDateTimePicker
             :value="stopTime"
@@ -106,6 +109,18 @@ export default {
       durationMinutes: 25,
       stopTime: this.displayDateTimeHuman(),
       anchored: ['stopTime', 'durationMinutes']
+    }
+  },
+  
+  computed: {
+    startLockIcon () {
+      return this.anchored.includes('startTime') ? 'lock' : 'unlock'
+    },
+    durationLockIcon () {
+      return this.anchored.includes('durationMinutes') ? 'lock' : 'unlock'
+    },
+    stopLockIcon () {
+      return this.anchored.includes('stopTime') ? 'lock' : 'unlock'
     }
   },
   
