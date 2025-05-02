@@ -31,7 +31,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import Checkbox from './Checkbox'
+import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
 

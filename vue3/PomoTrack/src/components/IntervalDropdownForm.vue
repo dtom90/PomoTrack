@@ -18,7 +18,7 @@
       />
       <img
         v-else
-        src="/icons/add-to-bottom.svg"
+        src="@/assets/icons/add-to-bottom.svg"
         alt="Add interval"
       >
     </template>
@@ -87,7 +87,7 @@
   </b-dropdown>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions } from 'vuex'
 import time from '../lib/time'
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker'

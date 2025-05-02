@@ -45,7 +45,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
-import ActivityView from './ActivityView'
+import ActivityView from './ActivityView.vue'
 import TagSettingsButton from './TagSettingsButton.vue'
 
 export default {

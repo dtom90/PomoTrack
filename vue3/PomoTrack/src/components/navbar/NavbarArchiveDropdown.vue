@@ -55,7 +55,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center">
           <div class="empty-archive-state d-flex flex-column align-items-center justify-content-center">
             <img
-              src="/icons/empty-white-box.svg"
+              src="@/assets/icons/empty-white-box.svg"
               alt="Empty Archive"
               class="mb-2"
             >

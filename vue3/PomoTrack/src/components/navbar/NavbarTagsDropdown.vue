@@ -31,7 +31,7 @@
             @click.stop="toggleSubmenu(tagId)"
           >
             <img
-              src="/icons/dots-6-vertical.svg"
+              src="@/assets/icons/dots-6-vertical.svg"
               alt="Drag Tag"
               class="drag-handle"
             >
@@ -71,9 +71,9 @@
   </b-nav-item-dropdown>
 </template>
 
-<script>
-import TagButton from '../TagButton'
-import TagEditMenu from '../TagEditMenu'
+<script lang="ts">
+import TagButton from '../TagButton.vue'
+import TagEditMenu from '../TagEditMenu.vue'
 import { mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
 

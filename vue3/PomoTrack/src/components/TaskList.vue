@@ -88,7 +88,7 @@
       class="empty-state-container"
     >
       <img
-        src="/icons/empty-white-box.svg"
+        src="@/assets/icons/empty-white-box.svg"
         alt="Empty Archive"
         class="mb-2"
       >

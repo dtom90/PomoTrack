@@ -1,4 +1,4 @@
-import './assets/main.css'
+import './styles/main.scss';
 
 // Vuex store
 import store from './store/index.js'

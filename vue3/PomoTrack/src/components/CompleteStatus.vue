@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex align-items-center">
     <img
-      :src="completed ? '/icons/complete.svg' : '/icons/incomplete.svg'"
+      :src="completed ? '/assets/icons/complete.svg' : '/assets/icons/incomplete.svg'"
       :alt="completed ? 'complete' : 'incomplete'"
       class="status-icon status-icon-small"
     >

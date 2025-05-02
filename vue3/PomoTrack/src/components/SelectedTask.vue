@@ -165,9 +165,9 @@
 </template>
 
 <script>
-import Checkbox from './Checkbox'
+import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
-import ActivityView from './ActivityView'
+import ActivityView from './ActivityView.vue'
 import TaskMenu from './TaskMenu.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'

@@ -88,8 +88,8 @@
 </template>
 
 <script>
-import Log from './Log'
-import ActivityChart from './ActivityChart'
+import Log from './Log.vue'
+import ActivityChart from './ActivityChart.vue'
 import IntervalDropdownForm from './IntervalDropdownForm.vue'
 import { mapState, mapActions } from 'vuex'
 import time from '../lib/time'
