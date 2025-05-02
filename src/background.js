@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow, shell, ipcMain, dialog, net } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+// import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
@@ -159,11 +159,11 @@ app.on('activate', () => {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS)
-    } catch (e) {
-      log.error('Vue Devtools failed to install:', e.toString())
-    }
+    // try {
+    //   await installExtension(VUEJS_DEVTOOLS)
+    // } catch (e) {
+    //   log.error('Vue Devtools failed to install:', e.toString())
+    // }
   }
   ipcMain.handle('checkForUpdates', checkForUpdates)
 
