@@ -26,15 +26,14 @@
         <b-dropdown-item
           class="tag-dropdown-item"
         >
-          <div class="d-flex justify-content-between align-items-center w-100">
+          <div @click.stop="toggleSubmenu(tagId)" class="d-flex justify-content-between align-items-center w-100">
             <img
               src="/icons/dots-6-vertical.svg"
-              alt="Add interval"
+              alt="Drag Tag"
               class="drag-handle"
             >
             <div
               class="flex-1"
-              @click.stop="toggleSubmenu(tagId)"
             >
               <TagButton
                 :tag="tags[tagId]"
@@ -44,7 +43,6 @@
             </div>
             <div
               class="submenu-indicator-wrapper"
-              @click.stop="toggleSubmenu(tagId)"
             >
               <font-awesome-icon
                 icon="chevron-right"

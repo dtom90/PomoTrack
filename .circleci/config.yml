@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: yarn add semver --ignore-scripts
+          command: yarn add semver
       - run:
           name: Check if version is greater than master
           command: ./docker/check-version.sh
@@ -158,7 +158,7 @@ jobs:
           command: |
             set +e
             pip install setuptools
-            yarn run install:ignore-scripts
+            yarn install
       - run:
           name: Reset xcode selection
           command: sudo xcode-select -r
@@ -166,37 +166,37 @@ jobs:
           name: Build macOS app
           command: yarn run electron:release:mac
 
-  build-windows:
-    executor:
-      name: windows/default
-      size: medium
-    steps:
-      - checkout
-      - run:
-          name: Install NVM
-          command: |
-            $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile("https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh", "$env:TEMP\install.sh")
-            bash $env:TEMP\install.sh
-      - run:
-          name: Install Node
-          command: |
-            . ~/.nvm/nvm.sh
-            nvm install v22.15.0
-            nvm use v22.15.0
-            npm install -g yarn
-      - run:
-          name: Install dependencies
-          command: |
-            . ~/.nvm/nvm.sh
-            nvm use v22.15.0
-            yarn install
-      - run:
-          name: Build Windows app
-          command: |
-            . ~/.nvm/nvm.sh
-            nvm use v22.15.0
-            yarn run electron:release:win
+  # build-windows:
+  #   executor:
+  #     name: windows/default
+  #     size: medium
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install NVM
+  #         command: |
+  #           $webClient = New-Object System.Net.WebClient
+  #           $webClient.DownloadFile("https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh", "$env:TEMP\install.sh")
+  #           bash $env:TEMP\install.sh
+  #     - run:
+  #         name: Install Node
+  #         command: |
+  #           . ~/.nvm/nvm.sh
+  #           nvm install v22.15.0
+  #           nvm use v22.15.0
+  #           npm install -g yarn
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           . ~/.nvm/nvm.sh
+  #           nvm use v22.15.0
+  #           yarn install
+  #     - run:
+  #         name: Build Windows app
+  #         command: |
+  #           . ~/.nvm/nvm.sh
+  #           nvm use v22.15.0
+  #           yarn run electron:release:win
 
 workflows:
   version: 2
@@ -238,17 +238,17 @@ workflows:
             branches:
               only:
                 - master
-      - build-windows:
-          requires:
-            - create-release
-          filters:
-            branches:
-              only:
-                - master
+      # - build-windows:
+      #     requires:
+      #       - create-release
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
       - publish-release:
           requires:
             - build-mac
-            - build-windows
+            # - build-windows
           filters:
             branches:
               only: master

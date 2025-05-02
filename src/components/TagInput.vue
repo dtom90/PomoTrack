@@ -84,6 +84,7 @@ export default {
     async addTagByName () {
       if (this.inputTagName && this.inputTagName.length) {
         await this.addTaskTagByName({ taskId: this.taskId, tagName: this.inputTagName })
+        this.$refs.dropdown.hide()
         this.resetInput()
       }
     },
