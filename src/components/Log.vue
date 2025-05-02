@@ -42,24 +42,7 @@
             v-if="!event.task && !event.completed"
             class="btn-container"
           >
-            <b-dropdown
-              dropright
-              boundary="viewport"
-              variant="light"
-              toggle-class="interval-menu-btn"
-              no-caret
-            >
-              <template #button-content>
-                <font-awesome-icon icon="ellipsis-vertical" />
-              </template>
-              <b-dropdown-item
-                variant="danger"
-                class="text-danger p-0"
-                @click="deleteInterval({ log: event, index })"
-              >
-                Delete Interval
-              </b-dropdown-item>
-            </b-dropdown>
+            <IntervalDropdownForm :log-id="event.id" />
           </td>
         </template>
         
@@ -81,9 +64,12 @@
 
 <script>
 import time, { displayDuration } from '../lib/time'
+import IntervalDropdownForm from '@/components/IntervalDropdownForm.vue'
 
 export default {
   name: 'Log',
+
+  components: { IntervalDropdownForm },
   
   mixins: [time],
   

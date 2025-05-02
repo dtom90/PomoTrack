@@ -1,81 +1,90 @@
 <template>
-  <div
-    style="display: flex; justify-content: flex-end;"
+  <b-dropdown
+    id="add-interval-dropdown"
+    ref="addIntervalDropdown"
+    dropright
+    boundary="viewport"
+    variant="light"
+    no-caret
+    @show="dropdownWillShow"
+    @shown="dropdownShown = true"
+    @hide="dropdownWillHide"
+    @hidden="dropdownShown = false"
   >
-    <b-dropdown
-      id="add-interval-dropdown"
-      ref="addIntervalDropdown"
-      dropright
-      boundary="viewport"
-      variant="light"
-      no-caret
-      @show="dropdownWillShow"
-      @shown="dropdownShown = true"
-      @hide="dropdownWillHide"
-      @hidden="dropdownShown = false"
-    >
-      <template v-slot:button-content>
-        <img
-          src="/icons/add-to-bottom.svg"
-          alt="Add interval"
-        >
-      </template>
-      <b-dropdown-form @keydown.enter="addIntervalButtonClicked">
-        <b-form-group>
-          <font-awesome-icon :icon="startLockIcon" />
-          Started:
-          <VueCtkDateTimePicker
-            :value="startTime"
-            :format="displayDateTimeFormat()"
-            :right="true"
-            @input="onStartTimeInput"
+    <template v-slot:button-content>
+      <font-awesome-icon
+        v-if="logId"
+        icon="ellipsis-v"
+      />
+      <img
+        v-else
+        src="/icons/add-to-bottom.svg"
+        alt="Add interval"
+      >
+    </template>
+    <b-dropdown-form @keydown.enter="onSubmit">
+      <b-form-group>
+        <font-awesome-icon :icon="startLockIcon" />
+        Started:
+        <VueCtkDateTimePicker
+          :value="startTime"
+          :format="displayDateTimeFormat()"
+          :right="true"
+          @input="onStartTimeInput"
+        />
+      </b-form-group>
+        
+      <b-form-group>
+        <font-awesome-icon :icon="durationLockIcon" />
+        Duration:
+        <b-input-group>
+          <b-form-input
+            ref="appendMinutesInput"
+            :value="durationMinutes"
+            :state="durationMinutes > 0 ? null : false"
+            aria-describedby="input-live-feedback"
+            type="number"
+            @input="onDurationMinutesInput"
+            @blur="handleBlur"
           />
-        </b-form-group>
+          <b-input-group-append is-text>
+            Minutes
+          </b-input-group-append>
+          <b-form-invalid-feedback id="input-live-feedback">
+            Duration must be greater than 0
+          </b-form-invalid-feedback>
+        </b-input-group>
+      </b-form-group>
         
-        <b-form-group>
-          <font-awesome-icon :icon="durationLockIcon" />
-          Duration:
-          <b-input-group>
-            <b-form-input
-              ref="appendMinutesInput"
-              :value="durationMinutes"
-              :state="durationMinutes > 0 ? null : false"
-              aria-describedby="input-live-feedback"
-              type="number"
-              @input="onDurationMinutesInput"
-              @blur="handleBlur"
-            />
-            <b-input-group-append is-text>
-              Minutes
-            </b-input-group-append>
-            <b-form-invalid-feedback id="input-live-feedback">
-              Duration must be greater than 0
-            </b-form-invalid-feedback>
-          </b-input-group>
-        </b-form-group>
+      <b-form-group>
+        <font-awesome-icon :icon="stopLockIcon" />
+        Stopped:
+        <VueCtkDateTimePicker
+          :value="stopTime"
+          :format="displayDateTimeFormat()"
+          :right="true"
+          @input="onStopTimeInput"
+        />
+      </b-form-group>
         
-        <b-form-group>
-          <font-awesome-icon :icon="stopLockIcon" />
-          Stopped:
-          <VueCtkDateTimePicker
-            :value="stopTime"
-            :format="displayDateTimeFormat()"
-            :right="true"
-            @input="onStopTimeInput"
-          />
-        </b-form-group>
-        
-        <b-btn
-          variant="primary"
-          class="w-100"
-          :disabled="durationMinutes <= 0"
-          @click="addIntervalButtonClicked"
-        >
-          Add Interval
-        </b-btn>
-      </b-dropdown-form>
-    </b-dropdown>
-  </div>
+      <b-btn
+        variant="primary"
+        class="w-100"
+        :disabled="durationMinutes <= 0"
+        @click="onSubmit"
+      >
+        {{ logId ? 'Update Interval' : 'Add Interval' }}
+      </b-btn>
+      <b-btn
+        v-if="logId"
+        variant="danger"
+        class="w-100 mt-3"
+        @click="deleteInterval({ logId })"
+      >
+        Delete Interval
+      </b-btn>
+    </b-dropdown-form>
+  </b-dropdown>
 </template>
 
 <script>
@@ -85,7 +94,7 @@ import VueCtkDateTimePicker from 'vue-ctk-date-time-picker'
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
 
 export default {
-  name: 'AddIntervalDropdown',
+  name: 'IntervalDropdownForm',
   
   components: {
     VueCtkDateTimePicker
@@ -95,6 +104,10 @@ export default {
   
   props: {
     taskId: {
+      type: String,
+      default: null
+    },
+    logId: {
       type: String,
       default: null
     }
@@ -108,7 +121,7 @@ export default {
       startTime: null,
       durationMinutes: 25,
       stopTime: this.displayDateTimeHuman(),
-      anchored: ['stopTime', 'durationMinutes']
+      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')]
     }
   },
   
@@ -125,11 +138,23 @@ export default {
   },
   
   methods: {
-    ...mapActions(['addInterval']),
+    ...mapActions([
+      'addInterval',
+      'getLogById',
+      'updateInterval',
+      'deleteInterval'
+    ]),
     
-    dropdownWillShow () {
-      this.stopTime = this.displayDateTimeHuman()
-      this.updateStartTime()
+    async dropdownWillShow () {
+      if (this.logId) {
+        const log = await this.getLogById({ logId: this.logId })
+        this.startTime = this.displayDateTimeHuman(log.started)
+        this.durationMinutes = this.msToMinutes(log.timeSpent)
+        this.stopTime = this.displayDateTimeHuman(log.stopped)
+      } else {
+        this.stopTime = this.displayDateTimeHuman()
+        this.updateStartTime()
+      }
     },
     
     onStartTimeInput (newValue) {
@@ -205,15 +230,24 @@ export default {
       }
     },
     
-    addIntervalButtonClicked (event) {
+    onSubmit (event) {
       this.intentionalEnter = true
       event.preventDefault()
-      this.addInterval({
-        taskId: this.taskId,
-        started: this.stringToMs(this.startTime),
-        timeSpent: this.minutesToMs(this.durationMinutes),
-        stopped: this.stringToMs(this.stopTime)
-      })
+      if (this.logId) {
+        this.updateInterval({
+          logId: this.logId,
+          started: this.stringToMs(this.startTime),
+          timeSpent: this.minutesToMs(this.durationMinutes),
+          stopped: this.stringToMs(this.stopTime)
+        })
+      } else {
+        this.addInterval({
+          taskId: this.taskId,
+          started: this.stringToMs(this.startTime),
+          timeSpent: this.minutesToMs(this.durationMinutes),
+          stopped: this.stringToMs(this.stopTime)
+        })
+      }
       this.$refs.addIntervalDropdown.hide()
     }
   }

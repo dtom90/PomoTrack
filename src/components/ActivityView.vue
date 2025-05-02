@@ -64,10 +64,12 @@
       </div>
 
       <!-- Dropdown to add interval manually -->
-      <AddIntervalDropdown
-        v-if="isTaskActivity"
-        :task-id="taskId"
-      />
+      <div style="display: flex; justify-content: flex-end;">
+        <IntervalDropdownForm
+          v-if="isTaskActivity"
+          :task-id="taskId"
+        />
+      </div>
       
       <!-- Log -->
       <div id="task-log">
@@ -88,7 +90,7 @@
 <script>
 import Log from './Log'
 import ActivityChart from './ActivityChart'
-import AddIntervalDropdown from './AddIntervalDropdown.vue'
+import IntervalDropdownForm from './IntervalDropdownForm.vue'
 import { mapState, mapActions } from 'vuex'
 import time from '../lib/time'
 
@@ -97,7 +99,7 @@ export default {
   
   components: {
     ActivityChart,
-    AddIntervalDropdown,
+    IntervalDropdownForm,
     Log
   },
   

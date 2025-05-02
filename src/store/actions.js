@@ -216,6 +216,20 @@ const actions = {
     }
   },
   
+  async getLogById ({ state }, { logId }) {
+    const log = await dexieDb.logs.get(logId)
+    return log
+  },
+  
+  async updateInterval ({ commit }, { logId, started, timeSpent, stopped }) {
+    const log = await dexieDb.logs.get(logId)
+    log.started = started
+    log.stopped = stopped
+    log.timeSpent = timeSpent
+    await dexieDb.logs.put(log)
+    commit('updateLog', { taskId: log.taskId, log })
+  },
+  
   async deleteInterval ({ commit }, { logId }) {
     const log = await dexieDb.logs.get(logId)
     await dexieDb.logs.delete(logId)
