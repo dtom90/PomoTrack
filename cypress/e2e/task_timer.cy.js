@@ -321,7 +321,7 @@ describe('task timer', () => {
     
     // Assert
     cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
-    cy.get('#allActivityModal').within(() => {
+    cy.get('#activityModal').within(() => {
       cy.get('#task-log').scrollIntoView()
       cy.get('#task-log').within(() => {
         cy.get('tr').eq(0).contains('My Second Task')

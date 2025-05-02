@@ -51,7 +51,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import time, { dayjs } from '../../lib/time'
+import time, { dayjs } from '../lib/time'
 import CompleteStatus from '@/components/CompleteStatus.vue'
 
 export default {
@@ -60,8 +60,8 @@ export default {
   mixins: [time],
   
   props: {
-    tagId: {
-      type: String,
+    filteredActivity: {
+      type: Array,
       required: false,
       default: null
     }
@@ -83,11 +83,11 @@ export default {
       'completedTasks'
     ]),
     
-    filteredActivity () {
-      return this.tagId
-        ? this.tagActivity
-        : this.allActivity
-    },
+    // filteredActivity () {
+    //   return this.tagId
+    //     ? this.tagActivity
+    //     : this.allActivity
+    // },
     
     selectedDay () {
       let daysBack = -1
@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../../styles/variables";
+@import "../styles/variables";
 
 .activity-summary {
   padding-left: 100px;

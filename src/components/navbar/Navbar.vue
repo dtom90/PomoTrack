@@ -19,7 +19,7 @@
           
           <NavbarArchiveDropdown />
 
-          <b-nav-item v-b-modal.allActivityModal>
+          <b-nav-item @click="openAllActivity">
             <span>
               All Activity
             </span>
@@ -34,6 +34,7 @@
 
 <script>
 import time from '../../lib/time'
+import { mapMutations } from 'vuex'
 import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
 import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
 import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
@@ -69,8 +70,17 @@ export default {
   },
   
   methods: {
+    ...mapMutations([
+      'updateTempState'
+    ]),
+    
     updateTime () {
       this.currentDate = new Date()
+    },
+    
+    openAllActivity () {
+      this.updateTempState({ key: 'modalTagId', value: null })
+      this.$root.$emit('bv::toggle::modal', 'activityModal')
     }
   }
 }

@@ -9,24 +9,34 @@
   >
     <template v-slot:modal-title>
       <span class="title-spacer" />
-      <span id="activity-for">Activity for</span>
-      <TagSettingsButton :tag-id="tempState.modalTagId" />
+      <span v-if="!tempState.modalTagId">All Activity</span>
+      <template v-else>
+        <span id="activity-for">Activity for</span>
+        <TagSettingsButton :tag-id="tempState.modalTagId" />
+      </template>
     </template>
     
     <template v-slot:modal-header-close>
       <span class="close-icon" />
     </template>
     
-    <div v-if="tempState.modalTagId && isModalShown && tagActivity !== null">
+    <div v-if="isModalShown && modalActivity !== null">
       <DailyActivitySummary
-        :tag-id="tempState.modalTagId"
+        :filtered-activity="modalActivity"
       />
       <ActivityView
+        v-if="!tempState.modalTagId"
+        id="allActivity"
+        label="All Activity"
+        :log="modalActivity"
+      />
+      <ActivityView
+        v-else
         id="tagActivity"
         :tag-id="tag.id"
         :label="tag.tagName"
         :color="tag.color"
-        :log="tagActivity"
+        :log="modalActivity"
       />
     </div>
   </b-modal>
@@ -34,12 +44,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import TagSettingsButton from '../TagSettingsButton'
-import DailyActivitySummary from './DailyActivitySummary'
-import ActivityView from '../ActivityView'
+import DailyActivitySummary from './DailyActivitySummary.vue'
+import ActivityView from './ActivityView'
+import TagSettingsButton from './TagSettingsButton.vue'
 
 export default {
-  name: 'TagActivityModal',
+  name: 'ActivityModal',
   
   components: {
     TagSettingsButton,
@@ -54,7 +64,7 @@ export default {
   computed: {
     ...mapState([
       'tags',
-      'tagActivity',
+      'modalActivity',
       'tempState'
     ]),
     
@@ -65,14 +75,19 @@ export default {
   
   methods: {
     ...mapActions([
+      'loadAllActivity',
       'loadTagActivity'
     ]),
     
     onModalShown () {
       this.isModalShown = true
-      this.loadTagActivity()
+      if (!this.tempState.modalTagId) {
+        this.loadAllActivity()
+      } else {
+        this.loadTagActivity()
+      }
     },
-    
+
     onModalHidden () {
       this.isModalShown = false
     }
