@@ -1,6 +1,5 @@
 @use "variables";
 @import "bootstrap/scss/bootstrap";
-// @import "bootstrap-vue-next/src/index.scss";
 @import "fonts";
 @import "tags";
 
@@ -164,7 +163,7 @@ table {
   opacity: 1 !important;
 }
 
-// Dropdown menu styles for all dropdowns in the app 
+// Dropdown menu styles for all dropdowns in the app
 .dropdown-menu {
   border-radius: variables.$border-radius-base;
   width: 240px;
@@ -227,10 +226,10 @@ table {
 
 /* Right-aligned dropdown options */
 .navbar .dropdown-menu.dropdown-menu-right {
-  left: auto !important; 
+  left: auto !important;
   right: 0 !important;
   transform: translateX(0) !important; /* Prevent any transform shifting */
-  
+
   /* This is critical for proper button alignment */
   position: absolute !important;
   top: 100% !important;

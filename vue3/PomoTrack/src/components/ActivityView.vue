@@ -5,17 +5,15 @@
   >
     <!-- Daily / Weekly / Monthly view switch -->
     <div class="view-select d-flex justify-content-center position-relative">
-      <b-form-group>
-        <b-form-radio-group
-          v-model="chartType"
-          :options="chartTypeOptions"
-          buttons
-          button-variant="light"
-          class="chart-type-buttons"
-          @change="onChartTypeChange"
-        />
-      </b-form-group>
-      
+      <BFormRadioGroup
+        v-model="chartType"
+        :options="chartTypeOptions"
+        buttons
+        button-variant="light"
+        class="chart-type-buttons"
+        @change="onChartTypeChange"
+      />
+
       <div
         v-if="!isTaskActivity"
         class="position-absolute"
@@ -40,7 +38,7 @@
         </b-dropdown>
       </div>
     </div>
-    
+
     <!-- ActivityChart -->
     <ActivityChart
       ref="activityChart"
@@ -48,9 +46,9 @@
       :styles="chartStyles"
       :target="target * 60"
     />
-    
+
     <br>
-    
+
     <!-- Activity Data -->
     <div>
       <div
@@ -67,7 +65,7 @@
           :task-id="taskId"
         />
       </div>
-      
+
       <!-- Log -->
       <div id="task-log">
         <br>
@@ -93,15 +91,15 @@ import time from '../lib/time'
 
 export default {
   name: 'ActivityView',
-  
+
   components: {
     ActivityChart,
     IntervalDropdownForm,
     Log
   },
-  
+
   mixins: [time],
-  
+
   props: {
     id: {
       type: String,
@@ -130,7 +128,7 @@ export default {
       }
     }
   },
-  
+
   data: function () {
     return {
       chartTypeOptions: ['Daily', 'Weekly', 'Monthly'],
@@ -138,19 +136,19 @@ export default {
       logVisible: false
     }
   },
-  
+
   computed: {
-    
+
     ...mapState([
       'tasks',
       'tags',
       'settings'
     ]),
-    
+
     isTaskActivity: function () {
       return this.taskId !== null
     },
-    
+
     target: {
       get () {
         if (this.isTaskActivity) {
@@ -178,11 +176,11 @@ export default {
         }
       }
     },
-    
+
     dailyActivity: function () {
       const dailyActivity = {}
       let day
-      
+
       if (this.isTaskActivity) {
         const task = this.tasks.filter(task => task.id === this.taskId)[0]
         if (task.completed) {
@@ -190,7 +188,7 @@ export default {
           dailyActivity[day] = { log: [{ completed: task.completed }] }
         }
       }
-      
+
       // Create dailyActivity Object from a copy of descending this.log
       for (const event of [...this.log].reverse()) {
         const timestamp = 'started' in event ? event.started : event.completed
@@ -201,7 +199,7 @@ export default {
           dailyActivity[day] = { log: [event] }
         }
       }
-      
+
       for (const day in dailyActivity) {
         dailyActivity[day].log.sort((a, b) => {
           const aTime = a.completed || a.started
@@ -209,22 +207,22 @@ export default {
           return bTime - aTime
         })
       }
-      
+
       const dailyActivityArray = Object.entries(dailyActivity)
       dailyActivityArray.sort(([day1], [day2]) => this.stringToMs(day2) - this.stringToMs(day1))
       return dailyActivityArray
     },
-    
+
     chartData () {
       const chartData = Object.assign({}, this.chartType === 'Daily' ? dailyChartData(this) : (this.chartType === 'Weekly' ? weeklyChartData(this) : monthlyChartData(this)))
       chartData.labels = chartData.labels.slice(-30)
       chartData.datasets[0].data = chartData.datasets[0].data.slice(-30)
       return chartData
     },
-    
+
     chartStyles () {
       const width = 50 + this.chartData.labels.length * 100
-      
+
       return width > 600 ? {
         width: `${width}px`,
         height: '400px',
@@ -233,30 +231,30 @@ export default {
         height: '400px'
       }
     }
-    
+
   },
-  
+
   methods: {
-    
+
     ...mapActions([
       'updateSetting',
       'updateTag',
       'deleteInterval'
     ]),
-    
+
     calculateTimeSpent (log) {
       return log.filter(interval => interval.timeSpent)
         .reduce((total, interval) => total + interval.timeSpent, 0)
     },
-    
+
     onChartTypeChange () {
       this.$refs.activityChart.scrollRight()
     },
-    
+
     toggleLog () {
       this.logVisible = !this.logVisible
     },
-    
+
     deleteIntervalButtonClicked ({ logId }) {
       this.deleteInterval({ logId })
     }
@@ -277,7 +275,7 @@ function initializeChartData (that) {
 
 function dailyChartData (that) {
   const chartData = initializeChartData(that)
-  
+
   // Add time spent per day and add to chartData
   let nextDay = null
   that.dailyActivity.forEach(([day, dayActivity]) => {
@@ -297,14 +295,14 @@ function dailyChartData (that) {
     chartData.datasets[0].data.unshift(that.msToMinutes(dayActivity.timeSpent))
     nextDay = day
   })
-  
+
   return chartData
 }
 
 function weeklyChartData (that) {
   const weeklyActivity = {}
   let week
-  
+
   // Create weeklyActivity Object from log
   for (const event of that.log) {
     week = that.displayWeekISO(event.started)
@@ -314,9 +312,9 @@ function weeklyChartData (that) {
       weeklyActivity[week] = { log: [event] }
     }
   }
-  
+
   const chartData = initializeChartData(that)
-  
+
   // Add time spent per week and add to chartData
   Object.keys(weeklyActivity).slice().sort((a, b) => {
     const [ay, aw] = a.split('-').map(n => parseInt(n))
@@ -326,14 +324,14 @@ function weeklyChartData (that) {
     chartData.labels.push(that.displayWeekHuman(week))
     chartData.datasets[0].data.push(that.msToMinutes(that.calculateTimeSpent(weeklyActivity[week].log)))
   })
-  
+
   return chartData
 }
 
 function monthlyChartData (that) {
   const monthlyActivity = {}
   let month
-  
+
   // Create monthlyActivity Object from log
   for (const event of that.log) {
     month = that.displayMonthISO(event.started)
@@ -343,9 +341,9 @@ function monthlyChartData (that) {
       monthlyActivity[month] = { log: [event] }
     }
   }
-  
+
   const chartData = initializeChartData(that)
-  
+
   // Add time spent per week and add to chartData
   Object.keys(monthlyActivity).slice().sort((a, b) => {
     const [ay, am] = a.split('-').map(n => parseInt(n))
@@ -355,7 +353,7 @@ function monthlyChartData (that) {
     chartData.labels.push(that.displayMonthHuman(month))
     chartData.datasets[0].data.push(that.msToMinutes(that.calculateTimeSpent(monthlyActivity[month].log)))
   })
-  
+
   return chartData
 }
 
