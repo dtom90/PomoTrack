@@ -3,20 +3,20 @@
     <b-navbar-brand href="#">
       PomoTrack
     </b-navbar-brand>
-    
+
     <div id="time-container">
       <span>{{ displayTime }}</span>
     </div>
-    
+
     <div class="navbar-menu d-flex flex-column align-items-end">
       <b-navbar-toggle target="nav-collapse" />
       <b-collapse
         id="nav-collapse"
         is-nav
       >
-        <b-navbar-nav class="ml-auto">
+        <b-navbar-nav class="ms-auto">
           <NavbarTagsDropdown />
-          
+
           <NavbarArchiveDropdown />
 
           <b-nav-item @click="openAllActivity">
@@ -24,7 +24,7 @@
               All Activity
             </span>
           </b-nav-item>
-          
+
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>
@@ -41,43 +41,43 @@ import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
 
 export default {
   name: 'Navbar',
-  
+
   components: {
     NavbarArchiveDropdown,
     NavbarTagsDropdown,
     NavbarOptionsDropdown
   },
-  
+
   mixins: [time],
-  
+
   data: function () {
     return {
       currentDate: null,
       currentMinute: null
     }
   },
-  
+
   computed: {
-    
+
     displayTime () {
       return this.displayTimeHuman(this.currentDate)
     }
   },
-  
+
   mounted () {
     this.updateTime()
     setInterval(this.updateTime, 1000)
   },
-  
+
   methods: {
     ...mapMutations([
       'updateTempState'
     ]),
-    
+
     updateTime () {
       this.currentDate = new Date()
     },
-    
+
     openAllActivity () {
       this.updateTempState({ key: 'modalTagId', value: null })
       this.$root.$emit('bv::toggle::modal', 'activityModal')

@@ -5,7 +5,6 @@
     text="Archive"
     no-caret
     boundary="viewport"
-    right
   >
     <div>
       <b-dropdown-header>
@@ -21,7 +20,7 @@
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
               <CompleteStatus :completed="task.completed !== null" />
-              <span class="ml-4 text-wrap">{{ task.name }}</span>
+              <span class="ms-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">
               <div class="submenu-button-wrapper">
@@ -32,7 +31,7 @@
                 >
                   <font-awesome-icon icon="ellipsis-vertical" />
                 </b-button>
-                
+
                 <!-- Submenu -->
                 <div
                   class="submenu task-submenu"
@@ -47,7 +46,7 @@
           </div>
         </b-dropdown-item>
       </template>
-    
+
       <b-dropdown-item
         v-if="archivedTasks.length === 0"
         disabled
@@ -73,30 +72,30 @@ import CompleteStatus from '@/components/CompleteStatus.vue'
 
 export default {
   name: 'NavbarArchiveDropdown',
-  
+
   components: { CompleteStatus },
-  
+
   data () {
     return {
       activeSubmenu: null
     }
   },
-  
+
   computed: {
     ...mapGetters([
       'archivedTasks'
     ])
   },
-  
+
   methods: {
     ...mapActions([
       'archiveTask'
     ]),
-    
+
     onTaskClick () {
       this.$refs.dropdown.show()
     },
-    
+
     toggleSubmenu (taskId) {
       this.$refs.dropdown.show() // Keep dropdown open after submenu is toggled
       if (this.activeSubmenu === taskId) {
@@ -105,11 +104,11 @@ export default {
         this.activeSubmenu = taskId
       }
     },
-    
+
     closeSubmenu () {
       this.activeSubmenu = null
     },
-    
+
     unarchiveTask (taskId) {
       this.archiveTask({ taskId, archived: false })
       this.closeSubmenu()
@@ -131,11 +130,12 @@ export default {
 </style>
 
 <style>
-#archive-dropdown {
-  /*noinspection CssUnusedSymbol*/
-  
-  .dropdown-menu {
-    width: 500px !important;
-  }
+/*noinspection CssUnusedSymbol*/
+#archive-dropdown-menu {
+  width: 500px !important;
+}
+
+.dropdown-header {
+  text-align: left;
 }
 </style>

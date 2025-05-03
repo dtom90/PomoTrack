@@ -5,12 +5,11 @@
     text="Tags"
     no-caret
     boundary="viewport"
-    right
   >
     <template #button-content>
       <span>Tags</span>
     </template>
-    
+
     <draggable
       v-model="tagOrder"
       :item-key="(tagId: string) => tagId"
@@ -43,7 +42,7 @@
                 <TagButton
                   :tag="tags[tagId]"
                   :tag-id="tagId"
-                  class="ml-3"
+                  class="ms-3"
                 />
               </div>
               <div
@@ -56,7 +55,7 @@
               </div>
             </div>
           </b-dropdown-item>
-          
+
           <!-- Submenu -->
           <div
             class="submenu tag-submenu"
@@ -82,13 +81,13 @@ import draggable from 'vuedraggable'
 
 export default {
   name: 'NavbarTagsDropdown',
-  
+
   components: {
     TagButton,
     TagEditMenu,
     draggable
   },
-  
+
   data () {
     return {
       activeSubmenu: null,
@@ -96,7 +95,7 @@ export default {
       isDragging: false
     }
   },
-  
+
   computed: {
     ...mapState([
       'tags'
@@ -110,7 +109,7 @@ export default {
       }
     }
   },
-  
+
   watch: {
     activeSubmenu (tagId) {
       if (tagId) {
@@ -130,14 +129,14 @@ export default {
       })
     })
   },
-  
+
   methods: {
     ...mapActions([
       'updateTag',
       'deleteTag',
       'reorderTags'
     ]),
-    
+
     toggleSubmenu (tagId) {
       this.$refs.dropdown.show() // Keep dropdown open after submenu is toggled
       if (this.activeSubmenu === tagId) {
@@ -146,19 +145,19 @@ export default {
         this.activeSubmenu = tagId
       }
     },
-    
+
     closeSubmenu () {
       this.activeSubmenu = null
     },
-    
+
     createNewTag () {
       this.$emit('create-new-tag')
     },
-    
+
     manageTags () {
       this.$emit('manage-tags')
     },
-    
+
     onDragEnd () {
       this.isDragging = false
       this.$refs.dropdown.show() // Keep dropdown open after drag ends

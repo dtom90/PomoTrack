@@ -3,7 +3,6 @@
     text="Options"
     boundary="viewport"
     no-caret
-    alignment="end"
     @show="refreshNotificationsEnabled"
   >
     <b-dropdown-item-button
