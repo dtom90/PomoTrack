@@ -232,7 +232,6 @@ export default {
     ]),
 
     isEmptyState () {
-      console.log('this.anyTasks', this.anyTasks)
       return !this.anyTasks
     },
 
