@@ -60,6 +60,7 @@
           <div
             class="submenu tag-submenu"
             :class="{ 'active': activeSubmenu === tagId }"
+            @click.stop
           >
             <TagEditMenu
               :ref="`tagEditMenu-${tagId}`"
@@ -115,7 +116,7 @@ export default {
       if (tagId) {
         const tag = this.tags[tagId]
         if (tag) {
-          this.$refs[`tagEditMenu-${tagId}`][0].refreshTagNameAndColor()
+          this.$refs[`tagEditMenu-${tagId}`].refreshTagNameAndColor()
         }
       }
     }
