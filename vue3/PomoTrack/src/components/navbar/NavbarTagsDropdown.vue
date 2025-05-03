@@ -13,6 +13,7 @@
     
     <draggable
       v-model="tagOrder"
+      :item-key="(tagId: string) => tagId"
       ghost-class="draggable-ghost"
       :animation="200"
       @start="isDragging = true"

@@ -15,13 +15,13 @@
       >
         <TaskList title="To Do" />
       </div>
-      <b-sidebar
-        v-if="isNarrowScreen"
-        id="sidebar-todo"
-        shadow
-      >
-        <TaskList title="To Do" />
-      </b-sidebar>
+<!--      <BOffcanvas-->
+<!--        v-if="isNarrowScreen"-->
+<!--        id="sidebar-todo"-->
+<!--        shadow-->
+<!--      >-->
+<!--        <TaskList title="To Do" />-->
+<!--      </BOffcanvas>-->
 
       <div
         id="selected-task-section"
@@ -31,18 +31,18 @@
           id="sidebar-buttons"
           class="d-flex justify-content-between"
         >
-          <b-button
-            v-b-toggle.sidebar-todo
-            variant="primary"
-          >
-            To Do
-          </b-button>
-          <b-button
-            v-b-toggle.sidebar-done
-            variant="primary"
-          >
-            Done
-          </b-button>
+<!--          <b-button-->
+<!--            v-b-toggle.sidebar-todo-->
+<!--            variant="primary"-->
+<!--          >-->
+<!--            To Do-->
+<!--          </b-button>-->
+<!--          <b-button-->
+<!--            v-b-toggle.sidebar-done-->
+<!--            variant="primary"-->
+<!--          >-->
+<!--            Done-->
+<!--          </b-button>-->
         </div>
         <div id="main-task-container">
           <ActiveTaskButton
@@ -61,13 +61,13 @@
       >
         <TaskList title="Done" />
       </div>
-      <b-sidebar
-        v-if="isNarrowScreen"
-        id="sidebar-done"
-        shadow
-      >
-        <TaskList title="Done" />
-      </b-sidebar>
+<!--      <BOffcanvas-->
+<!--        v-if="isNarrowScreen"-->
+<!--        id="sidebar-done"-->
+<!--        shadow-->
+<!--      >-->
+<!--        <TaskList title="Done" />-->
+<!--      </BOffcanvas>-->
     </div>
 
     <!-- Modals -->

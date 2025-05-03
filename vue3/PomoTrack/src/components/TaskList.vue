@@ -54,13 +54,13 @@
       v-if="!isCompletedList"
       id="incomplete-task-list"
       v-model="incompleteTaskList"
+      :item-key="task => task.id"
       :force-fallback="isInElectron"
       class="list-group"
       ghost-class="draggable-ghost"
       :animation="200"
       @start="isDragging = true"
       @end="isDragging = false"
-      item-key="id"  
     >
       <template #item="{element: task}">
         <Task
