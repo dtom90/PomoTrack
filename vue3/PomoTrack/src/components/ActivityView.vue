@@ -29,15 +29,12 @@
         >
           <b-dropdown-form>
             <label>{{ chartType }} Target</label>
-            <b-input-group>
+            <b-input-group append="hours">
               <b-form-input
                 v-model="target"
                 type="number"
                 min="0"
               />
-              <b-input-group-append>
-                <b-input-group-text>hours</b-input-group-text>
-              </b-input-group-append>
             </b-input-group>
           </b-dropdown-form>
         </b-dropdown>

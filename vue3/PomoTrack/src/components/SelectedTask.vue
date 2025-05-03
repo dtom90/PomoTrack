@@ -232,6 +232,7 @@ export default {
     ]),
 
     isEmptyState () {
+      console.log('this.anyTasks', this.anyTasks)
       return !this.anyTasks
     },
 
@@ -277,16 +278,19 @@ export default {
     },
 
     async saveName () {
+      console.log('saveName:newTaskName', this.newTaskName)
       if (!this.newTaskName || !this.newTaskName.trim().length) {
         this.editingName = false
         return
       }
 
+      console.log('saveName:isEmptyState', this.isEmptyState)
       if (this.isEmptyState) {
         // Create new task
         await this.addTask({ name: this.newTaskName })
       } else {
         // Update existing task
+        console.log('this.selectedTask', this.selectedTask)
         await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
       }
       this.editingName = false

@@ -37,7 +37,7 @@
       <b-form-group>
         <font-awesome-icon :icon="durationLockIcon" />
         Duration:
-        <b-input-group>
+        <b-input-group append="Minutes">
           <b-form-input
             ref="appendMinutesInput"
             :value="durationMinutes"
@@ -47,9 +47,6 @@
             @input="onDurationMinutesInput"
             @blur="handleBlur"
           />
-          <b-input-group-append is-text>
-            Minutes
-          </b-input-group-append>
           <b-form-invalid-feedback id="input-live-feedback">
             Duration must be greater than 0
           </b-form-invalid-feedback>
@@ -67,22 +64,22 @@
         />
       </b-form-group>
         
-      <b-btn
+      <b-button
         variant="primary"
         class="w-100"
         :disabled="durationMinutes <= 0"
         @click="onSubmit"
       >
         {{ logId ? 'Update Interval' : 'Add Interval' }}
-      </b-btn>
-      <b-btn
+      </b-button>
+      <b-button
         v-if="logId"
         variant="danger"
         class="w-100 mt-3"
         @click="deleteInterval({ logId })"
       >
         Delete Interval
-      </b-btn>
+      </b-button>
     </b-dropdown-form>
   </b-dropdown>
 </template>
