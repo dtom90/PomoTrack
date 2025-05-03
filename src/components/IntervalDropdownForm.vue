@@ -24,7 +24,18 @@
       >
     </template>
 
-    <b-dropdown-form @keydown.enter="onSubmit">
+    <b-dropdown-item
+      v-if="isActiveLog"
+      disabled
+    >
+      Stop Timer to Update Interval
+    </b-dropdown-item>
+
+    <b-dropdown-form
+      v-else
+      :disabled="isActiveLog"
+      @keydown.enter="onSubmit"
+    >
       <b-form-group>
         <font-awesome-icon :icon="startLockIcon" />
         Started:
@@ -120,7 +131,8 @@ export default {
       startTime: null,
       durationMinutes: 25,
       stopTime: this.displayDateTimeHuman(),
-      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')]
+      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')],
+      log: null
     }
   },
 
@@ -133,6 +145,9 @@ export default {
     },
     stopLockIcon () {
       return this.anchored.includes('stopTime') ? 'lock' : 'unlock'
+    },
+    isActiveLog () {
+      return this.log !== null && this.log.stopped === null
     }
   },
 
@@ -146,10 +161,10 @@ export default {
 
     async dropdownWillShow () {
       if (this.logId) {
-        const log = await this.getLogById({ logId: this.logId })
-        this.startTime = this.displayDateTimeHuman(log.started)
-        this.durationMinutes = this.msToMinutes(log.timeSpent)
-        this.stopTime = this.displayDateTimeHuman(log.stopped)
+        this.log = await this.getLogById({ logId: this.logId })
+        this.startTime = this.displayDateTimeHuman(this.log.started)
+        this.durationMinutes = this.msToMinutes(this.log.timeSpent)
+        this.stopTime = this.log.stopped ? this.displayDateTimeHuman(this.log.stopped) : null
       } else {
         this.stopTime = this.displayDateTimeHuman()
         this.updateStartTime()
