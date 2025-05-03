@@ -2,7 +2,7 @@
   <b-dropdown
     id="add-interval-dropdown"
     ref="addIntervalDropdown"
-    dropright
+    placement="right-start"
     boundary="viewport"
     variant="light"
     no-caret

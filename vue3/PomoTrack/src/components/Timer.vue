@@ -90,7 +90,7 @@
           class="mx-2"
           toggle-class="circular-button btn-sm"
           no-caret
-          dropright
+          placement="right-start"
           boundary="viewport"
           :disabled="disabled"
         >

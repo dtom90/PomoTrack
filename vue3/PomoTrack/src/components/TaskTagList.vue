@@ -1,5 +1,5 @@
 <template>
-  <div id="task-tag-list">
+  <div class="d-flex align-items-center">
     <TagButton
       v-for="tagId in taskTags"
       :key="tagId"

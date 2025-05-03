@@ -3,7 +3,7 @@
     ref="dropdown"
     v-b-tooltip.hover.right="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
-    dropright
+    placement="right-start"
     boundary="viewport"
     variant="light"
     :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
