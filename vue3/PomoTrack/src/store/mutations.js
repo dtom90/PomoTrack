@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import $ from 'jquery'
 import initialState from './initialState'
 
@@ -12,7 +11,7 @@ const mutations = {
     state.tags = {}
     state.tagOrder = []
     for (const tag of tags) {
-      Vue.set(state.tags, tag.id, tag)
+      state.tags[tag.id] = tag
       state.tagOrder.push(tag.id)
     }
     for (const taskTagMap of taskTagMaps) {
@@ -37,7 +36,7 @@ const mutations = {
   updateTask (state, { taskId, taskUpdates }) {
     const index = state.tasks.findIndex(t => t.id === taskId)
     if (index !== -1) {
-      Vue.set(state.tasks, index, { ...state.tasks[index], ...taskUpdates })
+      state.tasks[index] = { ...state.tasks[index], ...taskUpdates }
     }
   },
   
@@ -49,7 +48,7 @@ const mutations = {
     tasksToUpdate.forEach(taskUpdate => {
       const index = state.tasks.findIndex(t => t.id === taskUpdate.id)
       if (index !== -1) {
-        Vue.set(state.tasks, index, { ...state.tasks[index], ...taskUpdate })
+        state.tasks[index] = { ...state.tasks[index], ...taskUpdate }
       }
     })
   },
@@ -69,7 +68,7 @@ const mutations = {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === log.id)
     if (logIndex >= 0) {
-      Vue.set(state.selectedTaskLogs, logIndex, log)
+      state.selectedTaskLogs[logIndex] = log
       if (log.stopped === null) {
         state.tempState.running = true
       } else {
@@ -85,7 +84,7 @@ const mutations = {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === logId)
     if (logIndex === -1) return
-    Vue.delete(state.selectedTaskLogs, logIndex)
+    state.selectedTaskLogs.splice(logIndex, 1)
   },
   
   setSelectedTaskLogs (state, { selectedTaskLogs }) {
@@ -110,7 +109,7 @@ const mutations = {
   
   addTaskTag (state, { taskId, tag, isNewTag }) {
     if (isNewTag) {
-      Vue.set(state.tags, tag.id, tag)
+      state.tags[tag.id] = tag
       state.tagOrder = [...state.tagOrder, tag.id]
     }
     
@@ -118,7 +117,7 @@ const mutations = {
     if (taskIndex === -1) return
     const task = state.tasks[taskIndex]
     const newTags = [...task.tags, tag.id]
-    Vue.set(state.tasks, taskIndex, { ...task, tags: newTags })
+    state.tasks[taskIndex] = { ...task, tags: newTags }
   },
   
   updateTagOrder (state, { reorderedTags }) {
@@ -137,7 +136,7 @@ const mutations = {
       task.tags = task.tags.filter(tId => tId !== tagId)
     })
     state.settings.selectedTagIds = state.settings.selectedTagIds.filter(tag => tag !== tagId)
-    Vue.delete(state.tags, tagId)
+    delete state.tags[tagId]
     state.tagOrder = state.tagOrder.filter(tId => tId !== tagId)
     $('#activityModal').modal('hide')
   },

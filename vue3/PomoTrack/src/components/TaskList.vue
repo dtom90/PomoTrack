@@ -60,12 +60,14 @@
       :animation="200"
       @start="isDragging = true"
       @end="isDragging = false"
+      item-key="id"  
     >
-      <Task
-        v-for="task in incompleteTaskList"
-        :key="task.id"
-        :task-id="task.id"
-      />
+      <template #item="{element: task}">
+        <Task
+          :key="task.id"
+          :task-id="task.id"
+        />
+      </template>
     </draggable>
     
     <!-- Completed Tasks -->

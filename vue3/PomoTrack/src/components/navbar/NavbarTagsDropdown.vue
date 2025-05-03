@@ -17,56 +17,58 @@
       :animation="200"
       @start="isDragging = true"
       @end="onDragEnd"
+      tag="div"
     >
-      <div
-        v-for="tagId in tagOrder"
-        :key="tagId"
-        class="submenu-button-wrapper"
-      >
-        <b-dropdown-item
-          class="tag-dropdown-item"
-        >
-          <div
-            class="d-flex justify-content-between align-items-center w-100"
-            @click.stop="toggleSubmenu(tagId)"
-          >
-            <img
-              src="@/assets/icons/dots-6-vertical.svg"
-              alt="Drag Tag"
-              class="drag-handle"
-            >
-            <div
-              class="flex-1"
-            >
-              <TagButton
-                :tag="tags[tagId]"
-                :tag-id="tagId"
-                class="ml-3"
-              />
-            </div>
-            <div
-              class="submenu-indicator-wrapper"
-            >
-              <font-awesome-icon
-                icon="chevron-right"
-                class="submenu-indicator"
-              />
-            </div>
-          </div>
-        </b-dropdown-item>
-        
-        <!-- Submenu -->
+      <template #item="{element: tagId}">
         <div
-          class="submenu tag-submenu"
-          :class="{ 'active': activeSubmenu === tagId }"
+          :key="tagId"
+          class="submenu-button-wrapper"
         >
-          <TagEditMenu
-            :ref="`tagEditMenu-${tagId}`"
-            :tag-id="tagId"
-            @update-tag="closeSubmenu"
-          />
+          <b-dropdown-item
+            class="tag-dropdown-item"
+          >
+            <div
+              class="d-flex justify-content-between align-items-center w-100"
+              @click.stop="toggleSubmenu(tagId)"
+            >
+              <img
+                src="@/assets/icons/dots-6-vertical.svg"
+                alt="Drag Tag"
+                class="drag-handle"
+              >
+              <div
+                class="flex-1"
+              >
+                <TagButton
+                  :tag="tags[tagId]"
+                  :tag-id="tagId"
+                  class="ml-3"
+                />
+              </div>
+              <div
+                class="submenu-indicator-wrapper"
+              >
+                <font-awesome-icon
+                  icon="chevron-right"
+                  class="submenu-indicator"
+                />
+              </div>
+            </div>
+          </b-dropdown-item>
+          
+          <!-- Submenu -->
+          <div
+            class="submenu tag-submenu"
+            :class="{ 'active': activeSubmenu === tagId }"
+          >
+            <TagEditMenu
+              :ref="`tagEditMenu-${tagId}`"
+              :tag-id="tagId"
+              @update-tag="closeSubmenu"
+            />
+          </div>
         </div>
-      </div>
+      </template>
     </draggable>
   </b-nav-item-dropdown>
 </template>

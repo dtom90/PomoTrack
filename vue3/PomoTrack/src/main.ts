@@ -8,12 +8,17 @@ import './lib/bootstrap'
 
 // Font Awesome Icons
 import { FontAwesomeIcon } from './lib/font-awesome-icons.js'
-FontAwesomeIcon.component('font-awesome-icon', FontAwesomeIcon)
 
 import { createApp } from 'vue'
+import { createBootstrap } from 'bootstrap-vue-next'
 import App from './components/App.vue'
 
-createApp(App).use(store).mount('#app')
+const app = createApp(App)
+
+app.component('font-awesome-icon', FontAwesomeIcon)
+app.use(store)
+app.use(createBootstrap())
+app.mount('#app')
 
 // import Vue from 'vue'
 // import App from './components/App.vue'
