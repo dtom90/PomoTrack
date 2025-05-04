@@ -12,7 +12,7 @@
 
     <draggable
       v-model="tagOrder"
-      :item-key="(tagId: string) => tagId"
+      :item-key="(tagId) => tagId"
       ghost-class="draggable-ghost"
       :animation="200"
       @start="isDragging = true"
@@ -74,7 +74,7 @@
   </b-nav-item-dropdown>
 </template>
 
-<script lang="ts">
+<script>
 import TagButton from '../TagButton.vue'
 import TagEditMenu from '../TagEditMenu.vue'
 import { mapActions, mapState } from 'vuex'

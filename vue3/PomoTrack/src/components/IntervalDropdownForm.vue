@@ -86,7 +86,7 @@
   </b-dropdown>
 </template>
 
-<script lang="ts">
+<script>
 import { mapActions } from 'vuex'
 import time from '../lib/time'
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker'
