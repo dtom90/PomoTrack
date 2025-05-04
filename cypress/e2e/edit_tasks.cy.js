@@ -4,7 +4,7 @@ describe('create tasks', () => {
       .click()
       .type('My First Task{enter}')
   })
-  
+
   it('edits the task name by clicking the name', () => {
     // Arrange
     cy.get('#selected-task-container').contains('My First Task').click()
@@ -71,7 +71,7 @@ describe('create tasks', () => {
     cy.reload()
     cy.get('#notes-section #display-notes').contains('My notes')
   })
-  
+
   it('edits the task notes and saves by clicking outside', () => {
     // Arrange
     cy.get('textarea[placeholder="Enter notes here.."]').click()
@@ -84,7 +84,7 @@ describe('create tasks', () => {
     cy.reload()
     cy.get('#notes-section #display-notes').contains('My notes')
   })
-  
+
   it('creates a newline in notes by hitting {shift}+{enter}', () => {
     // Arrange
     cy.get('textarea[placeholder="Enter notes here.."]').click()
@@ -97,28 +97,28 @@ describe('create tasks', () => {
     cy.get('#notes-section #display-notes').contains('My notes')
     cy.get('#notes-section #display-notes').contains('More notes on a new line')
   })
-  
+
   it('edits the task notes then switches to another task', () => {
     // Arrange
     cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('textarea[placeholder="Enter notes here.."]').click()
-    
+
     // Act
     cy.get('#notes-section textarea').type('My notes{enter}')
     cy.get('#incomplete-task-list').contains('My First Task').click()
-    
+
     // Assert
     cy.get('#incomplete-task-list').contains('My Second Task').click()
     cy.get('#notes-section #display-notes').contains('My notes')
   })
-  
+
   it('edits the task timer', () => {
     // Act
     cy.get('#selected-task-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('30{enter}')
-    
+
     // Assert
     cy.reload()
     cy.get('#selected-task-container').contains('30:00')

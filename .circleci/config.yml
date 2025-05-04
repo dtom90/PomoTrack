@@ -6,7 +6,7 @@ orbs:
   windows: circleci/windows@5
 
 jobs:
-  
+
   check-version:
     docker:
       - image: cimg/node:22.15.0
@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: yarn add semver
+          command: npm install semver
       - run:
           name: Check if version is greater than master
           command: ./docker/check-version.sh
@@ -77,7 +77,7 @@ jobs:
               --notes "## What's Changed
             
               $COMMIT_MSG"
-  
+
   publish-release:
     docker:
       - image: cimg/node:20.11
@@ -93,7 +93,7 @@ jobs:
             
             # Find and publish the draft release
             gh release edit "v$VERSION" --draft=false
-  
+
   build-web:
     parameters:
       target_repo:
@@ -158,13 +158,13 @@ jobs:
           command: |
             set +e
             pip install setuptools
-            yarn install
+            npm install
       - run:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
           name: Build macOS app
-          command: yarn run electron:release:mac
+          command: npm run electron:release:mac
 
   build-windows:
     executor:
@@ -184,19 +184,18 @@ jobs:
             . ~/.nvm/nvm.sh
             nvm install v22.15.0
             nvm use v22.15.0
-            npm install -g yarn
       - run:
           name: Install dependencies
           command: |
             . ~/.nvm/nvm.sh
             nvm use v22.15.0
-            yarn install
+            npm install
       - run:
           name: Build Windows app
           command: |
             . ~/.nvm/nvm.sh
             nvm use v22.15.0
-            yarn run electron:release:win
+            npm run electron:release:win
 
 workflows:
   version: 2
@@ -252,7 +251,7 @@ workflows:
           filters:
             branches:
               only: master
-  
+
   # New workflow for DevTrack gh-pages deployment
   deploy-to-devtrack:
     jobs:

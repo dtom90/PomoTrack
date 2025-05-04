@@ -20,6 +20,6 @@ docker build \
        -t ${IMAGE_NAME} \
        . && \
 docker run ${RUN_OPTION} --rm \
-       -p 8080:80 \
+       -p 5173:80 \
        --name ${CONTAINER_NAME} \
        ${IMAGE_NAME}

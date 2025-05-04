@@ -90,7 +90,7 @@
           class="mx-2"
           toggle-class="circular-button btn-sm"
           no-caret
-          dropright
+          placement="right-start"
           boundary="viewport"
           :disabled="disabled"
         >
@@ -399,7 +399,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/_variables.scss';
+@use '../styles/_variables.scss';
 
 $dial-size: 300px;
 $circle-thickness: 18px;
@@ -410,8 +410,8 @@ $circle-thickness: 18px;
 
 #dial-section {
   #timer-display {
-    font-size: $font-size-xxxxl;
-    font-weight: $font-weight-bold;
+    font-size: variables.$font-size-xxxxl;
+    font-weight: variables.$font-weight-bold;
     margin: 0;
     z-index: 2;
   }
@@ -441,18 +441,18 @@ $circle-thickness: 18px;
   }
   
   #play-pause-btn {
-    color: $white;
-    background-color: $dark-primary;
+    color: variables.$white;
+    background-color: variables.$dark-primary;
   }
 
   #play-pause-btn:hover {
-    color: $dark-tertiary;
+    color: variables.$dark-tertiary;
   }
 }
 </style>
 
 <style lang="scss">
-@import '../styles/_variables.scss';
+@use '../styles/_variables.scss';
 
 .circular-button {
   border-radius: 50% !important;
@@ -472,8 +472,8 @@ $circle-thickness: 18px;
 .circular-button.btn-sm {
   width: 36px;
   height: 36px;
-  background-color: $white;
-  border: 1px solid $dark-tertiary;
+  background-color: variables.$white;
+  border: 1px solid variables.$dark-tertiary;
 }
 
 // Timer settings form spacing

@@ -19,28 +19,28 @@ export default {
 
   computed: {
     notificationsEnabled () {
-      // eslint-disable-next-line no-unused-expressions
+      // eslint-disable-next-line no-unused-expressions,@typescript-eslint/no-unused-expressions
       this.updateTrigger // Trigger recomputation
       return 'Notification' in window && Notification && Notification.permission === 'granted'
     }
   },
-  
+
   methods: {
     ...mapMutations([
       'saveNotification',
       'clearNotifications'
     ]),
-    
+
     refreshNotificationsEnabled () {
       this.updateTrigger++
     },
-    
+
     async toggleEnableNotifications () {
       if (!this.notificationsEnabled) {
         await this.requestPermission()
       }
     },
-    
+
     async requestPermission () {
       if (!('Notification' in window && Notification)) { // Check if the browser supports notifications
         alert('This browser does not support system notifications')
@@ -59,7 +59,7 @@ export default {
         }
       }
     },
-    
+
     notify (message) {
       if (!('Notification' in window && Notification)) {
         alert(message)

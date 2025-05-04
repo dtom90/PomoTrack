@@ -2,12 +2,12 @@
   <b-dropdown
     id="tagInputDropdown"
     ref="dropdown"
-    :disabled="false"
-    toggle-class="btn-light"
+    class="mt-8"
+    toggle-class="mt-8 btn-light"
     boundary="viewport"
     no-caret
-    dropright
-    @show="resetInput"
+    placement="right-start"
+    @shown="resetInput"
   >
     <template #button-content>
       <font-awesome-icon icon="plus" />
@@ -92,21 +92,19 @@ export default {
     resetInput () {
       this.inputTagName = ''
       this.updateTagOptions()
-      this.$nextTick(() => {
-        this.$refs.dropdown.show()
-        setTimeout(() => {
-          if (this.$refs.addTagInput) {
-            this.$refs.addTagInput.focus()
-          }
-        }, 50)
-      })
+      this.$refs.addTagInput.focus()
+      this.$refs.dropdown.show()
     }
   }
 }
 </script>
 
-<style scoped>
-#tagInputDropdown {
+<style>
+.add-tag-btn {
+  margin-top: 8px;
+}
+
+.dropend {
   margin-top: 8px;
 }
 </style>

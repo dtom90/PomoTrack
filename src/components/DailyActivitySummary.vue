@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/variables";
+@use "../styles/variables";
 
 .activity-summary {
   padding-left: 100px;

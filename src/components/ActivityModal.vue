@@ -1,26 +1,24 @@
 <template>
   <b-modal
     id="activityModal"
+    v-model="modalVisible"
     size="lg"
-    hide-footer
+    no-footer
     scrollable
-    @shown="onModalShown"
     @hidden="onModalHidden"
   >
-    <template v-slot:modal-title>
-      <span class="title-spacer" />
-      <span v-if="!tempState.modalTagId">All Activity</span>
-      <template v-else>
-        <span id="activity-for">Activity for</span>
-        <TagSettingsButton :tag-id="tempState.modalTagId" />
-      </template>
+    <template #header="{ close }">
+      <div class="w-100 d-flex justify-content-center align-items-center position-relative">
+        <span v-if="!tempState.modalTagId">All Activity</span>
+        <template v-else>
+          <span id="activity-for">Activity for</span>
+          <TagSettingsButton :tag-id="tempState.modalTagId" />
+        </template>
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-0 p-1" aria-label="Close" @click="close()"></button>
+      </div>
     </template>
-    
-    <template v-slot:modal-header-close>
-      <span class="close-icon" />
-    </template>
-    
-    <div v-if="isModalShown && modalActivity !== null">
+
+    <div v-if="modalActivity !== null">
       <DailyActivitySummary
         :filtered-activity="modalActivity"
       />
@@ -43,53 +41,54 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
-import ActivityView from './ActivityView'
+import ActivityView from './ActivityView.vue'
 import TagSettingsButton from './TagSettingsButton.vue'
 
 export default {
   name: 'ActivityModal',
-  
+
   components: {
     TagSettingsButton,
     DailyActivitySummary,
     ActivityView
   },
-  
-  data: () => ({
-    isModalShown: false
-  }),
-  
+
   computed: {
     ...mapState([
       'tags',
       'modalActivity',
-      'tempState'
+      'tempState',
+      'isActivityModalVisible'
     ]),
-    
+
     tag: function () {
       return this.tags[this.tempState.modalTagId]
+    },
+
+    modalVisible: {
+      get () {
+        return this.isActivityModalVisible
+      },
+      set (value) {
+        this.setActivityModalVisible(value)
+      }
     }
   },
-  
+
   methods: {
     ...mapActions([
       'loadAllActivity',
       'loadTagActivity'
     ]),
-    
-    onModalShown () {
-      this.isModalShown = true
-      if (!this.tempState.modalTagId) {
-        this.loadAllActivity()
-      } else {
-        this.loadTagActivity()
-      }
-    },
+    ...mapMutations([
+      'unloadModalActivity',
+      'setActivityModalVisible'
+    ]),
 
     onModalHidden () {
-      this.isModalShown = false
+      this.unloadModalActivity()
     }
   }
 }

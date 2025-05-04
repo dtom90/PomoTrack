@@ -9,11 +9,11 @@ describe('create tasks', () => {
   it('archives an incomplete task', () => {
     // Act
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container button').contains('Archive').click()
 
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archive-dropdown').contains('My First Task').should('be.visible')
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
+    cy.get('#archive-dropdown-menu').contains('My First Task').should('be.visible')
     cy.get('#incomplete-task-list').contains('My First Task').should('not.exist')
   })
 
@@ -23,27 +23,28 @@ describe('create tasks', () => {
 
     // Act
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container button').contains('Archive').click()
 
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archive-dropdown').contains('My First Task').should('be.visible')
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
+    cy.get('#archive-dropdown-menu').contains('My First Task').should('be.visible')
     cy.get('#completed-task-list').contains('My First Task').should('not.exist')
   })
 
   it('restores a single task', () => {
     // Arrange
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container button').contains('Archive').click()
 
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archive-dropdown button > svg.fa-ellipsis-vertical').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
+    cy.get('#archive-dropdown-menu button > svg.fa-ellipsis-vertical').click()
     cy.get('.task-submenu').contains('Restore').click()
 
     // Assert
-    cy.get('#archive-dropdown').contains('My First Task').should('not.exist')
-    cy.get('#archive-dropdown').contains('Archived tasks will appear here').should('be.visible')
+    cy.get('#task-name').scrollIntoView()
+    cy.get('#archive-dropdown-menu').contains('My First Task').should('not.exist')
+    cy.get('#archive-dropdown-menu').contains('Archived tasks will appear here').should('be.visible')
     cy.get('#selected-task-container').contains('My First Task').should('be.visible')
     cy.get('#incomplete-task-list').contains('My First Task').should('be.visible')
   })
@@ -55,7 +56,7 @@ describe('create tasks', () => {
       .type('My Second Task{enter}')
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
-    
+
     // Act
     cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
     cy.get('.dropdown-item').contains('Archive All').click()
@@ -68,7 +69,7 @@ describe('create tasks', () => {
     cy.reload()
     cy.get('#completed-task-list .task').should('not.exist')
   })
-  
+
   it('archives only visible completed tasks when filtering', () => {
     // Arrange
     cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
@@ -83,11 +84,11 @@ describe('create tasks', () => {
     cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
       cy.contains('button.tag-name', 'my tag').click({ force: true })
     })
-    
+
     // Act
     cy.get('#completed-tasks-section button > svg.fa-ellipsis-vertical').click()
     cy.get('.dropdown-item').contains('Archive All').click()
-    
+
     // Assert
     cy.get('button > svg.fa-filter').click()
     cy.contains('.dropdown-menu:visible', 'Filter by Tag').within(() => {
@@ -100,19 +101,19 @@ describe('create tasks', () => {
     // Arrange
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container button').contains('Archive').click()
     cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Second Task{enter}')
     cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
-    
+    cy.get('#selected-task-container button').contains('Archive').click()
+
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
 
     // Assert
-    cy.get('#archive-dropdown').contains('Archived Tasks').should('be.visible')
-    cy.get('#archive-dropdown').contains('My First Task').should('be.visible')
-    cy.get('#archive-dropdown').contains('My Second Task').should('be.visible')
+    cy.get('#archive-dropdown-menu').contains('Archived Tasks').should('be.visible')
+    cy.get('#archive-dropdown-menu').contains('My First Task').should('be.visible')
+    cy.get('#archive-dropdown-menu').contains('My Second Task').should('be.visible')
   })
 })

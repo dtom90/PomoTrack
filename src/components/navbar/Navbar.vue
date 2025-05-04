@@ -3,20 +3,20 @@
     <b-navbar-brand href="#">
       PomoTrack
     </b-navbar-brand>
-    
+
     <div id="time-container">
       <span>{{ displayTime }}</span>
     </div>
-    
+
     <div class="navbar-menu d-flex flex-column align-items-end">
       <b-navbar-toggle target="nav-collapse" />
       <b-collapse
         id="nav-collapse"
         is-nav
       >
-        <b-navbar-nav class="ml-auto">
+        <b-navbar-nav class="ms-auto">
           <NavbarTagsDropdown />
-          
+
           <NavbarArchiveDropdown />
 
           <b-nav-item @click="openAllActivity">
@@ -24,7 +24,7 @@
               All Activity
             </span>
           </b-nav-item>
-          
+
           <NavbarOptionsDropdown />
         </b-navbar-nav>
       </b-collapse>
@@ -34,64 +34,67 @@
 
 <script>
 import time from '../../lib/time'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
 import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
 import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
 
 export default {
   name: 'Navbar',
-  
+
   components: {
     NavbarArchiveDropdown,
     NavbarTagsDropdown,
     NavbarOptionsDropdown
   },
-  
+
   mixins: [time],
-  
+
   data: function () {
     return {
       currentDate: null,
       currentMinute: null
     }
   },
-  
+
   computed: {
-    
+
     displayTime () {
       return this.displayTimeHuman(this.currentDate)
     }
   },
-  
+
   mounted () {
     this.updateTime()
     setInterval(this.updateTime, 1000)
   },
-  
+
   methods: {
     ...mapMutations([
       'updateTempState'
     ]),
-    
+    ...mapActions([
+      'openActivityModal'
+    ]),
+
     updateTime () {
       this.currentDate = new Date()
     },
-    
+
     openAllActivity () {
       this.updateTempState({ key: 'modalTagId', value: null })
-      this.$root.$emit('bv::toggle::modal', 'activityModal')
+      this.openActivityModal()
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "../../styles/variables";
+@use "../../styles/variables";
 
 .navbar-brand {
   z-index: 2;
-  font-size: $font-size-base;
+  font-size: variables.$font-size-base;
 }
 
 .navbar-brand, .navbar-menu, .navbar-toggler {
@@ -108,12 +111,12 @@ export default {
 
 // Add global font size for all elements in the navbar
 nav {
-  font-size: $font-size-base;
+  font-size: variables.$font-size-base;
 }
 
 // Ensure time display also uses the same font size
 #time-container {
-  font-size: $font-size-base;
+  font-size: variables.$font-size-base;
 }
 
 // Add padding to navbar items

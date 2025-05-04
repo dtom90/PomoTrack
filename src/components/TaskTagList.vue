@@ -1,5 +1,5 @@
 <template>
-  <div id="task-tag-list">
+  <div id="task-tag-list" class="d-flex align-items-center">
     <TagButton
       v-for="tagId in taskTags"
       :key="tagId"
@@ -38,19 +38,19 @@ export default {
       default: false
     }
   },
-  
+
   computed: {
     ...mapState([
       'tags',
       'tagOrder',
       'tasks'
     ]),
-    
+
     ...mapGetters([
       'availableTags',
       'getTaskById'
     ]),
-    
+
     taskTags () {
       if (!this.taskId) return []
       const task = this.getTaskById(this.taskId)
@@ -58,23 +58,24 @@ export default {
       return task.tags.slice().sort((a, b) => this.tagOrder.indexOf(a) - this.tagOrder.indexOf(b))
     }
   },
-  
+
   methods: {
     ...mapActions([
-      'removeTaskTag'
+      'removeTaskTag',
+      'openActivityModal'
     ]),
-    
+
     ...mapMutations([
       'updateTempState'
     ]),
-    
+
     selectTag ({ tagId }) {
       if (!this.mini) {
         this.updateTempState({ key: 'modalTagId', value: tagId })
-        this.$root.$emit('bv::toggle::modal', 'activityModal')
+        this.openActivityModal()
       }
     },
-    
+
     removeTag ({ tagId }) {
       this.removeTaskTag({ taskId: this.taskId, tagId })
       this.$forceUpdate()

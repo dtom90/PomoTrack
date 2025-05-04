@@ -2,7 +2,7 @@
   <div :class="'tag btn-group' + (unselected ? ' unselected' : '') + (mini ? ' mini' : '')">
     <button
       class="tag-name btn"
-      :style="`backgroundColor: ${tag.color}; color: ${textColor}`"
+      :style="tagButtonStyle"
       :title="selectText"
       @click="onSelectTag"
     >
@@ -14,7 +14,7 @@
     <button
       v-if="removeTag"
       class="tag-close btn"
-      :style="`backgroundColor: ${tag.color}; color: ${textColor}`"
+      :style="tagButtonStyle"
       :title="removeText"
       aria-label="Close"
       @click="removeTag({ tagId })"
@@ -81,6 +81,15 @@ export default {
     }
   },
   
+  computed: {
+    tagButtonStyle() {
+      return {
+        backgroundColor: this.tag.color,
+        color: this.textColor
+      };
+    }
+  },
+  
   methods: {
     ...mapMutations([
       'updateTempState'
@@ -97,8 +106,12 @@ export default {
 
 <style scoped lang="scss">
 .tag {
+  /* Define the CSS variable here using v-bind */
+  --tag-button-padding: v-bind('mini ? "0.375rem 1rem" : "0.375rem .75rem"');
+
   > .btn {
-    padding: v-bind('mini ? "0.375rem 1rem" : "0.375rem .75rem"');
+    /* Use the CSS variable */
+    padding: var(--tag-button-padding);
   }
   
   &.unselected {

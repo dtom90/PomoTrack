@@ -14,11 +14,11 @@ CONTAINER_NAME=pomotrack-dev
 
 # shellcheck disable=SC2124
 CMD="$@"
-if [[ -z "$CMD" ]]; then CMD="yarn run web:dev"; fi
+if [[ -z "$CMD" ]]; then CMD="npm run dev"; fi
 
 ./docker/install.sh && \
 docker run -it --rm \
-       -p 8080:8080 \
+       -p 5173:5173 \
        -v "$(pwd)":/app \
        -w /app \
        --name ${CONTAINER_NAME} \

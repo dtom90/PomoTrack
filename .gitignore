@@ -1,32 +1,32 @@
-# Dependency files
-node_modules
-
-# Test files
-cypress/downloads/
-cypress/screenshots/
-
-# local env files
-.env.local
-.env.*.local
-electron-builder.env
-
-# Build output
-/dist*
-public/notifications/
-
-# Log files
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-docker/*.log
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist_web
+dist-ssr
+coverage
+*.local
+
+/cypress/downloads/
+/cypress/videos/
+/cypress/screenshots/
 
 # Editor directories and files
+.vscode/*
+!.vscode/extensions.json
 .idea
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw*
+*.sw?
 
-# System files
-.DS_Store
+*.tsbuildinfo

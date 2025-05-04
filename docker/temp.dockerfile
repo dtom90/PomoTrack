@@ -5,10 +5,10 @@ RUN apk update && apk upgrade && \
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package*.json ./
+RUN npm install
 
 COPY . .
 
-EXPOSE 8080
-CMD ["yarn", "run", "web:dev"]
+EXPOSE 5173
+CMD ["npm", "run", "dev"]

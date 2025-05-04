@@ -21,7 +21,7 @@ Cypress.on('window:before:load', (win) => {
     // Log the error to the Cypress console
     // eslint-disable-next-line no-console
     console.error(...args)
-    
+
     // Fail the test if a console error occurs
     throw new Error(`Console error: ${args.join(' ')}`)
   })
@@ -29,7 +29,7 @@ Cypress.on('window:before:load', (win) => {
 
 beforeEach(() => {
   const hostname = Cypress.env('POMOTRACK_HOSTNAME') || 'localhost'
-  cy.visit(`http://${hostname}:8080`)
+  cy.visit(`http://${hostname}:5173`)
   cy.contains('PomoTrack')
   indexedDB.databases().then((databases) => {
     databases.forEach((db) => {

@@ -3,7 +3,7 @@
     id="app"
   >
     <Navbar />
-    
+
     <div
       id="main-section"
       class="d-flex border"
@@ -15,34 +15,34 @@
       >
         <TaskList title="To Do" />
       </div>
-      <b-sidebar
-        v-if="isNarrowScreen"
-        id="sidebar-todo"
-        shadow
-      >
-        <TaskList title="To Do" />
-      </b-sidebar>
+<!--      <BOffcanvas-->
+<!--        v-if="isNarrowScreen"-->
+<!--        id="sidebar-todo"-->
+<!--        shadow-->
+<!--      >-->
+<!--        <TaskList title="To Do" />-->
+<!--      </BOffcanvas>-->
 
       <div
         id="selected-task-section"
-        class="section border-left border-right"
+        class="section border-start border-end"
       >
         <div
           id="sidebar-buttons"
           class="d-flex justify-content-between"
         >
-          <b-button
-            v-b-toggle.sidebar-todo
-            variant="primary"
-          >
-            To Do
-          </b-button>
-          <b-button
-            v-b-toggle.sidebar-done
-            variant="primary"
-          >
-            Done
-          </b-button>
+<!--          <b-button-->
+<!--            v-b-toggle.sidebar-todo-->
+<!--            variant="primary"-->
+<!--          >-->
+<!--            To Do-->
+<!--          </b-button>-->
+<!--          <b-button-->
+<!--            v-b-toggle.sidebar-done-->
+<!--            variant="primary"-->
+<!--          >-->
+<!--            Done-->
+<!--          </b-button>-->
         </div>
         <div id="main-task-container">
           <ActiveTaskButton
@@ -53,7 +53,7 @@
           />
         </div>
       </div>
-      
+
       <div
         v-if="!isNarrowScreen"
         id="completed-tasks-section"
@@ -61,15 +61,15 @@
       >
         <TaskList title="Done" />
       </div>
-      <b-sidebar
-        v-if="isNarrowScreen"
-        id="sidebar-done"
-        shadow
-      >
-        <TaskList title="Done" />
-      </b-sidebar>
+<!--      <BOffcanvas-->
+<!--        v-if="isNarrowScreen"-->
+<!--        id="sidebar-done"-->
+<!--        shadow-->
+<!--      >-->
+<!--        <TaskList title="Done" />-->
+<!--      </BOffcanvas>-->
     </div>
-    
+
     <!-- Modals -->
     <ActivityModal />
   </div>
@@ -77,22 +77,17 @@
 
 <script>
 import Navbar from './navbar/Navbar.vue'
-import TaskList from './TaskList'
+import TaskList from './TaskList.vue'
 import ActiveTaskButtonButton from './ActiveTaskButton.vue'
-import SelectedTask from './SelectedTask'
+import SelectedTask from './SelectedTask.vue'
 import ActivityModal from './ActivityModal.vue'
 
 import { mapState } from 'vuex'
-import $ from 'jquery'
-
-$(document).on('click', '.dropdown-menu', function (e) {
-  e.stopPropagation()
-})
 
 export default {
-  
+
   name: 'App',
-  
+
   components: {
     ActiveTaskButton: ActiveTaskButtonButton,
     Navbar,
@@ -100,28 +95,28 @@ export default {
     SelectedTask,
     ActivityModal
   },
-  
+
   data () {
     return {
       windowWidth: window.innerWidth
     }
   },
-  
+
   computed: {
-    
+
     ...mapState([
       'tempState',
       'settings'
     ]),
-    
+
     showActive () {
       return this.tempState.activeTaskID && (this.settings.selectedTaskID !== this.tempState.activeTaskID)
     },
-    
+
     heightClass () {
       return (this.showActive ? 'partial' : 'full') + '-height'
     },
-    
+
     isNarrowScreen () {
       return this.windowWidth < 768
     }
@@ -129,11 +124,11 @@ export default {
   mounted () {
     window.addEventListener('resize', this.handleResize)
   },
-  
-  beforeDestroy () {
+
+  beforeUnmount () {
     window.removeEventListener('resize', this.handleResize)
   },
-  
+
   methods: {
     handleResize () {
       this.windowWidth = window.innerWidth
@@ -143,7 +138,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $horiz-spacing: 24px;
 
@@ -154,12 +149,12 @@ body {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: $dark-primary;
+  color: variables.$dark-primary;
 }
 
 #main-section {
-  font-size: $font-size-base;
-  height: calc(100vh - #{$top-offset})
+  font-size: variables.$font-size-base;
+  height: calc(100vh - #{variables.$top-offset})
 }
 
 h3, h4, h5, h6 {
@@ -196,7 +191,7 @@ h3, h4, h5, h6 {
   #sidebar-buttons {
     display: none !important;
   }
-  
+
   .task-list {
     flex: 1;
   }
@@ -205,7 +200,7 @@ h3, h4, h5, h6 {
 .b-sidebar {
   display: block;
   position: absolute;
-  top: $top-offset;
+  top: variables.$top-offset;
   height: 100%;
   z-index: 100 !important;
 }

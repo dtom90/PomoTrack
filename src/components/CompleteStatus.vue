@@ -1,12 +1,23 @@
 <template>
-  <div class="d-flex align-items-center">
+  <div v-if="completed" class="d-flex align-items-center">
     <img
-      :src="completed ? '/icons/complete.svg' : '/icons/incomplete.svg'"
-      :alt="completed ? 'complete' : 'incomplete'"
+      src="@/assets/icons/complete.svg"
+      alt="completed"
       class="status-icon status-icon-small"
     >
-    <span class="task-checkbox-label ml-2">
-      {{ completed ? 'Completed' : 'Incomplete' }}
+    <span class="task-checkbox-label ms-2">
+      Completed
+    </span>
+  </div>
+
+  <div v-else class="d-flex align-items-center">
+    <img
+      src="@/assets/icons/incomplete.svg"
+      alt="incomplete"
+      class="status-icon status-icon-small"
+    >
+    <span class="task-checkbox-label ms-2">
+      Incomplete
     </span>
   </div>
 </template>
@@ -14,7 +25,7 @@
 <script>
 export default {
   name: 'CompleteStatus',
-  
+
   props: {
     completed: {
       type: Boolean,
@@ -25,17 +36,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $status-icon-size: 24px;
 
 .status-icon {
   width: $status-icon-size;
   height: $status-icon-size;
-  
+
   &.status-icon-small {
-    width: $checkbox-size-small;
-    height: $checkbox-size-small;
+    width: variables.$checkbox-size-small;
+    height: variables.$checkbox-size-small;
   }
 }
 </style>

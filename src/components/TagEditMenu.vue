@@ -13,17 +13,17 @@
         />
       </b-input-group>
     </b-dropdown-form>
-        
+
     <div class="dropdown-divider" />
-        
+
     <sketch-picker
       v-model="tagColor"
       class="color-picker"
       @input="tagColor = $event.hex"
     />
-        
+
     <div class="dropdown-divider" />
-        
+
     <b-button
       variant="primary"
       class="w-100 mb-2"
@@ -45,24 +45,24 @@
 </template>
 
 <script>
-import Sketch from 'vue-color/src/components/Sketch'
+import { SketchPicker } from 'vue-color';
 import getTextColor from '../lib/getTextColor'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'TagEditMenu',
-  
+
   components: {
-    'sketch-picker': Sketch
+    'sketch-picker': SketchPicker
   },
-  
+
   props: {
     tagId: {
       type: String,
       required: true
     }
   },
-  
+
   data () {
     return {
       tagName: '',
@@ -70,7 +70,7 @@ export default {
       textColor: '#FFFFFF'
     }
   },
-  
+
   computed: {
     ...mapState([
       'tags'
@@ -79,7 +79,7 @@ export default {
       return this.tags[this.tagId]
     }
   },
-  
+
   watch: {
     tagColor: {
       handler (newVal) {
@@ -88,7 +88,7 @@ export default {
       immediate: true
     }
   },
-  
+
   mounted () {
     this.refreshTagNameAndColor()
 
@@ -99,7 +99,7 @@ export default {
     // NOTE: the input element, due to being withing draggable, cannot be highlighted
     // orignally thought it was just in firefox for some reason (chrome works) but now it seems to be in chrome too
   },
-  
+
   methods: {
     ...mapActions([
       'updateTag',
@@ -111,7 +111,7 @@ export default {
       this.tagColor = this.tag.color
       this.textColor = getTextColor(this.tagColor)
     },
-    
+
     async updateTagAction () {
       await this.updateTag({
         tagId: this.tagId,
@@ -120,7 +120,7 @@ export default {
       })
       this.$emit('update-tag')
     },
-    
+
     deleteTagAction () {
       this.deleteTag({ tagId: this.tagId })
     }

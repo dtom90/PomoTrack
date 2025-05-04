@@ -4,7 +4,7 @@
     ref="dropdown"
     class="tag"
     :text="tag.tagName"
-    dropright
+    placement="right-start"
     @show="handleDropdownShow"
   >
     <TagEditMenu

@@ -1,9 +1,7 @@
-import Vue from 'vue'
-import $ from 'jquery'
 import initialState from './initialState'
 
 const mutations = {
-  
+
   loadInitialData (state, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }) {
     state.tasks = tasks
     state.tasks.forEach(task => {
@@ -12,7 +10,7 @@ const mutations = {
     state.tags = {}
     state.tagOrder = []
     for (const tag of tags) {
-      Vue.set(state.tags, tag.id, tag)
+      state.tags[tag.id] = tag
       state.tagOrder.push(tag.id)
     }
     for (const taskTagMap of taskTagMaps) {
@@ -27,35 +25,35 @@ const mutations = {
     }
     state.selectedTaskLogs = selectedTaskLogs
   },
-  
+
   /** Tasks **/
-  
+
   addTask (state, { task }) {
     state.tasks.push(task)
   },
-  
+
   updateTask (state, { taskId, taskUpdates }) {
     const index = state.tasks.findIndex(t => t.id === taskId)
     if (index !== -1) {
-      Vue.set(state.tasks, index, { ...state.tasks[index], ...taskUpdates })
+      state.tasks[index] = { ...state.tasks[index], ...taskUpdates }
     }
   },
-  
+
   setTasks (state, { tasks }) {
     state.tasks = tasks
   },
-  
+
   updateTasks (state, { tasksToUpdate }) {
     tasksToUpdate.forEach(taskUpdate => {
       const index = state.tasks.findIndex(t => t.id === taskUpdate.id)
       if (index !== -1) {
-        Vue.set(state.tasks, index, { ...state.tasks[index], ...taskUpdate })
+        state.tasks[index] = { ...state.tasks[index], ...taskUpdate }
       }
     })
   },
-  
+
   /** Logs **/
-  
+
   startTask (state, { log }) {
     const task = state.tasks.find(t => t.id === log.taskId)
     if (task) {
@@ -64,12 +62,12 @@ const mutations = {
       state.selectedTaskLogs.push(log)
     }
   },
-  
+
   updateLog (state, { taskId, log }) {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === log.id)
     if (logIndex >= 0) {
-      Vue.set(state.selectedTaskLogs, logIndex, log)
+      state.selectedTaskLogs[logIndex] = log
       if (log.stopped === null) {
         state.tempState.running = true
       } else {
@@ -80,18 +78,18 @@ const mutations = {
       state.selectedTaskLogs.push(log)
     }
   },
-  
+
   deleteInterval (state, { taskId, logId }) {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === logId)
     if (logIndex === -1) return
-    Vue.delete(state.selectedTaskLogs, logIndex)
+    state.selectedTaskLogs.splice(logIndex, 1)
   },
-  
+
   setSelectedTaskLogs (state, { selectedTaskLogs }) {
     state.selectedTaskLogs = selectedTaskLogs
   },
-  
+
   setModalActivity (state, { logs }) {
     // Add task name and tags to each log
     const logsWithTaskDetails = logs.map(l => {
@@ -105,59 +103,67 @@ const mutations = {
     logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
     state.modalActivity = logsWithTaskDetails
   },
-  
+
+  unloadModalActivity (state) {
+    state.modalActivity = null
+  },
+
+  setActivityModalVisible (state, isVisible) {
+    state.isActivityModalVisible = isVisible
+  },
+
   /** Tags **/
-  
+
   addTaskTag (state, { taskId, tag, isNewTag }) {
     if (isNewTag) {
-      Vue.set(state.tags, tag.id, tag)
+      state.tags[tag.id] = tag
       state.tagOrder = [...state.tagOrder, tag.id]
     }
-    
+
     const taskIndex = state.tasks.findIndex(t => t.id === taskId)
     if (taskIndex === -1) return
     const task = state.tasks[taskIndex]
     const newTags = [...task.tags, tag.id]
-    Vue.set(state.tasks, taskIndex, { ...task, tags: newTags })
+    state.tasks[taskIndex] = { ...task, tags: newTags }
   },
-  
+
   updateTagOrder (state, { reorderedTags }) {
     reorderedTags.forEach(tag => {
       state.tags[tag.id] = tag
     })
     state.tagOrder = reorderedTags.map(tag => tag.id)
   },
-  
+
   updateTag (state, { tagId, tagUpdates }) {
     state.tags[tagId] = { ...state.tags[tagId], ...tagUpdates }
   },
-  
+
   deleteTag (state, { tagId }) {
     state.tasks.forEach(task => {
       task.tags = task.tags.filter(tId => tId !== tagId)
     })
     state.settings.selectedTagIds = state.settings.selectedTagIds.filter(tag => tag !== tagId)
-    Vue.delete(state.tags, tagId)
+    delete state.tags[tagId]
     state.tagOrder = state.tagOrder.filter(tId => tId !== tagId)
-    $('#activityModal').modal('hide')
+    state.isActivityModalVisible = false
   },
-  
+
   /** Temp state and Settings **/
-  
+
   updateTempState (state, { key, value }) {
     state.tempState[key] = value
   },
-  
+
   updateSetting (state, { key, value }) {
     state.settings[key] = value
   },
-  
+
   /** Notifications **/
-  
+
   saveNotification (state, { notification }) {
     state.tempState.notificationList.push(notification)
   },
-  
+
   clearNotifications (state) {
     // close all open notification
     while (state.tempState.notificationList.length > 0) {

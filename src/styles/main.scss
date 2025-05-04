@@ -1,6 +1,7 @@
-@import "~bootstrap/scss/bootstrap";
-@import "~bootstrap-vue/src/index.scss";
-@import "variables";
+@use "variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-vue-next/src/styles/styles.scss";
+@import 'vue-color/style.css';
 @import "fonts";
 @import "tags";
 
@@ -8,8 +9,8 @@
 body {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
-  font-size: $font-size-base;
-  color: $dark-primary;
+  font-size: variables.$font-size-base;
+  color: variables.$dark-primary;
 }
 
 .width-100 {
@@ -25,13 +26,13 @@ body {
 }
 
 h5 {
-  font-size: $font-size-base;
-  font-weight: $font-weight-extra-bold;
+  font-size: variables.$font-size-base;
+  font-weight: variables.$font-weight-extra-bold;
 }
 
 h6 {
-  font-size: $font-size-base;
-  font-weight: $font-weight-normal;
+  font-size: variables.$font-size-base;
+  font-weight: variables.$font-weight-normal;
 }
 
 .oval-border {
@@ -39,14 +40,14 @@ h6 {
 }
 
 .navbar {
-  background-color: $white !important;
+  background-color: variables.$white !important;
   padding: 10px 24px !important;
 
   .nav-link,
   .navbar-brand,
   #time-container,
   #navbarTagsDropdown .nav-link {
-    color: $dark-primary !important;
+    color: variables.$dark-primary !important;
     opacity: 0.7;
     transition: opacity 0.2s ease;
 
@@ -54,36 +55,40 @@ h6 {
       opacity: 1;
     }
   }
+
+  .dropdown-menu {
+    @extend .dropdown-menu-right;
+  }
 }
 
 .navbar-nav li.nav-item:hover,li.nav-item.show {
-  background-color: $dark-quaternary;
-  border-radius: $border-radius-base;
+  background-color: variables.$dark-quaternary;
+  border-radius: variables.$border-radius-base;
 }
 
 // Custom border-radius for all light buttons
 .btn-light {
-  border-radius: $border-radius-base;
+  border-radius: variables.$border-radius-base;
   border-color: transparent;
-  background-color: $white;
+  background-color: variables.$white;
 }
 
 .btn-light:hover:not(:disabled) {
   border-color: transparent;
-  background-color: $dark-quaternary;
+  background-color: variables.$dark-quaternary;
 }
 
 .btn-light.active {
-  background-color: $white !important;
+  background-color: variables.$white !important;
 }
 
 .btn-danger, .text-danger {
-  color: $error-red;
+  color: variables.$error-red;
 }
 
 .btn-danger {
-  background-color: $white;
-  border-color: $error-red;
+  background-color: variables.$white;
+  border-color: variables.$error-red;
 }
 
 //noinspection CssInvalidPropertyValue
@@ -121,7 +126,7 @@ h6 {
 }
 
 table {
-  color: $dark-primary;
+  color: variables.$dark-primary;
   td {
     padding: 8px !important;
   }
@@ -148,7 +153,7 @@ table {
 .close-icon {
   width: 15px;
   height: 15px;
-  background-image: url('/icons/x.svg');
+  background-image: url('/assets/icons/x.svg');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -164,33 +169,34 @@ table {
   opacity: 1 !important;
 }
 
-// Dropdown menu styles for all dropdowns in the app 
+// Dropdown menu styles for all dropdowns in the app
 .dropdown-menu {
-  border-radius: $border-radius-base;
+  border-radius: variables.$border-radius-base;
   width: 240px;
   padding: 4px;
   margin: 0;
+  overflow: visible !important;
 
   .dropdown-header {
     padding: 8px;
-    color: $dark-primary;
+    color: variables.$dark-primary;
   }
 
   .dropdown-item {
     border: 1px solid transparent;
-    border-radius: $border-radius-hover;
+    border-radius: variables.$border-radius-hover;
     padding-left: 12px !important;
     padding-right: 12px !important;
-    color: $dark-primary;
+    color: variables.$dark-primary;
   }
 
   .dropdown-item[disabled] {
-    color: $dark-secondary;
+    color: variables.$dark-secondary;
   }
 
   .dropdown-item:hover {
-    background-color: $dark-quaternary;
-    border-color: $dark-quaternary;
+    background-color: variables.$dark-quaternary;
+    border-color: variables.$dark-quaternary;
   }
 
   li.selected {
@@ -199,11 +205,11 @@ table {
     }
   }
 
-  .b-dropdown-form {
+  form.dropdown-item-text {
     padding: 8px;
     label {
-      font-size: $font-size-base;
-      font-weight: $font-weight-normal;
+      font-size: variables.$font-size-base;
+      font-weight: variables.$font-weight-normal;
     }
   }
 }
@@ -223,14 +229,15 @@ table {
   transform: none !important;
   float: left !important; /* Helps with horizontal alignment */
   max-width: 500px !important;
+  overflow: visible !important;
 }
 
 /* Right-aligned dropdown options */
 .navbar .dropdown-menu.dropdown-menu-right {
-  left: auto !important; 
+  left: auto !important;
   right: 0 !important;
   transform: translateX(0) !important; /* Prevent any transform shifting */
-  
+
   /* This is critical for proper button alignment */
   position: absolute !important;
   top: 100% !important;
@@ -243,7 +250,7 @@ table {
 }
 
 .submenu {
-  border-radius: $border-radius-base;
+  border-radius: variables.$border-radius-base;
   position: absolute !important;
   top: 0;
   left: 100%;

@@ -4,6 +4,7 @@ const initialState = {
   tagOrder: [],
   selectedTaskLogs: [],
   modalActivity: null,
+  isActivityModalVisible: false,
   
   tempState: {
     activeTaskID: null,

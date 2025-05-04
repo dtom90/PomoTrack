@@ -17,7 +17,7 @@ docker build \
        -t ${IMAGE_NAME} \
        . && \
 docker run -it --rm \
-       -p 8080:8080 \
+       -p 5173:5173 \
        --name ${CONTAINER_NAME} \
        ${IMAGE_NAME} \
        "$@"

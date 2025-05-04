@@ -1,53 +1,39 @@
 # PomoTrack
-[![CircleCI](https://circleci.com/gh/dtom90/PomoTrack.svg?style=svg)](https://circleci.com/gh/dtom90/PomoTrack)
 
-A pomodoro timer app with task tracking
+This template should help get you started developing with Vue 3 in Vite.
 
-Written in [Vue.js](https://vuejs.org/)
+## Recommended IDE Setup
 
-## Setup
-```
-yarn
-```
-#### Install in Docker for development:
-```
-./docker/install.sh
-```
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Development
-#### Compile and hot-reload for development:
-```
-yarn run web:dev
-```
-#### Deploy container for development:
-```
-./docker/dev.sh
+## Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
 ```
 
-## Test
-#### Lint and fix source files
-```
-yarn run lint
-```
-#### Run basic tests (lint, audit)
-```
-yarn run test:basic
-```
-#### Run all tests in Docker containers
-```
-./docker/test_all.sh
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
 ```
 
-## Production
-#### Compile and minify for production
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
 ```
-yarn run build
-```
-#### Serve production files
-```
-yarn run serve:prod
-```
-#### Build Docker image and deploy container for production:
-```
-./docker/prod.sh
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
 ```

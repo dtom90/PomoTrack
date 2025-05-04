@@ -49,8 +49,8 @@ describe('reorder tasks', () => {
       .drag('.task', { destination: '#incomplete-task-list .task', position: 'top' })
 
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
+    cy.get('#archive-dropdown-menu').contains('My Archived Task').should('be.visible')
   })
 
   it('keeps incomplete archived task even after dragging', () => {
@@ -58,18 +58,20 @@ describe('reorder tasks', () => {
     cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
       .type('My Archived Task{enter}')
-    cy.get('#selected-task-container button > svg.fa-ellipsis-vertical').click()
-    cy.get('button').contains('Archive').click()
+    cy.get('#selected-task-container').within(() => {
+      cy.get('button > svg.fa-ellipsis-vertical').click()
+      cy.get('button').contains('Archive').click()
+    })
 
     // Act
     cy.get('#incomplete-task-list .task').contains('My Second Task')
       .drag('.task', { destination: '#incomplete-task-list .task', position: 'top' })
 
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Archive').click()
-    cy.get('#archive-dropdown').contains('My Archived Task').should('be.visible')
+    cy.get('nav.navbar').get('.nav-item').contains('Archive').click()
+    cy.get('#archive-dropdown-menu').contains('My Archived Task').should('be.visible')
   })
-  
+
   it('inserts new task at bottom of list by default', () => {
     // Arrange
 

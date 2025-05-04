@@ -2,7 +2,7 @@
   <div
     id="selected-task-container"
   >
-    <template>
+    <div>
       <!--  Title Section  -->
       <div
         id="title-section"
@@ -39,14 +39,14 @@
           >
             <span>{{ selectedTask && selectedTask.name }}</span>
           </div>
-          
+
           <!--  Task Field (when editing)  -->
-          <b-input-group
+          <BInputGroup
             v-if="editingName || isEmptyState"
             class="input-group flex-grow-1"
             @submit.prevent="saveName()"
           >
-            <b-form-input
+            <BFormInput
               id="task-name-input"
               ref="taskNameInput"
               v-model="newTaskName"
@@ -55,9 +55,9 @@
               @keyup.enter="saveName()"
               @blur="saveName()"
             />
-          </b-input-group>
+          </BInputGroup>
         </div>
-        
+
         <!-- Menu Options -->
         <TaskMenu
           v-if="selectedTask || isEmptyState"
@@ -65,9 +65,9 @@
           :is-archived="selectedTask && selectedTask.archived"
         />
       </div>
-    </template>
-      
-    <template>
+    </div>
+
+    <div>
       <!-- Countdown Timer -->
       <div id="countdown-section">
         <div v-show="isEmptyState || (selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id))">
@@ -76,7 +76,7 @@
             :disabled="isEmptyState"
           />
         </div>
-        
+
         <!-- Continue Timer Here -->
         <div
           v-if="selectedTask && !selectedTask.completed && (tempState.running && tempState.activeTaskID && tempState.activeTaskID !== selectedTask.id)"
@@ -96,7 +96,7 @@
           </button>
         </div>
       </div>
-      
+
       <div
         v-if="selectedTask"
         id="tags-and-notes-section"
@@ -116,7 +116,7 @@
             v-html="displayNotes"
           />
           <!-- eslint-enable vue/no-v-html -->
-          
+
           <!-- Editing Mode -->
           <b-input-group
             v-if="editingNotes || !selectedTask.notes"
@@ -134,7 +134,7 @@
             />
           </b-input-group>
         </div>
-        
+
         <!-- Tags Section -->
         <div
           id="tags-section"
@@ -149,9 +149,9 @@
           <TaskTagList :task-id="selectedTask.id" />
         </div>
       </div>
-    </template>
-    
-    <template v-if="selectedTask">
+    </div>
+
+    <div v-if="selectedTask">
       <!-- Activity View -->
       <ActivityView
         id="taskActivity"
@@ -159,15 +159,15 @@
         :label="selectedTask.name"
         :log="selectedTaskLogs"
       />
-    </template>
+    </div>
     <br>
   </div>
 </template>
 
 <script>
-import Checkbox from './Checkbox'
+import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
-import ActivityView from './ActivityView'
+import ActivityView from './ActivityView.vue'
 import TaskMenu from './TaskMenu.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { marked } from 'marked'
@@ -185,14 +185,12 @@ renderer.link = (href, title, text) => {
   return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
 // add class to span tags
-renderer.paragraph = (text) => {
-  return `<p class="custom-p">${text}</p>`
-}
+renderer.paragraph = ({tokens}) => tokens.map(token => `<p class="custom-p">${token.text}</p>`).join('');
 
 export default {
-  
+
   name: 'SelectedTask',
-  
+
   components: {
     Timer,
     Checkbox,
@@ -200,23 +198,23 @@ export default {
     ActivityView,
     TaskMenu
   },
-  
+
   props: {
     heightClass: {
       type: String,
       default: 'full-height'
     }
   },
-  
+
   data: () => ({
     possibleEdit: true,
     editingName: false,
     editingNotes: false,
     newTaskName: null
   }),
-  
+
   computed: {
-    
+
     ...mapState([
       'tasks',
       'tempState',
@@ -225,7 +223,7 @@ export default {
       'selectedTaskLogs',
       'tags'
     ]),
-    
+
     ...mapGetters([
       'selectedTask',
       'anyTasks'
@@ -234,21 +232,22 @@ export default {
     isEmptyState () {
       return !this.anyTasks
     },
-    
+
     checked () {
       return this.selectedTask && this.selectedTask.completed !== null
     },
-    
+
     taskTags () {
       return this.selectedTask.tags
     },
 
     displayNotes () {
-      return marked(DOMPurify.sanitize(this.selectedTask.notes), { renderer })
+      const sanitizedNotes = DOMPurify.sanitize(this.selectedTask.notes)
+      return marked(sanitizedNotes, { renderer })
     }
-    
+
   },
-  
+
   watch: {
     selectedTaskID () {
       this.editingName = false
@@ -256,9 +255,9 @@ export default {
       this.newTaskName = this.selectedTask ? this.selectedTask.name : null
     }
   },
-  
+
   methods: {
-    
+
     ...mapActions([
       'addTask',
       'updateTaskName',
@@ -266,7 +265,7 @@ export default {
       'startTask',
       'removeTaskTag'
     ]),
-    
+
     editName () {
       if (this.possibleEdit) {
         this.newTaskName = this.selectedTask.name
@@ -275,13 +274,13 @@ export default {
       }
       this.possibleEdit = true
     },
-    
+
     async saveName () {
       if (!this.newTaskName || !this.newTaskName.trim().length) {
         this.editingName = false
         return
       }
-      
+
       if (this.isEmptyState) {
         // Create new task
         await this.addTask({ name: this.newTaskName })
@@ -291,7 +290,7 @@ export default {
       }
       this.editingName = false
     },
-    
+
     editNotes () {
       this.editingNotes = true
       this.$nextTick(() => {
@@ -299,24 +298,24 @@ export default {
         this.adjustTextareaHeight()
       })
     },
-    
+
     handleNotesEnter (event) {
       if (event.shiftKey) {
         return // Allow the newline to occur
       }
       this.saveNotes()
     },
-    
+
     async saveNotes () {
       await this.updateTaskNotes({ taskId: this.selectedTask.id, notes: this.selectedTask.notes })
       this.editingNotes = false
     },
-    
+
     async continueTimerHere () {
       await this.startTask({ taskId: this.selectedTask.id })
     },
-    
-    adjustTextareaHeight (event) {
+
+    adjustTextareaHeight () {
       const textarea = this.$refs.notesInput.$el
       // Reset height to auto to get the correct scrollHeight
       textarea.style.height = 'auto'
@@ -328,13 +327,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 $vertical-spacing: 30px;
 
 #selected-task-container {
   flex: 1;
-  
+
   > * {
     margin-bottom: $vertical-spacing;
   }
@@ -347,10 +346,10 @@ $vertical-spacing: 30px;
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-bold;
   }
-  
+
   #selected-task-menu {
     justify-content: space-evenly;
   }
@@ -358,7 +357,7 @@ $vertical-spacing: 30px;
 
 #countdown-section {
   $play-btn-size: 75px;
-  
+
   #play-btn {
     width: $play-btn-size;
     height: $play-btn-size;
@@ -371,14 +370,14 @@ $vertical-spacing: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   > div {
     width: 100%;
     max-width: 400px;
   }
-  
+
   #notes-section {
-    
+
     .notes-input-and-display {
       outline: none !important;
       box-shadow: none !important;
@@ -387,7 +386,7 @@ $vertical-spacing: 30px;
       min-height: 48px;
       overflow-y: hidden; // Hide scrollbar when expanding
     }
-    
+
     #display-notes {
       flex: 1;
       min-width: 0;
@@ -396,9 +395,9 @@ $vertical-spacing: 30px;
     }
     margin-bottom: 10px;
   }
-  
+
   #tags-section {
-    
+
     #tags-label {
       padding-right: 15px;
       margin-top: 10px;

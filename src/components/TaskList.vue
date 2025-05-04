@@ -6,10 +6,10 @@
       <span class="title">
         {{ title }}
       </span>
-      
+
       <!-- To Do List Filter Menu -->
       <TaskFilterDropdown v-if="!isCompletedList" />
-      
+
       <!-- Done List Menu -->
       <b-dropdown
         v-if="isCompletedList"
@@ -23,7 +23,7 @@
         <template #button-content>
           <font-awesome-icon icon="ellipsis-vertical" />
         </template>
-        
+
         <b-dropdown-item
           id="archive-btn"
           variant="danger"
@@ -34,7 +34,7 @@
         </b-dropdown-item>
       </b-dropdown>
     </div>
-    
+
     <b-input-group
       v-if="!isCompletedList"
       id="todo-input-section"
@@ -48,26 +48,29 @@
         @keyup.enter="addNewTask"
       />
     </b-input-group>
-    
+
     <!-- Incomplete Tasks -->
     <draggable
       v-if="!isCompletedList"
       id="incomplete-task-list"
       v-model="incompleteTaskList"
-      :force-fallback="isInElectron"
+      item-key="id"
+      :key="incompleteTaskList.length"
       class="list-group"
       ghost-class="draggable-ghost"
       :animation="200"
       @start="isDragging = true"
       @end="isDragging = false"
     >
-      <Task
-        v-for="task in incompleteTaskList"
-        :key="task.id"
-        :task-id="task.id"
-      />
+      <template #item="{element: task}">
+        <div :key="task.id"> <!-- a bug in vue.draggable.next requires this to be wrapped in a non-component element -->
+          <Task
+            :task-id="task.id"
+          />
+        </div>
+      </template>
     </draggable>
-    
+
     <!-- Completed Tasks -->
     <ul
       v-if="isCompletedList && completedTaskList.length > 0"
@@ -80,7 +83,7 @@
         :task-id="task.id"
       />
     </ul>
-    
+
     <!-- Empty State for Completed Tasks -->
     <div
       v-if="isCompletedList && completedTaskList.length === 0"
@@ -88,7 +91,7 @@
       class="empty-state-container"
     >
       <img
-        src="/icons/empty-white-box.svg"
+        src="@/assets/icons/empty-white-box.svg"
         alt="Empty Archive"
         class="mb-2"
       >
@@ -105,22 +108,22 @@ import draggable from 'vuedraggable'
 import isElectron from '../lib/isElectron'
 
 export default {
-  
+
   name: 'TaskList',
-  
+
   components: {
     Task,
     draggable,
     TaskFilterDropdown
   },
-  
+
   props: {
     title: {
       type: String,
       default: 'To Do'
     }
   },
-  
+
   data: () => ({
     newTaskName: '',
     isFilterMenuOpen: false,
@@ -129,7 +132,7 @@ export default {
     isDragging: false,
     isInElectron: isElectron()
   }),
-  
+
   computed: {
     ...mapState([
       'tempState',
@@ -185,7 +188,7 @@ export default {
         : completedTasks
     }
   },
-  
+
   methods: {
 
     ...mapActions([
@@ -201,7 +204,7 @@ export default {
     ...mapMutations([
       'updateTempState'
     ]),
-    
+
     addNewTask () {
       this.addTask({
         name: this.newTaskName
@@ -213,7 +216,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_variables.scss";
+@use "../styles/_variables.scss";
 
 .task-list-container {
   display: flex;
@@ -230,8 +233,8 @@ export default {
 .title {
   flex: 1;
   text-align: left;
-  font-size: $font-size-large;
-  font-weight: $font-weight-bold;
+  font-size: variables.$font-size-large;
+  font-weight: variables.$font-weight-bold;
 }
 
 .title-section > button,
