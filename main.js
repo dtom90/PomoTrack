@@ -1,10 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { app, protocol, BrowserWindow, shell, ipcMain, dialog, net } = require('electron')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+/* eslint-disable @typescript-eslint/no-require-imports */
+const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron')
 const path = require('path')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { autoUpdater } = require('electron-updater')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const log = require('electron-log')
 
 // Use NODE_ENV to determine development status (like the old script)
@@ -178,7 +175,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
+  app.on('second-instance', () => {
     // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
