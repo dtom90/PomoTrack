@@ -2,7 +2,7 @@ import $ from 'jquery'
 import initialState from './initialState'
 
 const mutations = {
-  
+
   loadInitialData (state, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }) {
     state.tasks = tasks
     state.tasks.forEach(task => {
@@ -26,24 +26,24 @@ const mutations = {
     }
     state.selectedTaskLogs = selectedTaskLogs
   },
-  
+
   /** Tasks **/
-  
+
   addTask (state, { task }) {
     state.tasks.push(task)
   },
-  
+
   updateTask (state, { taskId, taskUpdates }) {
     const index = state.tasks.findIndex(t => t.id === taskId)
     if (index !== -1) {
       state.tasks[index] = { ...state.tasks[index], ...taskUpdates }
     }
   },
-  
+
   setTasks (state, { tasks }) {
     state.tasks = tasks
   },
-  
+
   updateTasks (state, { tasksToUpdate }) {
     tasksToUpdate.forEach(taskUpdate => {
       const index = state.tasks.findIndex(t => t.id === taskUpdate.id)
@@ -52,9 +52,9 @@ const mutations = {
       }
     })
   },
-  
+
   /** Logs **/
-  
+
   startTask (state, { log }) {
     const task = state.tasks.find(t => t.id === log.taskId)
     if (task) {
@@ -63,7 +63,7 @@ const mutations = {
       state.selectedTaskLogs.push(log)
     }
   },
-  
+
   updateLog (state, { taskId, log }) {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === log.id)
@@ -79,18 +79,18 @@ const mutations = {
       state.selectedTaskLogs.push(log)
     }
   },
-  
+
   deleteInterval (state, { taskId, logId }) {
     if (taskId !== state.settings.selectedTaskID) return
     const logIndex = state.selectedTaskLogs.findIndex(l => l.id === logId)
     if (logIndex === -1) return
     state.selectedTaskLogs.splice(logIndex, 1)
   },
-  
+
   setSelectedTaskLogs (state, { selectedTaskLogs }) {
     state.selectedTaskLogs = selectedTaskLogs
   },
-  
+
   setModalActivity (state, { logs }) {
     // Add task name and tags to each log
     const logsWithTaskDetails = logs.map(l => {
@@ -114,31 +114,31 @@ const mutations = {
   },
 
   /** Tags **/
-  
+
   addTaskTag (state, { taskId, tag, isNewTag }) {
     if (isNewTag) {
       state.tags[tag.id] = tag
       state.tagOrder = [...state.tagOrder, tag.id]
     }
-    
+
     const taskIndex = state.tasks.findIndex(t => t.id === taskId)
     if (taskIndex === -1) return
     const task = state.tasks[taskIndex]
     const newTags = [...task.tags, tag.id]
     state.tasks[taskIndex] = { ...task, tags: newTags }
   },
-  
+
   updateTagOrder (state, { reorderedTags }) {
     reorderedTags.forEach(tag => {
       state.tags[tag.id] = tag
     })
     state.tagOrder = reorderedTags.map(tag => tag.id)
   },
-  
+
   updateTag (state, { tagId, tagUpdates }) {
     state.tags[tagId] = { ...state.tags[tagId], ...tagUpdates }
   },
-  
+
   deleteTag (state, { tagId }) {
     state.tasks.forEach(task => {
       task.tags = task.tags.filter(tId => tId !== tagId)
@@ -146,25 +146,25 @@ const mutations = {
     state.settings.selectedTagIds = state.settings.selectedTagIds.filter(tag => tag !== tagId)
     delete state.tags[tagId]
     state.tagOrder = state.tagOrder.filter(tId => tId !== tagId)
-    $('#activityModal').modal('hide')
+    state.isActivityModalVisible = false
   },
-  
+
   /** Temp state and Settings **/
-  
+
   updateTempState (state, { key, value }) {
     state.tempState[key] = value
   },
-  
+
   updateSetting (state, { key, value }) {
     state.settings[key] = value
   },
-  
+
   /** Notifications **/
-  
+
   saveNotification (state, { notification }) {
     state.tempState.notificationList.push(notification)
   },
-  
+
   clearNotifications (state) {
     // close all open notification
     while (state.tempState.notificationList.length > 0) {

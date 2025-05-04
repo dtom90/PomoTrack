@@ -51,11 +51,11 @@ describe('create tags', () => {
       .click()
       .type('My Second Task{enter}')
     cy.get('button > svg.fa-plus').click()
-    cy.get('#tagInputDropdown .dropdown-menu button').contains(firstTagName).click()
+    cy.get('#tagInputDropdown-menu.dropdown-menu button').contains(firstTagName).click()
 
     // Assert
     cy.get('#selected-task-container').within(() => {
-      cy.get('#tagInputDropdown .dropdown-menu button').should('not.exist')
+      cy.get('#tagInputDropdown-menu.dropdown-menu button').should('not.exist')
       cy.get('div.tag > button.tag-name').contains(firstTagName).should('be.visible')
     })
   })
@@ -81,11 +81,10 @@ describe('create tags', () => {
       .should('have.focus').type(secondTagName + '{enter}')
 
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Tags').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Tags').click()
 
     // Assert
-    cy.get('#navbarTagsDropdown').contains('Tags')
-    cy.get('#navbarTagsDropdown').within(() => {
+    cy.get('#navbarTagsDropdown-menu').within(() => {
       cy.get('div.tag').eq(0).contains(firstTagName)
       cy.get('div.tag').eq(1).contains(secondTagName)
     })
@@ -105,10 +104,10 @@ describe('create tags', () => {
   it('drags one task above the other in the Tags Menu', () => {
     // Arrange
     cy.get('input[placeholder="add new tag"]').should('have.focus').type(secondTagName + '{enter}')
-    cy.get('nav.navbar').get('a.nav-link').contains('Tags').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Tags').click()
 
     // Act
-    cy.get('#navbarTagsDropdown').within(() => {
+    cy.get('#navbarTagsDropdown-menu').within(() => {
       cy.get('div.tag').contains(secondTagName)
         .closest('div.tag').drag('.drag-handle')
     })
@@ -167,7 +166,7 @@ describe('create tags', () => {
     // Act
     cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
     cy.get('button > svg.fa-plus').click()
-    cy.get('#tagInputDropdown .dropdown-menu button').contains(firstTagName).click({ force: true })
+    cy.get('#tagInputDropdown-menu.dropdown-menu button').contains(firstTagName).click({ force: true })
     cy.reload()
 
     // Assert

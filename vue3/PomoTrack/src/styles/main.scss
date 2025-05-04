@@ -175,6 +175,7 @@ table {
   width: 240px;
   padding: 4px;
   margin: 0;
+  overflow: visible !important;
 
   .dropdown-header {
     padding: 8px;
@@ -204,7 +205,7 @@ table {
     }
   }
 
-  .b-dropdown-form {
+  form.dropdown-item-text {
     padding: 8px;
     label {
       font-size: variables.$font-size-base;

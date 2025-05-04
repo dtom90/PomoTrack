@@ -14,10 +14,10 @@ describe('interval updates', () => {
       cy.get('.activity-view img[alt="Add interval"]').click()
 
       // Assert
-      cy.get('#add-interval-dropdown .dropdown-menu').within(() => {
-        cy.get('fieldset').contains('Started:')
-        cy.get('fieldset').contains('Duration:')
-        cy.get('fieldset').contains('Stopped:')
+      cy.get('#add-interval-dropdown-menu').within(() => {
+        cy.get('.b-form-group').contains('Started:')
+        cy.get('.b-form-group').contains('Duration:')
+        cy.get('.b-form-group').contains('Stopped:')
       })
     })
 
@@ -41,7 +41,7 @@ describe('interval updates', () => {
 
       // Act
       cy.get('.activity-view img[alt="Add interval"]').click()
-      cy.get('.activity-view fieldset').contains('Duration:').within(() => {
+      cy.get('.activity-view .b-form-group').contains('Duration:').within(() => {
         cy.get('input').type('{enter}')
       })
 
@@ -67,11 +67,11 @@ describe('interval updates', () => {
       // Arrange
       cy.get('#countdown-container button > svg.fa-play').click()
       cy.contains('Activity Log').scrollIntoView()
-      
+
       // Act
       cy.get('.activity-view img[alt="Add interval"]').click()
       cy.get('.activity-view button').contains('Add Interval').click()
-      
+
       // Assert
       cy.get('.activity-view tr').first().within(() => {
         cy.get('td').contains('Running')
@@ -92,7 +92,7 @@ describe('interval updates', () => {
       // Act
       cy.get('tr').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
-        cy.get('fieldset').contains('Duration:').within(() => {
+        cy.get('#add-interval-dropdown-menu .b-form-group').contains('Duration:').within(() => {
           cy.get('input').clear().type('35{enter}')
         })
       })
@@ -112,7 +112,7 @@ describe('interval updates', () => {
       // Act
       cy.get('tr').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
-        cy.get('fieldset').contains('Duration:').within(() => {
+        cy.get('.b-form-group').contains('Duration:').within(() => {
           cy.get('input').clear().type('35')
         })
         cy.get('.btn').contains('Update Interval').click()

@@ -6,7 +6,7 @@ describe('24-hour clock', () => {
 
   it('toggles to 24-hour clock', () => {
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').get('.dropdown-menu label').contains('Use 24-hour Clock').click()
 
     // Assert
@@ -151,7 +151,7 @@ describe('notifications', () => {
 
   it('shows notification setting disabled in options menu  by default', () => {
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').within(() => {
       cy.get('input[type="checkbox"]').should('not.be.checked')
     })
@@ -167,7 +167,7 @@ describe('notifications', () => {
     cy.get('button > svg.fa-play').click()
 
     // Assert
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').within(() => {
       cy.get('input[type="checkbox"]').should('not.be.checked')
     })
@@ -181,7 +181,7 @@ describe('notifications', () => {
     })
 
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
 
     // Assert
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').within(() => {
@@ -191,7 +191,7 @@ describe('notifications', () => {
 
   it('should allow user to enable notification permission via menu', () => {
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').click()
 
     // Assert
@@ -215,7 +215,7 @@ describe('notifications', () => {
     })
 
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').click()
 
     // Assert
@@ -231,7 +231,7 @@ describe('notifications', () => {
     })
 
     // Act
-    cy.get('nav.navbar').get('a.nav-link').contains('Options').click()
+    cy.get('nav.navbar').get('.nav-item').contains('Options').click()
     cy.get('nav.navbar').contains('.dropdown-menu .dropdown-item', 'Enable Notifications').click()
 
     // Assert

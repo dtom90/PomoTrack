@@ -10,6 +10,7 @@
     @shown="dropdownShown = true"
     @hide="dropdownWillHide"
     @hidden="dropdownShown = false"
+    auto-close="outside"
   >
     <template v-slot:button-content>
       <font-awesome-icon
@@ -22,29 +23,30 @@
         alt="Add interval"
       >
     </template>
+
     <b-dropdown-form @keydown.enter="onSubmit">
       <b-form-group>
         <font-awesome-icon :icon="startLockIcon" />
         Started:
         <VueCtkDateTimePicker
-          :value="startTime"
+          :model-value="startTime"
           :format="displayDateTimeFormat()"
           :right="true"
-          @input="onStartTimeInput"
+          @update:model-value="onStartTimeInput"
         />
       </b-form-group>
-        
+
       <b-form-group>
         <font-awesome-icon :icon="durationLockIcon" />
         Duration:
         <b-input-group append="Minutes">
           <b-form-input
             ref="appendMinutesInput"
-            :value="durationMinutes"
+            :model-value="durationMinutes"
             :state="durationMinutes > 0 ? null : false"
             aria-describedby="input-live-feedback"
             type="number"
-            @input="onDurationMinutesInput"
+            @update:model-value="onDurationMinutesInput"
             @blur="handleBlur"
           />
           <b-form-invalid-feedback id="input-live-feedback">
@@ -52,18 +54,18 @@
           </b-form-invalid-feedback>
         </b-input-group>
       </b-form-group>
-        
+
       <b-form-group>
         <font-awesome-icon :icon="stopLockIcon" />
         Stopped:
         <VueCtkDateTimePicker
-          :value="stopTime"
+          :model-value="stopTime"
           :format="displayDateTimeFormat()"
           :right="true"
-          @input="onStopTimeInput"
+          @update:model-value="onStopTimeInput"
         />
       </b-form-group>
-        
+
       <b-button
         variant="primary"
         class="w-100"
@@ -92,13 +94,13 @@ import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
 
 export default {
   name: 'IntervalDropdownForm',
-  
+
   components: {
     VueCtkDateTimePicker
   },
-  
+
   mixins: [time],
-  
+
   props: {
     taskId: {
       type: String,
@@ -109,7 +111,7 @@ export default {
       default: null
     }
   },
-  
+
   data: function () {
     return {
       dropdownShown: false,
@@ -121,7 +123,7 @@ export default {
       anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')]
     }
   },
-  
+
   computed: {
     startLockIcon () {
       return this.anchored.includes('startTime') ? 'lock' : 'unlock'
@@ -133,7 +135,7 @@ export default {
       return this.anchored.includes('stopTime') ? 'lock' : 'unlock'
     }
   },
-  
+
   methods: {
     ...mapActions([
       'addInterval',
@@ -141,7 +143,7 @@ export default {
       'updateInterval',
       'deleteInterval'
     ]),
-    
+
     async dropdownWillShow () {
       if (this.logId) {
         const log = await this.getLogById({ logId: this.logId })
@@ -153,7 +155,7 @@ export default {
         this.updateStartTime()
       }
     },
-    
+
     onStartTimeInput (newValue) {
       this.startTime = newValue
       if (!this.anchored.includes('startTime')) {
@@ -181,6 +183,7 @@ export default {
       }
     },
     onStopTimeInput (newValue) {
+      console.log('onStopTimeInput', newValue)
       this.stopTime = newValue
       if (!this.anchored.includes('stopTime')) {
         this.anchored.shift()
@@ -192,19 +195,19 @@ export default {
         this.updateDurationMinutes()
       }
     },
-    
+
     updateStartTime () {
       this.startTime = this.displayDateTimeHuman(this.stringToMs(this.stopTime) - this.minutesToMs(this.durationMinutes))
     },
-    
+
     updateDurationMinutes () {
       this.durationMinutes = this.msToMinutes(this.stringToMs(this.stopTime) - this.stringToMs(this.startTime))
     },
-    
+
     updateStopTime () {
       this.stopTime = this.displayDateTimeHuman(this.stringToMs(this.startTime) + this.minutesToMs(this.durationMinutes))
     },
-    
+
     dropdownWillHide (event) {
       if (!this.intentionalEnter) {
         this.dropdownHide = event
@@ -213,11 +216,11 @@ export default {
         this.intentionalEnter = false
       }
     },
-    
+
     clearDropdownHide () {
       this.dropdownHide = null
     },
-    
+
     handleBlur (event) {
       if (event.sourceCapabilities === null && this.dropdownHide !== null) {
         setTimeout(() => {
@@ -226,7 +229,7 @@ export default {
         }, 50)
       }
     },
-    
+
     onSubmit (event) {
       this.intentionalEnter = true
       event.preventDefault()
@@ -252,9 +255,7 @@ export default {
 </script>
 
 <style>
-  #add-interval-dropdown {
-    .dropdown-menu {
-      width: 270px !important;
-    }
+  #add-interval-dropdown-menu {
+    width: 270px !important;
   }
 </style>

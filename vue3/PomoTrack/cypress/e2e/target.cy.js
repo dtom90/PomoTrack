@@ -7,7 +7,7 @@ describe('target', () => {
 
   it('sets a daily target for all activity', () => {
     // Arrange
-    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
 
     // Act
@@ -17,8 +17,8 @@ describe('target', () => {
     })
 
     // Assert
-    cy.get('#activityModal button.close').click()
-    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('#activityModal button.btn-close').click()
+    cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {
       cy.get('input').should('have.value', '1')
@@ -27,7 +27,7 @@ describe('target', () => {
 
   it('preserves daily target after page reload', () => {
     // Arrange
-    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {
       cy.get('label').contains('Daily Target').should('be.visible')
@@ -38,7 +38,7 @@ describe('target', () => {
     cy.reload()
 
     // Assert
-    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {
       cy.get('input').should('have.value', '1')

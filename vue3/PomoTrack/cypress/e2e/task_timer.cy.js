@@ -186,7 +186,7 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
     cy.get('button > svg.fa-gear').click()
-    cy.get('.custom-checkbox').contains('Continue Timer on Interval Complete').click()
+    cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
 
     // Act
     cy.get('button > svg.fa-play').click()
@@ -206,7 +206,7 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.1{enter}')
     cy.get('button > svg.fa-gear').click()
-    cy.get('.custom-checkbox').contains('Continue Timer on Interval Complete').click()
+    cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
     cy.get('button > svg.fa-play').click()
     cy.get('#countdown-container').contains('0:06')
     cy.get('#countdown-container').contains('0:05')
@@ -228,7 +228,7 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
     cy.get('button > svg.fa-gear').click()
-    cy.get('.custom-checkbox').contains('Continue Timer on Interval Complete').click()
+    cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
 
     cy.get('button > svg.fa-play').click()
     cy.get('#countdown-container').contains('0:03')
@@ -252,7 +252,7 @@ describe('task timer', () => {
   //   cy.get('#countdown-container').contains('25:00').click()
   //   cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
   //   cy.get('button > svg.fa-gear').click()
-  //   cy.get('.custom-checkbox').contains('Continue Timer on Interval Complete').click()
+  //   cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
   //
   //   cy.get('button > svg.fa-play').click()
   //   cy.get('#countdown-container').contains('0:03')
@@ -279,7 +279,7 @@ describe('task timer', () => {
     cy.get('#countdown-container').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
     cy.get('button > svg.fa-gear').click()
-    cy.get('.custom-checkbox').contains('Continue Timer on Interval Complete').click()
+    cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
 
     cy.get('button > svg.fa-play').click()
     cy.get('#countdown-container').contains('0:03')
@@ -320,7 +320,7 @@ describe('task timer', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').first().click()
 
     // Assert
-    cy.get('.navbar-nav').get('a.nav-link').contains('All Activity').click()
+    cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('#activityModal').within(() => {
       cy.get('#task-log').scrollIntoView()
       cy.get('#task-log').within(() => {
