@@ -19,6 +19,6 @@ docker build \
 docker run -it \
        --name ${CONTAINER_NAME} \
        ${IMAGE_NAME} \
-       sh -c 'npm run web:build && cp -r .circleci dist_web && cp CNAME dist_web' && \
+       sh -c 'npm run build && cp -r .circleci dist_web && cp CNAME dist_web' && \
 docker cp ${CONTAINER_NAME}:/app/dist_web ./dist_web && \
 docker rm -f ${CONTAINER_NAME}
