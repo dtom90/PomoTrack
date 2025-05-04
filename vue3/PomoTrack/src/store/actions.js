@@ -216,8 +216,8 @@ const actions = {
     }
   },
   
-  async getLogById ({ state }, { logId }) {
-    const log = await dexieDb.logs.get(logId)
+  async getLogById ({ }, { logId }) {
+    const log = await dexieDb.logs.where('id').equals(logId).first()
     return log
   },
   
@@ -280,7 +280,7 @@ const actions = {
     }
   },
   
-  async updateTag ({ state, commit }, { tagId, ...tagUpdates }) {
+  async updateTag ({ commit }, { tagId, ...tagUpdates }) {
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
     if (!tag) {
       alert('Error: the tag you are trying to update does not exist. Please refresh the page and try again.')
@@ -357,7 +357,7 @@ const actions = {
     await dispatch('updateSetting', { key: 'selectedTagIds', value: selectedTagIds })
   },
   
-  async updateSetting ({ state, commit }, { key, value }) {
+  async updateSetting ({ commit }, { key, value }) {
     await dexieDb.settings.put({ key, value })
     commit('updateSetting', { key, value })
   },
@@ -365,6 +365,21 @@ const actions = {
   async removeAllTagFilters ({ dispatch }) {
     await dexieDb.settings.put({ key: 'selectedTagIds', value: [] })
     await dispatch('updateSetting', { key: 'selectedTagIds', value: [] })
+  },
+
+  openActivityModal ({ state, commit, dispatch }) {
+    // Load data based on whether a tag is selected in tempState
+    if (!state.tempState.modalTagId) {
+      dispatch('loadAllActivity')
+    } else {
+      dispatch('loadTagActivity')
+    }
+    // Then commit the mutation to show the modal
+    commit('setActivityModalVisible', true)
+  },
+
+  closeActivityModal ({ commit }) {
+    commit('setActivityModalVisible', false)
   }
 }
 

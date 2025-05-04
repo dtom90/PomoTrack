@@ -61,7 +61,8 @@ export default {
   
   methods: {
     ...mapActions([
-      'removeTaskTag'
+      'removeTaskTag',
+      'openActivityModal'
     ]),
     
     ...mapMutations([
@@ -71,7 +72,7 @@ export default {
     selectTag ({ tagId }) {
       if (!this.mini) {
         this.updateTempState({ key: 'modalTagId', value: tagId })
-        this.$root.$emit('bv::toggle::modal', 'activityModal')
+        this.openActivityModal()
       }
     },
     

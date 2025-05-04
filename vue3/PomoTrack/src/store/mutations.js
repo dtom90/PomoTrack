@@ -104,7 +104,15 @@ const mutations = {
     logsWithTaskDetails.sort((a, b) => ('started' in a ? a.started : a.completed) - ('started' in b ? b.started : b.completed))
     state.modalActivity = logsWithTaskDetails
   },
-  
+
+  unloadModalActivity (state) {
+    state.modalActivity = null
+  },
+
+  setActivityModalVisible (state, isVisible) {
+    state.isActivityModalVisible = isVisible
+  },
+
   /** Tags **/
   
   addTaskTag (state, { taskId, tag, isNewTag }) {

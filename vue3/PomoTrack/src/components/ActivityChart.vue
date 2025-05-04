@@ -166,6 +166,7 @@ export default {
   
   methods: {
     updateWith () {
+      if (!this.$refs.chartContainerBody) return
       this.$refs.chartContainerBody.style.width = Math.max(
         this.$refs.chartContainer.clientWidth,
         140 + 140 * this.chartData.labels.length

@@ -1,10 +1,10 @@
 <template>
   <b-modal
     id="activityModal"
+    v-model="modalVisible"
     size="lg"
-    hide-footer
+    no-footer
     scrollable
-    @shown="onModalShown"
     @hidden="onModalHidden"
   >
     <template v-slot:modal-title>
@@ -20,7 +20,7 @@
       <span class="close-icon" />
     </template>
     
-    <div v-if="isModalShown && modalActivity !== null">
+    <div v-if="modalActivity !== null">
       <DailyActivitySummary
         :filtered-activity="modalActivity"
       />
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import DailyActivitySummary from './DailyActivitySummary.vue'
 import ActivityView from './ActivityView.vue'
 import TagSettingsButton from './TagSettingsButton.vue'
@@ -56,20 +56,26 @@ export default {
     DailyActivitySummary,
     ActivityView
   },
-  
-  data: () => ({
-    isModalShown: false
-  }),
-  
+
   computed: {
     ...mapState([
       'tags',
       'modalActivity',
-      'tempState'
+      'tempState',
+      'isActivityModalVisible'
     ]),
     
     tag: function () {
       return this.tags[this.tempState.modalTagId]
+    },
+
+    modalVisible: {
+      get () {
+        return this.isActivityModalVisible
+      },
+      set (value) {
+        this.setActivityModalVisible(value)
+      }
     }
   },
   
@@ -78,18 +84,13 @@ export default {
       'loadAllActivity',
       'loadTagActivity'
     ]),
+    ...mapMutations([
+      'unloadModalActivity',
+      'setActivityModalVisible'
+    ]),
     
-    onModalShown () {
-      this.isModalShown = true
-      if (!this.tempState.modalTagId) {
-        this.loadAllActivity()
-      } else {
-        this.loadTagActivity()
-      }
-    },
-
     onModalHidden () {
-      this.isModalShown = false
+      this.unloadModalActivity()
     }
   }
 }

@@ -34,7 +34,7 @@
 
 <script>
 import time from '../../lib/time'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
 import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
 import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
@@ -73,6 +73,9 @@ export default {
     ...mapMutations([
       'updateTempState'
     ]),
+    ...mapActions([
+      'openActivityModal'
+    ]),
 
     updateTime () {
       this.currentDate = new Date()
@@ -80,7 +83,7 @@ export default {
 
     openAllActivity () {
       this.updateTempState({ key: 'modalTagId', value: null })
-      this.$root.$emit('bv::toggle::modal', 'activityModal')
+      this.openActivityModal()
     }
   }
 }
