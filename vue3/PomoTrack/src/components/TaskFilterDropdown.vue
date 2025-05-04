@@ -1,7 +1,7 @@
 <template>
-  <b-dropdown
+  <BDropdown
     ref="dropdown"
-    v-b-tooltip.hover.right="filterButtonTooltip"
+    v-b-tooltip.hover.left="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
     placement="right-start"
     boundary="viewport"
@@ -9,12 +9,13 @@
     :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
     :style="filterBtnStyle"
     no-caret
+    auto-close="outside"
   >
     <template #button-content>
       <font-awesome-icon icon="filter" />
     </template>
     
-    <b-dropdown-header>
+    <BDropdownHeader>
       <div class="d-flex justify-content-between">
         <div>Filter by Tag</div>
         <a
@@ -32,23 +33,23 @@
           Include in new tasks
         </b-form-checkbox>
       </div>
-    </b-dropdown-header>
+    </BDropdownHeader>
 
-    <b-dropdown-divider />
+    <BDropdownDivider />
 
-    <b-dropdown-item
+    <BDropdownItemButton
       v-for="tagId in tagOrder"
       :key="tagId"
       :class="unselectedTags.includes(tagId) ? '' : 'selected'"
-      @click.native.stop="itemClicked(tagId)"
+      @click="itemClicked(tagId, $event)"
     >
       <TagButton
         :tag="tags[tagId]"
         :tag-id="tagId"
         :unselected="unselectedTags.includes(tagId)"
       />
-    </b-dropdown-item>
-  </b-dropdown>
+    </BDropdownItemButton>
+  </BDropdown>
 </template>
 
 <script>
@@ -119,7 +120,6 @@ export default {
     ]),
 
     itemClicked (tagId) {
-      this.$refs.dropdown.show()
       this.toggleSelectedTag({ tagId })
     },
     

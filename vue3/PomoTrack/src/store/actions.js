@@ -1,6 +1,7 @@
 import dexieDb from './dexieDb'
 import { nanoid } from 'nanoid'
 import ColorManager from 'color-manager'
+import { toRaw } from 'vue'
 
 const actions = {
   async loadInitialData ({ commit }) {
@@ -358,7 +359,7 @@ const actions = {
   },
   
   async updateSetting ({ commit }, { key, value }) {
-    await dexieDb.settings.put({ key, value })
+    await dexieDb.settings.put({ key, value: toRaw(value) })
     commit('updateSetting', { key, value })
   },
 
