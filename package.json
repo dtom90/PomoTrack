@@ -1,5 +1,13 @@
 {
   "name": "pomotrack",
+  "displayName": "PomoTrack",
+  "description": "A pomodoro timer app with task tracking",
+  "author": {
+    "name": "David Thomason",
+    "url": "https://davidthomason.com/"
+  },
+  "homepage": "https://github.com/dtom90/PomoTrack",
+  "repository": "https://github.com/dtom90/PomoTrack",
   "version": "0.18.1",
   "private": true,
   "main": "main.js",
@@ -11,6 +19,7 @@
     "type-check": "vue-tsc --build",
     "electron:dev": "electron .",
     "electron:build": "npm run build && electron-builder",
+    "electron:run_local": "NODE_ENV=production ./dist_electron/mac/PomoTrack.app/Contents/MacOS/PomoTrack --inspect",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:basic": "npm audit && npm run type-check && npm run lint",
@@ -28,6 +37,8 @@
     "color-manager": "https://github.com/dtom90/color-manager",
     "dexie": "^4.0.11",
     "dompurify": "^3.2.5",
+    "electron-log": "^5.4.0",
+    "electron-updater": "^6.6.2",
     "humanize-duration": "^3.32.1",
     "lodash.clonedeep": "^4.5.0",
     "marked": "^15.0.11",
