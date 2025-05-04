@@ -1,13 +1,25 @@
 {
   "name": "pomotrack",
-  "version": "0.18.0",
+  "displayName": "PomoTrack",
+  "description": "A pomodoro timer app with task tracking",
+  "author": {
+    "name": "David Thomason",
+    "url": "https://davidthomason.com/"
+  },
+  "homepage": "https://github.com/dtom90/PomoTrack",
+  "repository": "https://github.com/dtom90/PomoTrack",
+  "version": "0.18.1",
   "private": true,
+  "main": "main.js",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
+    "electron:dev": "electron .",
+    "electron:build": "npm run build && electron-builder",
+    "electron:run_local": "NODE_ENV=production ./dist_electron/mac/PomoTrack.app/Contents/MacOS/PomoTrack --inspect",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:basic": "npm audit && npm run type-check && npm run lint",
@@ -25,6 +37,8 @@
     "color-manager": "https://github.com/dtom90/color-manager",
     "dexie": "^4.0.11",
     "dompurify": "^3.2.5",
+    "electron-log": "^5.4.0",
+    "electron-updater": "^6.6.2",
     "humanize-duration": "^3.32.1",
     "lodash.clonedeep": "^4.5.0",
     "marked": "^15.0.11",
@@ -38,12 +52,15 @@
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.3.0",
+    "@electron/notarize": "^3.0.1",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
     "cypress": "^14.3.2",
+    "electron": "^36.1.0",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
     "jiti": "^2.4.2",
@@ -53,5 +70,31 @@
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "^2.2.8"
+  },
+  "build": {
+    "appId": "app.pomotrack",
+    "productName": "PomoTrack",
+    "publish": "github",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist_web/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "afterSign": "./notarize.js"
   }
 }

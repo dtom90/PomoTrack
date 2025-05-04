@@ -8,6 +8,7 @@ import { BootstrapVueNextResolver } from 'bootstrap-vue-next'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './', // Use relative paths for assets
   plugins: [
     vue(),
     Components({

@@ -142,11 +142,16 @@ jobs:
           name: Install NVM
           command: |
             set +e
-            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
           name: Install Node
           command: |
@@ -159,12 +164,16 @@ jobs:
             set +e
             pip install setuptools
             npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
           name: Build macOS app
-          command: npm run electron:release:mac
+          command: npm run electron:build
 
   build-windows:
     executor:
@@ -174,28 +183,58 @@ jobs:
       - checkout
       - run:
           name: Install NVM
+          shell: bash.exe
           command: |
-            $webClient = New-Object System.Net.WebClient
-            $webClient.DownloadFile("https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh", "$env:TEMP\install.sh")
-            bash $env:TEMP\install.sh
+            # Ensure curl is available or install it
+            if ! command -v curl &> /dev/null; then
+              echo "curl could not be found, attempting to install..."
+              # Add appropriate package manager command for the Windows image if needed
+              # e.g., choco install curl or apt-get update && apt-get install -y curl if using WSL
+              echo "Error: curl is required but not found. Please install it."
+              exit 1
+            fi
+            echo "Installing NVM..."
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
+            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+            echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $BASH_ENV
+            source $BASH_ENV
+            echo "NVM installed."
       - run:
-          name: Install Node
+          name: Install and Use Node.js v22.15.0
+          shell: bash.exe
           command: |
-            . ~/.nvm/nvm.sh
+            source $BASH_ENV # Source NVM environment variables again for this step
+            echo "Listing available Node versions..."
+            nvm ls-remote
+            echo "Installing Node v22.15.0..."
             nvm install v22.15.0
             nvm use v22.15.0
+            echo "Node version: $(node -v)"
+            echo "NPM version: $(npm -v)"
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
           name: Install dependencies
+          shell: bash.exe
           command: |
-            . ~/.nvm/nvm.sh
+            source $BASH_ENV
             nvm use v22.15.0
             npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Build Windows app
+          shell: bash.exe
           command: |
-            . ~/.nvm/nvm.sh
+            source $BASH_ENV
             nvm use v22.15.0
-            npm run electron:release:win
+            npm run electron:build -- --win
 
 workflows:
   version: 2
