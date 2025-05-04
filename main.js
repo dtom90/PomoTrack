@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { app, BrowserWindow } = require('electron')
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path')
 
 // Define isDev based on ELECTRON_IS_DEV environment variable set by electron-builder
@@ -16,7 +18,7 @@ function createWindow () {
   // Load the index.html of the app.
   if (isDev) {
     // In development, load the Vite dev server URL
-    mainWindow.loadURL('http://localhost:5173') 
+    mainWindow.loadURL('http://localhost:5173')
     // Optional: Open DevTools automatically in development
     mainWindow.webContents.openDevTools()
   } else {
