@@ -7,19 +7,20 @@
     scrollable
     @hidden="onModalHidden"
   >
-    <template v-slot:modal-title>
-      <span class="title-spacer" />
-      <span v-if="!tempState.modalTagId">All Activity</span>
-      <template v-else>
-        <span id="activity-for">Activity for</span>
-        <TagSettingsButton :tag-id="tempState.modalTagId" />
-      </template>
+    <template v-slot:header>
+      <div class="w-100 d-flex justify-content-center align-items-center">
+        <span v-if="!tempState.modalTagId">All Activity</span>
+        <template v-else>
+          <span id="activity-for">Activity for</span>
+          <TagSettingsButton :tag-id="tempState.modalTagId" />
+        </template>
+      </div>
     </template>
-    
+
     <template v-slot:modal-header-close>
       <span class="close-icon" />
     </template>
-    
+
     <div v-if="modalActivity !== null">
       <DailyActivitySummary
         :filtered-activity="modalActivity"
@@ -50,7 +51,7 @@ import TagSettingsButton from './TagSettingsButton.vue'
 
 export default {
   name: 'ActivityModal',
-  
+
   components: {
     TagSettingsButton,
     DailyActivitySummary,
@@ -64,7 +65,7 @@ export default {
       'tempState',
       'isActivityModalVisible'
     ]),
-    
+
     tag: function () {
       return this.tags[this.tempState.modalTagId]
     },
@@ -78,7 +79,7 @@ export default {
       }
     }
   },
-  
+
   methods: {
     ...mapActions([
       'loadAllActivity',
@@ -88,7 +89,7 @@ export default {
       'unloadModalActivity',
       'setActivityModalVisible'
     ]),
-    
+
     onModalHidden () {
       this.unloadModalActivity()
     }

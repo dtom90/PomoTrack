@@ -243,33 +243,32 @@ describe('task timer', () => {
     })
   })
 
-  // TODO: fix
-  // it('should stop timer when task completed and not continue next task', () => {
-  //   // Arrange
-  //   cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
-  //     .click()
-  //     .type('My Second Task{enter}')
-  //   cy.get('#countdown-container').contains('25:00').click()
-  //   cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
-  //   cy.get('button > svg.fa-gear').click()
-  //   cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
-  //
-  //   cy.get('button > svg.fa-play').click()
-  //   cy.get('#countdown-container').contains('0:03')
-  //   cy.get('#countdown-container').contains('0:02')
-  //
-  //   // Act
-  //   cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
-  //
-  //   // Assert
-  //   cy.get('#incomplete-task-list .task').click()
-  //   cy.get('button#active-task-container').should('not.exist')
-  //   cy.get('#timer-display').scrollIntoView()
-  //   cy.get('#countdown-container').contains('0:02').should('be.visible')
-  //   cy.wait(2000)
-  //   cy.get('button > svg.fa-play').should('be.visible')
-  //   cy.get('#countdown-container').contains('0:02').should('be.visible')
-  // })
+  it.only('should stop timer when task completed and not continue next task', () => {
+    // Arrange
+    cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
+      .click()
+      .type('My Second Task{enter}')
+    cy.get('#countdown-container').contains('25:00').click()
+    cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
+    cy.get('button > svg.fa-gear').click()
+    cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
+  
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('0:03')
+    cy.get('#countdown-container').contains('0:02')
+  
+    // Act
+    cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
+  
+    // Assert
+    cy.get('#incomplete-task-list .task').click()
+    cy.get('button#active-task-container').should('not.exist')
+    cy.get('#timer-display').scrollIntoView()
+    cy.get('#countdown-container').contains('0:02').should('be.visible')
+    cy.wait(2000)
+    cy.get('button > svg.fa-play').should('be.visible')
+    cy.get('#countdown-container').contains('0:02').should('be.visible')
+  })
 
   it('should reset timer when task completed during overtime', () => {
     // Arrange

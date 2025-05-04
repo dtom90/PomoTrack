@@ -90,16 +90,15 @@ describe('create tags', () => {
     })
   })
 
-  // TODO: fix
-  // it('clicks the Tag button to show the Tag Activity Modal', () => {
-  //   // Act
-  //   cy.get('#selected-task-container').within(() => {
-  //     cy.get('div.tag > button.tag-name').contains(firstTagName).click()
-  //   })
-  //
-  //   // Assert
-  //   cy.get('#activityModal').contains(firstTagName).should('be.visible')
-  // })
+  it('clicks the Tag button to show the Tag Activity Modal', () => {
+    // Act
+    cy.get('#selected-task-container').within(() => {
+      cy.get('div.tag > button.tag-name').contains(firstTagName).click()
+    })
+
+    // Assert
+    cy.get('#activityModal').contains(firstTagName).should('be.visible')
+  })
 
   it('drags one task above the other in the Tags Menu', () => {
     // Arrange
