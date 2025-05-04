@@ -6,10 +6,10 @@
     >
       {{ displayDateHuman(day) }}
     </h5>
-    
+
     <!-- Time Spent on Task -->
     <h6>Time Spent: {{ displayDuration(timeSpent) }}</h6>
-    
+
     <!-- Task Activity Log -->
     <table
       class="activityLog table"
@@ -25,7 +25,7 @@
           >
             <span>{{ event.task }}</span>
           </td>
-          
+
           <td v-if="event.started">
             <span>Started {{ displayTimeHuman(event.started) }}</span>
           </td>
@@ -45,7 +45,7 @@
             <IntervalDropdownForm :log-id="event.id" />
           </td>
         </template>
-        
+
         <template v-if="event.completed">
           <td v-if="event.task">
             <span>{{ event.task }}</span>
@@ -70,9 +70,9 @@ export default {
   name: 'Log',
 
   components: { IntervalDropdownForm },
-  
+
   mixins: [time],
-  
+
   props: {
     day: {
       type: String,
@@ -85,23 +85,14 @@ export default {
     timeSpent: {
       type: Number,
       default: 0
-    },
-    deleteIntervalButtonClicked: {
-      type: Function,
-      default: () => {
-      }
     }
   },
-  
+
   methods: {
-    
+
     displayEventDuration (event) {
       const end = event.stopped || Date.now()
       return displayDuration(end - event.started)
-    },
-  
-    deleteInterval ({ log, index }) {
-      this.deleteIntervalButtonClicked({ logId: log.id })
     }
   }
 }

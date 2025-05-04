@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import initialState from './initialState'
 
 const mutations = {

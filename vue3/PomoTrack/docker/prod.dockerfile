@@ -6,13 +6,13 @@ RUN apk update && apk upgrade && \
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package*.json ./
+RUN npm install
 
 COPY public public
 COPY src src
 COPY vue.config.js .
-RUN yarn run web:build
+RUN npm run build
 
 # production stage
 FROM nginx:stable-alpine as production-stage

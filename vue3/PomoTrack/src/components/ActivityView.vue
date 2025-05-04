@@ -75,7 +75,6 @@
           :day="day"
           :log="dayActivity.log"
           :time-spent="dayActivity.timeSpent"
-          :delete-interval-button-clicked="deleteIntervalButtonClicked"
         />
       </div>
     </div>
@@ -238,8 +237,7 @@ export default {
 
     ...mapActions([
       'updateSetting',
-      'updateTag',
-      'deleteInterval'
+      'updateTag'
     ]),
 
     calculateTimeSpent (log) {
@@ -253,10 +251,6 @@ export default {
 
     toggleLog () {
       this.logVisible = !this.logVisible
-    },
-
-    deleteIntervalButtonClicked ({ logId }) {
-      this.deleteInterval({ logId })
     }
   }
 }

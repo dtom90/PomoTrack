@@ -6,15 +6,17 @@ export default class CountdownTimer {
     this.finishTimerCallback = finishTimerCallback
     this.ID = null
   }
-  
+
   setSeconds (seconds) {
     this.totalSeconds = seconds
     this.remainingSeconds = this.totalSeconds
   }
-  
+
   start () {
     this.startTime = Date.now()
     this.endTime = this.startTime + (this.remainingSeconds * 1000)
+    // TODO: fix this
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const t = this
     this.ID = setInterval(function () {
       const remainingMs = t.endTime - Date.now()
@@ -26,11 +28,11 @@ export default class CountdownTimer {
       }
     }, 1000)
   }
-  
+
   pause () {
     clearInterval(this.ID)
   }
-  
+
   clear () {
     clearInterval(this.ID)
     this.remainingSeconds = this.totalSeconds

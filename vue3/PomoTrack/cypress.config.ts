@@ -4,7 +4,7 @@ module.exports = defineConfig({
   e2e: {
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.js',
-    setupNodeEvents (on, config) {
+    setupNodeEvents (on) {
       // implement node event listeners here
       on('task', {
         log (message) {

@@ -118,25 +118,25 @@ export default {
       type: Object,
       required: true
     },
-    
+
     target: {
       type: Number,
       default: null
     }
   },
-  
+
   data: function () {
     return {
       chartOptions: {},
       observer: null
     }
   },
-  
+
   watch: {
     target: function (newTarget) {
       this.chartOptions = chartOptions(newTarget)
     },
-    
+
     chartData: function (newChartData, oldChartData) {
       this.updateWith()
       this.chartOptions.plugins.datalabels.color = getTextColor(newChartData.datasets[0].backgroundColor)
@@ -157,13 +157,13 @@ export default {
     })
     this.observeWidthChange()
   },
-  
-  beforeDestroy () {
+
+  beforeUnmount () {
     if (this.observer) {
       this.observer.disconnect()
     }
   },
-  
+
   methods: {
     updateWith () {
       if (!this.$refs.chartContainerBody) return
@@ -172,19 +172,19 @@ export default {
         140 + 140 * this.chartData.labels.length
       ) + 'px'
     },
-    
+
     scrollRight () {
       this.$refs.chartContainer.scrollLeft = this.$refs.chartContainer.scrollWidth
     },
-    
+
     observeWidthChange () {
       const chartContainer = this.$refs.chartContainer
       if (!chartContainer) return
-      
+
       this.observer = new ResizeObserver(() => {
         this.updateWith()
       })
-      
+
       this.observer.observe(chartContainer)
     }
   }

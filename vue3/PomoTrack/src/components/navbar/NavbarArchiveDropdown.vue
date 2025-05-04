@@ -15,7 +15,7 @@
         <b-dropdown-item
           v-for="task of archivedTasks"
           :key="task.id"
-          @click.native.stop="onTaskClick"
+          @click.stop="onTaskClick"
         >
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
