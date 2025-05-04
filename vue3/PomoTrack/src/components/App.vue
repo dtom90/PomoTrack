@@ -83,11 +83,6 @@ import SelectedTask from './SelectedTask.vue'
 import ActivityModal from './ActivityModal.vue'
 
 import { mapState } from 'vuex'
-import $ from 'jquery'
-
-$(document).on('click', '.dropdown-menu', function (e) {
-  e.stopPropagation()
-})
 
 export default {
 

@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: yarn add semver
+          command: npm install -g semver
       - run:
           name: Check if version is greater than master
           command: ./docker/check-version.sh
@@ -158,13 +158,13 @@ jobs:
           command: |
             set +e
             pip install setuptools
-            yarn install
+            npm install
       - run:
           name: Reset xcode selection
           command: sudo xcode-select -r
       - run:
           name: Build macOS app
-          command: yarn run electron:release:mac
+          command: npm run electron:release:mac
 
   build-windows:
     executor:
@@ -190,13 +190,13 @@ jobs:
           command: |
             . ~/.nvm/nvm.sh
             nvm use v22.15.0
-            yarn install
+            npm install
       - run:
           name: Build Windows app
           command: |
             . ~/.nvm/nvm.sh
             nvm use v22.15.0
-            yarn run electron:release:win
+            npm run electron:release:win
 
 workflows:
   version: 2

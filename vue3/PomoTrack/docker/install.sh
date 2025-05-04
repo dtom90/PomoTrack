@@ -9,7 +9,7 @@ cd "${THIS_DIR}/.." || exit
 IMAGE_NAME=pomotrack-base
 
 CMD="$@"
-if [[ -z "$CMD" ]]; then CMD="yarn install"; fi
+if [[ -z "$CMD" ]]; then CMD="npm install"; fi
 
 docker build \
        -f docker/base.dockerfile \

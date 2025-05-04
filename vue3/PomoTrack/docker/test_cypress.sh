@@ -18,5 +18,4 @@ docker run -it --rm \
            --name ${CONTAINER_NAME} \
            --add-host=host.docker.internal:host-gateway \
            --env CYPRESS_POMOTRACK_HOSTNAME='host.docker.internal' \
-           ${IMAGE_NAME} \
-           --browser chrome
+           ${IMAGE_NAME}
