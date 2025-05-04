@@ -17,7 +17,7 @@ describe('target', () => {
     })
 
     // Assert
-    cy.get('#activityModal button.btn-close').click()
+    cy.get('#activityModal .btn-close').click()
     cy.get('.navbar-nav').get('.nav-item').contains('All Activity').click()
     cy.get('button').contains('Set Target').click()
     cy.get('#allActivity .dropdown-menu').within(() => {

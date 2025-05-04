@@ -7,18 +7,15 @@
     scrollable
     @hidden="onModalHidden"
   >
-    <template v-slot:header>
-      <div class="w-100 d-flex justify-content-center align-items-center">
+    <template #header="{ close }">
+      <div class="w-100 d-flex justify-content-center align-items-center position-relative">
         <span v-if="!tempState.modalTagId">All Activity</span>
         <template v-else>
           <span id="activity-for">Activity for</span>
           <TagSettingsButton :tag-id="tempState.modalTagId" />
         </template>
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-0 p-1" aria-label="Close" @click="close()"></button>
       </div>
-    </template>
-
-    <template v-slot:modal-header-close>
-      <span class="close-icon" />
     </template>
 
     <div v-if="modalActivity !== null">

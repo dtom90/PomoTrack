@@ -183,7 +183,6 @@ export default {
       }
     },
     onStopTimeInput (newValue) {
-      console.log('onStopTimeInput', newValue)
       this.stopTime = newValue
       if (!this.anchored.includes('stopTime')) {
         this.anchored.shift()

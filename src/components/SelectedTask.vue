@@ -185,9 +185,7 @@ renderer.link = (href, title, text) => {
   return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
 }
 // add class to span tags
-renderer.paragraph = (text) => {
-  return `<p class="custom-p">${text}</p>`
-}
+renderer.paragraph = ({tokens}) => tokens.map(token => `<p class="custom-p">${token.text}</p>`).join('');
 
 export default {
 
@@ -244,7 +242,8 @@ export default {
     },
 
     displayNotes () {
-      return marked(DOMPurify.sanitize(this.selectedTask.notes), { renderer })
+      const sanitizedNotes = DOMPurify.sanitize(this.selectedTask.notes)
+      return marked(sanitizedNotes, { renderer })
     }
 
   },
@@ -277,19 +276,16 @@ export default {
     },
 
     async saveName () {
-      console.log('saveName:newTaskName', this.newTaskName)
       if (!this.newTaskName || !this.newTaskName.trim().length) {
         this.editingName = false
         return
       }
 
-      console.log('saveName:isEmptyState', this.isEmptyState)
       if (this.isEmptyState) {
         // Create new task
         await this.addTask({ name: this.newTaskName })
       } else {
         // Update existing task
-        console.log('this.selectedTask', this.selectedTask)
         await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
       }
       this.editingName = false
