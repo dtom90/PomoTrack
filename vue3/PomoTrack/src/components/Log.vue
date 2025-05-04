@@ -128,5 +128,8 @@ export default {
 
 td {
   font-size: variables.$font-size-small;
+  span {
+    padding: 0 !important;
+  }
 }
 </style>

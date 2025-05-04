@@ -69,12 +69,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-@use "../styles/_variables.scss";
+<style lang="scss" scoped>
+@use '@/styles/_variables.scss' as variables;
 
 #color-scheme {
-  --error-red: $variables.error-red;
-  --dark-quaternary: $variables.dark-quaternary;
+  --error-red: #{variables.$error-red};
+  --dark-quaternary: #{variables.$dark-quaternary};
 }
 
 .dial-container {

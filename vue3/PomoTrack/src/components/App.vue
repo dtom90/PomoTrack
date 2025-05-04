@@ -25,7 +25,7 @@
 
       <div
         id="selected-task-section"
-        class="section border-left border-right"
+        class="section border-start border-end"
       >
         <div
           id="sidebar-buttons"
