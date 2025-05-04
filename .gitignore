@@ -11,6 +11,7 @@ node_modules
 .DS_Store
 dist
 dist_web
+dist_electron
 dist-ssr
 coverage
 *.local
