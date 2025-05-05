@@ -184,6 +184,7 @@ jobs:
       - checkout
       - node/install:
           node-version: "22.15.0"
+          shell: bash.exe
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
@@ -191,6 +192,7 @@ jobs:
             - v1-dependencies-
       - run:
           name: Install dependencies
+          shell: bash.exe
           command: |
             npm install
       - save_cache:
@@ -199,6 +201,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Build Windows app
+          shell: bash.exe
           command: |
             npm run electron:build -- --win
 

@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "private": true,
   "main": "main.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder",
     "electron:build:beta": "npm run build && electron-builder -c.productName=\"PomoTrack Beta\"",
-    "electron:run_local": "NODE_ENV=development ./dist_electron/mac/PomoTrack.app/Contents/MacOS/PomoTrack --inspect",
+    "electron:run:beta": "./dist_electron/mac/\"PomoTrack Beta\".app/Contents/MacOS/\"PomoTrack Beta\" --inspect",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
