@@ -165,6 +165,8 @@ if (!gotTheLock) {
 
 
 app.whenReady().then(() => {
+  const appDataPath = app.getPath('appData');
+  log.info('App Data Path:', appDataPath);
   log.info('App is ready.');
 
   // Handle the checkForUpdates IPC call from renderer

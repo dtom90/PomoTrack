@@ -182,9 +182,18 @@ jobs:
       size: medium
     steps:
       - checkout
-      - node/install:
-          node-version: "22.15.0"
-          shell: bash.exe
+      - run:
+          name: Install NVM
+          command: |
+            $webClient = New-Object System.Net.WebClient
+            $webClient.DownloadFile("https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh", "$env:TEMP\install.sh")
+            bash $env:TEMP\install.sh
+      - run:
+          name: Install Node
+          command: |
+            . ~/.nvm/nvm.sh
+            nvm install v22.15.0
+            nvm use v22.15.0
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
@@ -192,8 +201,9 @@ jobs:
             - v1-dependencies-
       - run:
           name: Install dependencies
-          shell: bash.exe
           command: |
+            . ~/.nvm/nvm.sh
+            nvm use v22.15.0
             npm install
       - save_cache:
           paths:
@@ -201,8 +211,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Build Windows app
-          shell: bash.exe
           command: |
+            . ~/.nvm/nvm.sh
+            nvm use v22.15.0
             npm run electron:build -- --win
 
 workflows:

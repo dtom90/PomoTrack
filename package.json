@@ -19,7 +19,7 @@
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder",
-    "electron:build:beta": "npm run build && electron-builder -c.productName=\"PomoTrack Beta\"",
+    "electron:build:beta": "npm run build && electron-builder --mac dir -c.productName=\"PomoTrack Beta\"",
     "electron:run:beta": "./dist_electron/mac/\"PomoTrack Beta\".app/Contents/MacOS/\"PomoTrack Beta\" --inspect",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
