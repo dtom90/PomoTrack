@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Tag Edit Form -->
-    <b-dropdown-form @submit.prevent="updateTag">
-      <b-input-group>
-        <b-form-input
+    <BDropdownForm @submit.prevent="updateTag">
+      <BInputGroup>
+        <BFormInput
           :id="`tag-name-input-${tagId}`"
           ref="tagNameInput"
           v-model="tagName"
@@ -11,8 +11,8 @@
           class="tag-name-input"
           :style="`backgroundColor: ${tagColor}; color: ${textColor}`"
         />
-      </b-input-group>
-    </b-dropdown-form>
+      </BInputGroup>
+    </BDropdownForm>
 
     <div class="dropdown-divider" />
 
@@ -24,15 +24,15 @@
 
     <div class="dropdown-divider" />
 
-    <b-button
+    <BButton
       variant="primary"
       class="w-100 mb-2"
       @click="updateTagAction"
     >
       Confirm
-    </b-button>
+    </BButton>
 
-    <b-button
+    <BButton
       :id="`delete-tag-btn-${tagId}`"
       title="Delete tag"
       variant="danger"
@@ -40,7 +40,7 @@
       @click="deleteTagAction"
     >
       Delete
-    </b-button>
+    </BButton>
   </div>
 </template>
 

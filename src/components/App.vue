@@ -31,18 +31,18 @@
           id="sidebar-buttons"
           class="d-flex justify-content-between"
         >
-<!--          <b-button-->
+<!--          <BButton-->
 <!--            v-b-toggle.sidebar-todo-->
 <!--            variant="primary"-->
 <!--          >-->
 <!--            To Do-->
-<!--          </b-button>-->
-<!--          <b-button-->
+<!--          </BButton>-->
+<!--          <BButton-->
 <!--            v-b-toggle.sidebar-done-->
 <!--            variant="primary"-->
 <!--          >-->
 <!--            Done-->
-<!--          </b-button>-->
+<!--          </BButton>-->
         </div>
         <div id="main-task-container">
           <ActiveTaskButton

@@ -31,7 +31,7 @@
       Stop Timer to Update Interval
     </b-dropdown-item>
 
-    <b-dropdown-form
+    <BDropdownForm
       v-else
       :disabled="isActiveLog"
       @keydown.enter="onSubmit"
@@ -50,8 +50,8 @@
       <b-form-group>
         <font-awesome-icon :icon="durationLockIcon" />
         Duration:
-        <b-input-group append="Minutes">
-          <b-form-input
+        <BInputGroup append="Minutes">
+          <BFormInput
             ref="appendMinutesInput"
             :model-value="durationMinutes"
             :state="durationMinutes > 0 ? null : false"
@@ -63,7 +63,7 @@
           <b-form-invalid-feedback id="input-live-feedback">
             Duration must be greater than 0
           </b-form-invalid-feedback>
-        </b-input-group>
+        </BInputGroup>
       </b-form-group>
 
       <b-form-group>
@@ -77,23 +77,23 @@
         />
       </b-form-group>
 
-      <b-button
+      <BButton
         variant="primary"
         class="w-100"
         :disabled="durationMinutes <= 0"
         @click="onSubmit"
       >
         {{ logId ? 'Update Interval' : 'Add Interval' }}
-      </b-button>
-      <b-button
+      </BButton>
+      <BButton
         v-if="logId"
         variant="danger"
         class="w-100 mt-3"
         @click="deleteInterval({ logId })"
       >
         Delete Interval
-      </b-button>
-    </b-dropdown-form>
+      </BButton>
+    </BDropdownForm>
   </b-dropdown>
 </template>
 

@@ -25,16 +25,16 @@
           text="Set Target"
           variant="light"
         >
-          <b-dropdown-form>
+          <BDropdownForm>
             <label>{{ chartType }} Target</label>
-            <b-input-group append="hours">
-              <b-form-input
+            <BInputGroup append="hours">
+              <BFormInput
                 v-model="target"
                 type="number"
                 min="0"
               />
-            </b-input-group>
-          </b-dropdown-form>
+            </BInputGroup>
+          </BDropdownForm>
         </b-dropdown>
       </div>
     </div>

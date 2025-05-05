@@ -24,13 +24,13 @@
             </div>
             <div class="text-right">
               <div class="submenu-button-wrapper">
-                <b-button
+                <BButton
                   variant="light"
                   class="task-dropdown-item"
                   @click.stop="toggleSubmenu(task.id)"
                 >
                   <font-awesome-icon icon="ellipsis-vertical" />
-                </b-button>
+                </BButton>
 
                 <!-- Submenu -->
                 <div

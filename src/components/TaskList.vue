@@ -35,19 +35,19 @@
       </b-dropdown>
     </div>
 
-    <b-input-group
+    <BInputGroup
       v-if="!isCompletedList"
       id="todo-input-section"
       class="my-3"
     >
       <!-- New Task Input Field -->
-      <b-form-input
+      <BFormInput
         id="new-task"
         v-model="newTaskName"
         placeholder="Enter new task.."
         @keyup.enter="addNewTask"
       />
-    </b-input-group>
+    </BInputGroup>
 
     <!-- Incomplete Tasks -->
     <draggable
