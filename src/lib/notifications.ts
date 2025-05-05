@@ -32,8 +32,8 @@ export default defineComponent({
 
   methods: {
     ...mapMutations({
-        saveNotification: 'saveNotification',
-        clearNotifications: 'clearNotifications'
+      saveNotification: 'saveNotification',
+      clearNotifications: 'clearNotifications'
     }),
 
     refreshNotificationsEnabled (): void {
@@ -47,18 +47,20 @@ export default defineComponent({
     },
 
     async requestPermission (): Promise<void> {
-      if (typeof window === 'undefined' || !('Notification' in window) || !Notification) {
+      if (!('Notification' in window && Notification)) { // Check if the browser supports notifications
         alert('This browser does not support system notifications')
       } else {
         const formerPermission = Notification.permission
         if (formerPermission === 'default') {
-          const newPermission: NotificationPermission = await Notification.requestPermission()
+          const newPermission = await Notification.requestPermission()
           this.refreshNotificationsEnabled()
           if (newPermission === 'granted') {
             this.notify('Permissions to notify you have been granted!')
+          } else if (newPermission === 'denied') {
+            alert('Warning! Permissions to notify you have been denied! You may not tell when your Pomodoro timer ends.')
           }
         } else if (formerPermission === 'denied') {
-            alert('Notification permissions were previously denied. Please enable them in your browser settings.')
+          alert('Notification permissions are denied. Go to your URL and enable notifications.')
         }
       }
     },
@@ -67,8 +69,10 @@ export default defineComponent({
       if (!('Notification' in window && Notification)) {
         alert(message)
       } else if (Notification.permission === 'granted') {
-        new Notification('PomoTrack', { body: message })
-      } else if (Notification.permission !== 'denied') {
+        const notification = new Notification('PomoTrack', { body: message })
+        this.saveNotification({ notification }) // save notification for later closure
+      } else {
+        alert(message)
       }
     }
   }
