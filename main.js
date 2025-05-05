@@ -201,34 +201,22 @@ app.on('window-all-closed', function () {
   }
 });
 
-// Exit cleanly on request from parent process in development mode (from old script).
-if (isDevelopment) {
-  if (process.platform === 'win32') {
-    process.on('message', (data) => {
-      if (data === 'graceful-exit') {
-        log.info('Received graceful-exit message, quitting.');
-        app.quit();
-      }
-    });
-  } else {
-    // Keep original SIGTERM handler for non-Windows dev environments
-    process.on('SIGTERM', () => {
-      log.info('Received SIGTERM, quitting.');
+// Simplified clean exit handling
+if (isDevelopment && process.platform === 'win32') {
+  // Handle IPC message for graceful exit on Windows development
+  process.on('message', (data) => {
+    if (data === 'graceful-exit') {
+      log.info('Received graceful-exit message, quitting.');
       app.quit();
-    });
-     process.on('SIGINT', () => {
-      log.info('Received SIGINT, quitting.');
-      app.quit();
-    });
-  }
+    }
+  });
 } else {
-   // Ensure app quits properly on termination signals in production too
-   process.on('SIGTERM', () => {
-    log.info('Received SIGTERM (production), quitting.');
+  // Handle standard termination signals for non-Windows dev and all production
+  const handleSignal = (signal) => {
+    log.info(`Received ${signal}, quitting.`);
     app.quit();
-  });
-   process.on('SIGINT', () => {
-    log.info('Received SIGINT (production), quitting.');
-    app.quit();
-  });
+  };
+
+  process.on('SIGTERM', () => handleSignal('SIGTERM'));
+  process.on('SIGINT', () => handleSignal('SIGINT'));
 }
