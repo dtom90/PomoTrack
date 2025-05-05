@@ -41,32 +41,36 @@ const actions = {
   async addTask ({ state, commit, dispatch }, { name }) {
     const taskName = name.trim()
     if (taskName) {
-      // insert at top by default
-      const order = state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
-      const newTask = {
-        id: 'task-' + nanoid(),
-        name: taskName,
-        notes: '',
-        order,
-        created_at: Date.now(),
-        completed: null,
-        archived: null
+      try {
+        const order = state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
+        const newTask = {
+          id: 'task-' + nanoid(),
+          name: taskName,
+          notes: '',
+          order,
+          created_at: Date.now(),
+          completed: null,
+          archived: null
+        }
+
+        await handleDexieError(dexieDb.tasks.add(newTask), 'tasks.add', newTask)
+
+        if (state.settings.addSelectedTags && state.settings.selectedTagIds.length) {
+          const taskTagMaps = state.settings.selectedTagIds.map(tagId => ({
+            id: 'taskTag-' + nanoid(),
+            taskId: newTask.id,
+            tagId
+          }))
+          await handleDexieError(dexieDb.taskTagMap.bulkAdd(taskTagMaps), 'taskTagMap.bulkAdd', taskTagMaps)
+          newTask.tags = taskTagMaps.map(taskTagMap => taskTagMap.tagId)
+        } else {
+          newTask.tags = []
+        }
+        commit('addTask', { task: newTask })
+        await dispatch('updateSetting', { key: 'selectedTaskID', value: newTask.id })
+      } catch (error) {
+        console.error('Failed to complete addTask operation:', error)
       }
-      // Note: task added to dexie without tags array
-      await dexieDb.tasks.add(newTask)
-      if (state.settings.addSelectedTags && state.settings.selectedTagIds.length) {
-        const taskTagMaps = state.settings.selectedTagIds.map(tagId => ({
-          id: 'taskTag-' + nanoid(),
-          taskId: newTask.id,
-          tagId
-        }))
-        await dexieDb.taskTagMap.bulkAdd(taskTagMaps)
-        newTask.tags = taskTagMaps.map(taskTagMap => taskTagMap.tagId)
-      } else {
-        newTask.tags = []
-      }
-      commit('addTask', { task: newTask })
-      await dispatch('updateSetting', { key: 'selectedTaskID', value: newTask.id })
     }
   },
 
@@ -89,36 +93,40 @@ const actions = {
   },
 
   async reorderIncompleteTasks ({ state, commit }, { newIncompleteTaskOrder }) {
-    const incompleteTasks = state.tasks.filter(t => !t.completed)
-    const completedTasks = state.tasks.filter(t => t.completed)
-    const origLength = incompleteTasks.length
-    if (newIncompleteTaskOrder.length === origLength) {
-      const fullTaskOrder = newIncompleteTaskOrder.concat(completedTasks)
-      for (const [i, task] of fullTaskOrder.entries()) {
-        task.order = i
-      }
-      await dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw))
-      commit('setTasks', { tasks: fullTaskOrder })
-    } else {
-      const reorderTaskIds = {}
-      newIncompleteTaskOrder.forEach(task => {
-        reorderTaskIds[task.id] = true
-      })
-      let r = 0
-      for (let i = 0; i < incompleteTasks.length; i++) {
-        if (incompleteTasks[i].id in reorderTaskIds) {
-          incompleteTasks[i] = newIncompleteTaskOrder[r]
-          r++
-        }
-      }
-      if (incompleteTasks.length === origLength) { // ensure that the length has not changed
-        const fullTaskOrder = incompleteTasks.concat(completedTasks)
+    try {
+      const incompleteTasks = state.tasks.filter(t => !t.completed)
+      const completedTasks = state.tasks.filter(t => t.completed)
+      const origLength = incompleteTasks.length
+      if (newIncompleteTaskOrder.length === origLength) {
+        const fullTaskOrder = newIncompleteTaskOrder.concat(completedTasks)
         for (const [i, task] of fullTaskOrder.entries()) {
           task.order = i
         }
-        await dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw))
+        await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw)), 'tasks.bulkPut reorder (same length)', fullTaskOrder.map(toRaw))
         commit('setTasks', { tasks: fullTaskOrder })
+      } else {
+        const reorderTaskIds = {}
+        newIncompleteTaskOrder.forEach(task => {
+          reorderTaskIds[task.id] = true
+        })
+        let r = 0
+        for (let i = 0; i < incompleteTasks.length; i++) {
+          if (incompleteTasks[i].id in reorderTaskIds) {
+            incompleteTasks[i] = newIncompleteTaskOrder[r]
+            r++
+          }
+        }
+        if (incompleteTasks.length === origLength) { // ensure that the length has not changed
+          const fullTaskOrder = incompleteTasks.concat(completedTasks)
+          for (const [i, task] of fullTaskOrder.entries()) {
+            task.order = i
+          }
+          await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw)), 'tasks.bulkPut reorder (different length)', fullTaskOrder.map(toRaw))
+          commit('setTasks', { tasks: fullTaskOrder })
+        }
       }
+    } catch (error) {
+      console.error('Failed to complete reorderIncompleteTasks operation:', error)
     }
   },
 
@@ -217,8 +225,7 @@ const actions = {
   },
 
   async getLogById ({ }, { logId }) {
-    const log = await dexieDb.logs.where('id').equals(logId).first()
-    return log
+    return await dexieDb.logs.where('id').equals(logId).first()
   },
 
   async updateInterval ({ commit }, { logId, started, timeSpent, stopped }) {
@@ -377,6 +384,16 @@ const actions = {
 
   closeActivityModal ({ commit }) {
     commit('setActivityModalVisible', false)
+  }
+}
+
+// Helper function for Dexie calls
+async function handleDexieError (dexiePromise, context = 'database operation', entity) {
+  try {
+    return await dexiePromise
+  } catch (error) {
+    console.error(`Dexie error during ${context}:`, error, 'entity(ies):', entity)
+    throw error
   }
 }
 
