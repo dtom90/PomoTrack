@@ -1,6 +1,6 @@
 // import Vue from 'vue'
 import Vuex from 'vuex'
-import config from './config'
+import config from './config.ts'
 
 // Vue.use(Vuex)
 

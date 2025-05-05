@@ -1,11 +1,13 @@
-const initialState = {
+import type { PomoTrackState } from "@/types"
+
+const initialState: PomoTrackState = {
   tasks: [],
   tags: {},
   tagOrder: [],
   selectedTaskLogs: [],
   modalActivity: null,
   isActivityModalVisible: false,
-  
+
   tempState: {
     activeTaskID: null,
     running: false,
@@ -15,7 +17,7 @@ const initialState = {
     active: true,
     overtime: false
   },
-  
+
   settings: {
 
     // Timer settings
@@ -25,12 +27,12 @@ const initialState = {
     continueOnComplete: false,
     secondReminderMinutes: 5,
     secondReminderEnabled: true,
-    
+
     // TaskList settings
     selectedTagIds: [],
     filterOperator: 'and',
     addSelectedTags: true,
-    
+
     // Navbar settings
     timeFormat24: false,
     DailyTarget: null,

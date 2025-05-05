@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue'
 import { mapMutations } from 'vuex'
 import isElectron from './isElectron'
-import type { ElectronAPI } from '@/types/electron'
+import type { ElectronAPI } from '@/types'
 
 declare global {
   interface Window {

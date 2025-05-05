@@ -2,7 +2,7 @@ import './styles/main.scss';
 
 import { createApp } from 'vue'
 
-import store from './store/index.js'
+import store from './store/index.ts'
 
 import { createBootstrap } from 'bootstrap-vue-next'
 import { FontAwesomeIcon } from './lib/font-awesome-icons.ts'
