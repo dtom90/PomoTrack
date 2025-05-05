@@ -85,7 +85,7 @@
     "files": [
       "dist_web/**/*",
       "electron.js",
-      "preload.js",
+      "preload.ts",
       "package.json"
     ],
     "mac": {
