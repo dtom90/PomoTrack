@@ -152,6 +152,7 @@ autoUpdater.on('update-downloaded', (info) => {
 // Ensure only a single instance of the app runs
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
+  log.info('Another instance is already running.')
   app.quit()
 } else {
   app.on('second-instance', () => {
