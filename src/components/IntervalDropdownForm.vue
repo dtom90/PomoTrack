@@ -10,7 +10,6 @@
     @shown="dropdownShown = true"
     @hide="dropdownWillHide"
     @hidden="dropdownShown = false"
-    auto-close="outside"
   >
     <template v-slot:button-content>
       <font-awesome-icon
@@ -269,7 +268,8 @@ export default {
 </script>
 
 <style>
-  #add-interval-dropdown-menu {
-    width: 270px !important;
-  }
+/*noinspection CssUnusedSymbol*/
+#add-interval-dropdown-menu {
+  width: 270px !important;
+}
 </style>
