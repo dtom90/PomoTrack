@@ -1,4 +1,3 @@
-
 export interface PomoTrackState {
   tasks: Task[];
   tags: { [key: string]: Tag };
@@ -12,32 +11,44 @@ export interface PomoTrackState {
 
 export interface Task {
   id: string;
-  // Add other Task properties here
+  name: string;
+  notes: string;
+  order: number;
+  created_at: Date;
+  completed: boolean;
+  archived: boolean;
 }
 
 export interface Tag {
   id: string;
-  name: string;
-  // Add other Tag properties here
+  tagName: string;
+  color: string;
+  order: number;
 }
 
 export interface TaskLog {
   id: string;
-  // Add other TaskLog properties here
+  taskId: string;
+  started: Date;
+  stopped: Date;
+  timeSpent: number;
 }
 
 export interface ModalActivityItem {
   id: string;
-  // Add other ModalActivityItem properties here
 }
 
 export interface Notification {
   id: string;
   message: string;
-  // Add other Notification properties here
 }
 
-// Derived from initialState.js
+export interface TaskTagMap {
+  id: string;
+  taskId: string;
+  tagId: string;
+}
+
 export interface TempState {
   activeTaskID: string | null;
   running: boolean;
@@ -48,7 +59,6 @@ export interface TempState {
   overtime: boolean;
 }
 
-// Derived from initialState.js
 export interface Settings {
   selectedTaskID: string | null;
   activeMinutes: number;
