@@ -17,6 +17,6 @@ docker run -it --rm \
            --net=bridge \
            --name ${CONTAINER_NAME} \
            --add-host=host.docker.internal:host-gateway \
-           --env CYPRESS_POMOTRACK_HOSTNAME='host.docker.internal' \
+           --env CYPRESS_BASE_URL='http://host.docker.internal:5173' \
            ${IMAGE_NAME} \
            --browser chrome
