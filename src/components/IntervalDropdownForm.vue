@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown
+  <BDropdown
     id="add-interval-dropdown"
     ref="addIntervalDropdown"
     placement="right-start"
@@ -24,12 +24,12 @@
       >
     </template>
 
-    <b-dropdown-item
+    <BDropdownItem
       v-if="isActiveLog"
       disabled
     >
       Stop Timer to Update Interval
-    </b-dropdown-item>
+    </BDropdownItem>
 
     <BDropdownForm
       v-else
@@ -94,7 +94,7 @@
         Delete Interval
       </BButton>
     </BDropdownForm>
-  </b-dropdown>
+  </BDropdown>
 </template>
 
 <script>

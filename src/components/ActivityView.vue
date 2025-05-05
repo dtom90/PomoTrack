@@ -19,7 +19,7 @@
         class="position-absolute"
         style="right: 0"
       >
-        <b-dropdown
+        <BDropdown
           no-caret
           right
           text="Set Target"
@@ -35,7 +35,7 @@
               />
             </BInputGroup>
           </BDropdownForm>
-        </b-dropdown>
+        </BDropdown>
       </div>
     </div>
 

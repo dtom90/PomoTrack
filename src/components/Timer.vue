@@ -83,7 +83,7 @@
           <font-awesome-icon :icon="playPauseIcon" />
         </BButton>
 
-        <b-dropdown
+        <BDropdown
           id="countdown-settings-dropdown"
           right
           variant="light"
@@ -107,7 +107,7 @@
               <div>on Interval Complete</div>
             </b-form-checkbox>
 
-            <b-dropdown-divider />
+            <BDropdownDivider />
 
             <fieldset :disabled="!continueOnComplete">
               <b-form-group>
@@ -133,7 +133,7 @@
               </b-form-group>
             </fieldset>
           </BDropdownForm>
-        </b-dropdown>
+        </BDropdown>
       </div>
     </div>
   </div>

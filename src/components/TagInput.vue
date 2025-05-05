@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown
+  <BDropdown
     id="tagInputDropdown"
     ref="dropdown"
     class="mt-8"
@@ -24,7 +24,7 @@
       @keyup.enter="addTagByName"
     />
 
-    <b-dropdown-item
+    <BDropdownItem
       v-for="tag in filteredTags"
       :key="tag.id"
       @click="addTagById(tag.id)"
@@ -33,8 +33,8 @@
         :tag="tag"
         :tag-id="tag.id"
       />
-    </b-dropdown-item>
-  </b-dropdown>
+    </BDropdownItem>
+  </BDropdown>
 </template>
 
 <script>

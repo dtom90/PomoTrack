@@ -7,12 +7,12 @@
     boundary="viewport"
   >
     <div>
-      <b-dropdown-header>
+      <BDropdownHeader>
         Archived Tasks
-      </b-dropdown-header>
-      <b-dropdown-divider />
+      </BDropdownHeader>
+      <BDropdownDivider />
       <template v-if="archivedTasks.length">
-        <b-dropdown-item
+        <BDropdownItem
           v-for="task of archivedTasks"
           :key="task.id"
           @click.stop="onTaskClick"
@@ -37,17 +37,17 @@
                   class="submenu task-submenu"
                   :class="{ 'active': activeSubmenu === task.id }"
                 >
-                  <b-dropdown-item @click="unarchiveTask(task.id)">
+                  <BDropdownItem @click="unarchiveTask(task.id)">
                     Restore
-                  </b-dropdown-item>
+                  </BDropdownItem>
                 </div>
               </div>
             </div>
           </div>
-        </b-dropdown-item>
+        </BDropdownItem>
       </template>
 
-      <b-dropdown-item
+      <BDropdownItem
         v-if="archivedTasks.length === 0"
         disabled
       >
@@ -61,7 +61,7 @@
             <span class="text-muted">Archived tasks will appear here</span>
           </div>
         </div>
-      </b-dropdown-item>
+      </BDropdownItem>
     </div>
   </b-nav-item-dropdown>
 </template>

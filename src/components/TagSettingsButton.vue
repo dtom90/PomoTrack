@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown
+  <BDropdown
     v-if="tag"
     ref="dropdown"
     class="tag"
@@ -12,7 +12,7 @@
       :tag-id="tagId"
       @update-tag="handleDropdownHide"
     />
-  </b-dropdown>
+  </BDropdown>
 </template>
 
 <script>
@@ -21,18 +21,18 @@ import { mapActions, mapState } from 'vuex'
 import getTextColor from '../lib/getTextColor'
 export default {
   name: 'TagSettingsButton',
-  
+
   components: {
     TagEditMenu
   },
-  
+
   props: {
     tagId: {
       type: String,
       default: null
     }
   },
-  
+
   computed: {
     ...mapState([
       'tags'
@@ -41,13 +41,13 @@ export default {
       return this.tags[this.tagId]
     }
   },
-  
+
   mounted () {
     if (this.tag) {
       this.setButtonColor()
     }
   },
-  
+
   methods: {
     ...mapActions([
       'updateTag',
@@ -58,14 +58,14 @@ export default {
       this.$el.querySelector('.dropdown-toggle').style.setProperty('background-color', this.tag.color)
       this.$el.querySelector('.dropdown-toggle').style.setProperty('color', getTextColor(this.tag.color))
     },
-    
+
     handleDropdownShow () {
       if (!this.tag) {
         return
       }
       this.$refs.tagEditMenu.refreshTagNameAndColor()
     },
-    
+
     handleDropdownHide () {
       this.setButtonColor()
       this.$refs.dropdown.hide()

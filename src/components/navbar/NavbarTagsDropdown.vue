@@ -24,7 +24,7 @@
           :key="tagId"
           class="submenu-button-wrapper"
         >
-          <b-dropdown-item
+          <BDropdownItem
             class="tag-dropdown-item"
           >
             <div
@@ -54,7 +54,7 @@
                 />
               </div>
             </div>
-          </b-dropdown-item>
+          </BDropdownItem>
 
           <!-- Submenu -->
           <div

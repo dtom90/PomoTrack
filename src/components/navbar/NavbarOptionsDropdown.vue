@@ -5,7 +5,7 @@
     no-caret
     @show="refreshNotificationsEnabled"
   >
-    <b-dropdown-item-button
+    <BDropdownItemButton
       v-b-tooltip.hover.left="notificationsEnabled ? 'Notifications are enabled (to disable, revoke in URL settings)' : 'Enable notifications'"
       :disabled="notificationsEnabled"
       @click.stop="toggleEnableNotifications"
@@ -15,25 +15,25 @@
         :checked="notificationsEnabled"
         :disabled="notificationsEnabled"
       > Enable Notifications
-    </b-dropdown-item-button>
-    <b-dropdown-item-button>
+    </BDropdownItemButton>
+    <BDropdownItemButton>
       <b-form-checkbox
         v-model="timeFormat24"
         class="time-format-checkbox"
       >
         Use 24-hour Clock
       </b-form-checkbox>
-    </b-dropdown-item-button>
-    <b-dropdown-divider />
-    <b-dropdown-text>
+    </BDropdownItemButton>
+    <BDropdownDivider />
+    <BDropdownText>
       App version: {{ $appVersion }}
-    </b-dropdown-text>
-    <b-dropdown-item-button
+    </BDropdownText>
+    <BDropdownItemButton
       v-if="isInElectron"
       @click="checkForUpdates"
     >
       Check for Updates
-    </b-dropdown-item-button>
+    </BDropdownItemButton>
   </b-nav-item-dropdown>
 </template>
 
@@ -44,15 +44,15 @@ import isElectron from '../../lib/isElectron'
 
 export default {
   name: 'NavbarOptionsDropdown',
-  
+
   mixins: [notifications],
-  
+
   data () {
     return {
       isInElectron: isElectron()
     }
   },
-  
+
   computed: {
     timeFormat24: {
       get () {
@@ -65,12 +65,12 @@ export default {
       }
     }
   },
-  
+
   methods: {
     ...mapActions([
       'updateSetting'
     ]),
-    
+
     checkForUpdates () {
       window.electronAPI.checkForUpdates()
     }
