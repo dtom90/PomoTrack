@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "private": true,
   "main": "main.js",
   "scripts": {
@@ -17,12 +17,13 @@
     "preview": "vite preview",
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
-    "electron:dev": "electron .",
+    "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder",
-    "electron:run_local": "NODE_ENV=production ./dist_electron/mac/PomoTrack.app/Contents/MacOS/PomoTrack --inspect",
+    "electron:build:beta": "npm run build && electron-builder -c.productName=\"PomoTrack Beta\"",
+    "electron:run_local": "NODE_ENV=development ./dist_electron/mac/PomoTrack.app/Contents/MacOS/PomoTrack --inspect",
+    "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test:basic": "npm audit && npm run type-check && npm run lint",
     "cy:open": "cypress open",
     "cy:run": "cypress run -b chrome"
   },
@@ -85,7 +86,13 @@
       "package.json"
     ],
     "mac": {
-      "target": "dmg",
+      "target": {
+        "target": "default",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      },
       "category": "public.app-category.productivity",
       "hardenedRuntime": true,
       "entitlements": "build/entitlements.mac.plist",

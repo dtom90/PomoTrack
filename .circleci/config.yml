@@ -4,6 +4,7 @@ orbs:
   github-cli: circleci/github-cli@2.6.3
   macos: circleci/macos@2.5.2
   windows: circleci/windows@5
+  node: circleci/node@5.2.0
 
 jobs:
 
@@ -181,37 +182,8 @@ jobs:
       size: medium
     steps:
       - checkout
-      - run:
-          name: Install NVM
-          shell: bash.exe
-          command: |
-            # Ensure curl is available or install it
-            if ! command -v curl &> /dev/null; then
-              echo "curl could not be found, attempting to install..."
-              # Add appropriate package manager command for the Windows image if needed
-              # e.g., choco install curl or apt-get update && apt-get install -y curl if using WSL
-              echo "Error: curl is required but not found. Please install it."
-              exit 1
-            fi
-            echo "Installing NVM..."
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
-            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
-            echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $BASH_ENV
-            source $BASH_ENV
-            echo "NVM installed."
-      - run:
-          name: Install and Use Node.js v22.15.0
-          shell: bash.exe
-          command: |
-            source $BASH_ENV # Source NVM environment variables again for this step
-            echo "Listing available Node versions..."
-            nvm ls-remote
-            echo "Installing Node v22.15.0..."
-            nvm install v22.15.0
-            nvm use v22.15.0
-            echo "Node version: $(node -v)"
-            echo "NPM version: $(npm -v)"
+      - node/install:
+          node-version: "22.15.0"
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
@@ -219,10 +191,7 @@ jobs:
             - v1-dependencies-
       - run:
           name: Install dependencies
-          shell: bash.exe
           command: |
-            source $BASH_ENV
-            nvm use v22.15.0
             npm install
       - save_cache:
           paths:
@@ -230,10 +199,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Build Windows app
-          shell: bash.exe
           command: |
-            source $BASH_ENV
-            nvm use v22.15.0
             npm run electron:build -- --win
 
 workflows:

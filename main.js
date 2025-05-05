@@ -5,7 +5,12 @@ const { autoUpdater } = require('electron-updater')
 const log = require('electron-log')
 
 // Use NODE_ENV to determine development status (like the old script)
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+// Set different app name for development to avoid profile/cache conflicts
+if (isDevelopment) {
+  app.setName('PomoTrack Dev')
+}
 
 // Configure logging
 autoUpdater.logger = log;
