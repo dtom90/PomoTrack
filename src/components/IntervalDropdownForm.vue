@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown
+  <BDropdown
     id="add-interval-dropdown"
     ref="addIntervalDropdown"
     placement="right-start"
@@ -10,7 +10,6 @@
     @shown="dropdownShown = true"
     @hide="dropdownWillHide"
     @hidden="dropdownShown = false"
-    auto-close="outside"
   >
     <template v-slot:button-content>
       <font-awesome-icon
@@ -24,7 +23,18 @@
       >
     </template>
 
-    <b-dropdown-form @keydown.enter="onSubmit">
+    <BDropdownItem
+      v-if="isActiveLog"
+      disabled
+    >
+      Stop Timer to Update Interval
+    </BDropdownItem>
+
+    <BDropdownForm
+      v-else
+      :disabled="isActiveLog"
+      @keydown.enter="onSubmit"
+    >
       <b-form-group>
         <font-awesome-icon :icon="startLockIcon" />
         Started:
@@ -39,8 +49,8 @@
       <b-form-group>
         <font-awesome-icon :icon="durationLockIcon" />
         Duration:
-        <b-input-group append="Minutes">
-          <b-form-input
+        <BInputGroup append="Minutes">
+          <BFormInput
             ref="appendMinutesInput"
             :model-value="durationMinutes"
             :state="durationMinutes > 0 ? null : false"
@@ -52,7 +62,7 @@
           <b-form-invalid-feedback id="input-live-feedback">
             Duration must be greater than 0
           </b-form-invalid-feedback>
-        </b-input-group>
+        </BInputGroup>
       </b-form-group>
 
       <b-form-group>
@@ -66,24 +76,24 @@
         />
       </b-form-group>
 
-      <b-button
+      <BButton
         variant="primary"
         class="w-100"
         :disabled="durationMinutes <= 0"
         @click="onSubmit"
       >
         {{ logId ? 'Update Interval' : 'Add Interval' }}
-      </b-button>
-      <b-button
+      </BButton>
+      <BButton
         v-if="logId"
         variant="danger"
         class="w-100 mt-3"
         @click="deleteInterval({ logId })"
       >
         Delete Interval
-      </b-button>
-    </b-dropdown-form>
-  </b-dropdown>
+      </BButton>
+    </BDropdownForm>
+  </BDropdown>
 </template>
 
 <script>
@@ -120,7 +130,8 @@ export default {
       startTime: null,
       durationMinutes: 25,
       stopTime: this.displayDateTimeHuman(),
-      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')]
+      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')],
+      log: null
     }
   },
 
@@ -133,6 +144,9 @@ export default {
     },
     stopLockIcon () {
       return this.anchored.includes('stopTime') ? 'lock' : 'unlock'
+    },
+    isActiveLog () {
+      return this.log !== null && this.log.stopped === null
     }
   },
 
@@ -146,10 +160,10 @@ export default {
 
     async dropdownWillShow () {
       if (this.logId) {
-        const log = await this.getLogById({ logId: this.logId })
-        this.startTime = this.displayDateTimeHuman(log.started)
-        this.durationMinutes = this.msToMinutes(log.timeSpent)
-        this.stopTime = this.displayDateTimeHuman(log.stopped)
+        this.log = await this.getLogById({ logId: this.logId })
+        this.startTime = this.displayDateTimeHuman(this.log.started)
+        this.durationMinutes = this.msToMinutes(this.log.timeSpent)
+        this.stopTime = this.log.stopped ? this.displayDateTimeHuman(this.log.stopped) : null
       } else {
         this.stopTime = this.displayDateTimeHuman()
         this.updateStartTime()
@@ -254,7 +268,8 @@ export default {
 </script>
 
 <style>
-  #add-interval-dropdown-menu {
-    width: 270px !important;
-  }
+/*noinspection CssUnusedSymbol*/
+#add-interval-dropdown-menu {
+  width: 270px !important;
+}
 </style>

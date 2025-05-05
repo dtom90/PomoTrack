@@ -1,5 +1,5 @@
 <template>
-  <b-modal
+  <BModal
     id="activityModal"
     v-model="modalVisible"
     size="lg"
@@ -37,7 +37,7 @@
         :log="modalActivity"
       />
     </div>
-  </b-modal>
+  </BModal>
 </template>
 
 <script>

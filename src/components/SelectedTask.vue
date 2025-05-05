@@ -118,7 +118,7 @@
           <!-- eslint-enable vue/no-v-html -->
 
           <!-- Editing Mode -->
-          <b-input-group
+          <BInputGroup
             v-if="editingNotes || !selectedTask.notes"
           >
             <b-form-textarea
@@ -132,7 +132,7 @@
               @keydown.enter="handleNotesEnter"
               @input="adjustTextareaHeight"
             />
-          </b-input-group>
+          </BInputGroup>
         </div>
 
         <!-- Tags Section -->

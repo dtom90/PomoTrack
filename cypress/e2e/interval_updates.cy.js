@@ -123,6 +123,24 @@ describe('interval updates', () => {
         cy.get('td').contains('Time Spent: 35 minutes')
       })
     })
+
+    it('should not allow updating an active interval', () => {
+      // Arrange
+      cy.get('#countdown-container button > svg.fa-play').click()
+      cy.wait(500)
+      cy.contains('Activity Log').scrollIntoView()
+
+      cy.get('tr').last().within(() => {
+        // Act
+        cy.get('button > svg.fa-ellipsis-vertical').click()
+
+        // Assert
+        cy.get('#add-interval-dropdown-menu').within(() => {
+          cy.contains('Stop Timer to Update Interval').should('be.visible')
+          cy.contains('button', 'Delete Interval').should('not.exist')
+        })
+      })
+    })
   })
 
   describe('interval deletion', () => {

@@ -1,7 +1,7 @@
 <template>
   <BDropdown
     ref="dropdown"
-    v-b-tooltip.hover.left="filterButtonTooltip"
+    vBTooltip.hover.left="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
     placement="right-start"
     boundary="viewport"
@@ -9,12 +9,11 @@
     :toggle-class="settings.selectedTagIds.length > 0 ? 'filter-btn-active' : ''"
     :style="filterBtnStyle"
     no-caret
-    auto-close="outside"
   >
     <template #button-content>
       <font-awesome-icon icon="filter" />
     </template>
-    
+
     <BDropdownHeader>
       <div class="d-flex justify-content-between">
         <div>Filter by Tag</div>
@@ -58,25 +57,25 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   name: 'TaskFilterDropdown',
-  
+
   components: {
     TagButton
   },
-  
+
   props: {
     taskTags: {
       type: Array,
       default: null
     }
   },
-  
+
   computed: {
     ...mapGetters([
       'unselectedTags',
       'incompleteTasks',
       'completedTasksFiltered'
     ]),
-    
+
     ...mapState([
       'tags',
       'tagOrder',
@@ -84,13 +83,13 @@ export default {
       'selectedTask',
       'settings'
     ]),
-    
+
     filterBtnStyle () {
       return {
         '--filter-btn-background-color': this.settings.selectedTagIds.length > 0 ? this.tags[this.settings.selectedTagIds[0]].color : 'white'
       }
     },
-    
+
     filterButtonTooltip () {
       if (this.tasks.length === 0) {
         return 'Add a task enable filtering'
@@ -99,7 +98,7 @@ export default {
       }
       return 'Filter tasks'
     },
-    
+
     addSelectedTags: {
       get () {
         return this.settings.addSelectedTags
@@ -109,7 +108,7 @@ export default {
       }
     }
   },
-  
+
   methods: {
     ...mapActions([
       'addTagFilter',
@@ -122,7 +121,7 @@ export default {
     itemClicked (tagId) {
       this.toggleSelectedTag({ tagId })
     },
-    
+
     async toggleSelectedTag ({ tagId }) {
       if (!this.settings.selectedTagIds.includes(tagId)) {
         await this.addTagFilter({ tagId })
@@ -131,7 +130,7 @@ export default {
       }
       await this.updateSelectedTask()
     },
-    
+
     updateSelectedTask () {
       // Select some task with the selected tags
       if (!this.selectedTask || (this.selectedTask && !(
@@ -155,7 +154,7 @@ export default {
         }
       }
     },
-    
+
     clearAllTags () {
       this.removeAllTagFilters()
     }

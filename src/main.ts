@@ -16,7 +16,9 @@ const app = createApp(App)
 app.config.globalProperties.$appVersion = packageInfo.version
 
 app.use(store)
-app.use(createBootstrap())
+app.use(createBootstrap({ components: {
+  BDropdown: { autoClose: 'outside' } // close dropdown only when clicking outside by default
+} }))
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 async function initializeApp() {

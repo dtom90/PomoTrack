@@ -15,7 +15,7 @@
         >
           {{ disabled ? '00:00' : displayCountdownTime }}
         </p>
-        
+
         <div class="d-flex justify-content-center">
           <div
             v-if="editing"
@@ -50,7 +50,7 @@
         </div>
       </TimerDial>
     </div>
-    
+
     <div
       id="controls-section"
       class="d-flex justify-content-center mt-3"
@@ -59,7 +59,7 @@
         id="controls-wrapper"
         class="d-flex justify-content-center align-items-center"
       >
-        <b-button
+        <BButton
           id="skip-btn"
           variant="light"
           class="mx-2 circular-button"
@@ -69,9 +69,9 @@
           @click="onSkipTimerClick"
         >
           <font-awesome-icon icon="times" />
-        </b-button>
-        
-        <b-button
+        </BButton>
+
+        <BButton
           id="play-pause-btn"
           variant="light"
           class="mx-2 circular-button"
@@ -81,9 +81,9 @@
           @click="toggleTimer"
         >
           <font-awesome-icon :icon="playPauseIcon" />
-        </b-button>
-        
-        <b-dropdown
+        </BButton>
+
+        <BDropdown
           id="countdown-settings-dropdown"
           right
           variant="light"
@@ -97,8 +97,8 @@
           <template #button-content>
             <font-awesome-icon icon="gear" />
           </template>
-          
-          <b-dropdown-form>
+
+          <BDropdownForm>
             <b-form-checkbox
               id="continueTimer"
               v-model="continueOnComplete"
@@ -106,9 +106,9 @@
               <div>Continue Timer </div>
               <div>on Interval Complete</div>
             </b-form-checkbox>
-            
-            <b-dropdown-divider />
-            
+
+            <BDropdownDivider />
+
             <fieldset :disabled="!continueOnComplete">
               <b-form-group>
                 <b-form-checkbox
@@ -118,10 +118,10 @@
                   Second Reminder
                 </b-form-checkbox>
               </b-form-group>
-              
+
               <b-form-group>
                 <label for="secondReminderMinutes">after</label>
-                <b-form-input
+                <BFormInput
                   id="secondReminderMinutes"
                   v-model="secondReminderMinutes"
                   type="number"
@@ -132,8 +132,8 @@
                 <span>minutes</span>
               </b-form-group>
             </fieldset>
-          </b-dropdown-form>
-        </b-dropdown>
+          </BDropdownForm>
+        </BDropdown>
       </div>
     </div>
   </div>
@@ -147,18 +147,18 @@ import TimerDial from './TimerDial.vue'
 import time from '../lib/time'
 
 export default {
-  
+
   name: 'Timer',
-  
+
   components: {
     TimerDial
   },
-  
+
   mixins: [
     time,
     notifications
   ],
-  
+
   props: {
     taskId: {
       type: String,
@@ -169,7 +169,7 @@ export default {
       default: false
     }
   },
-  
+
   data: () => ({
     editing: false,
     newActiveMinutes: 0,
@@ -177,37 +177,37 @@ export default {
     secondReminderDisplayed: false,
     timer: null
   }),
-  
+
   computed: {
-    
+
     ...mapState([
       'tempState',
       'settings'
     ]),
-    
+
     totalSeconds () {
       return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
     },
-    
+
     playPauseIcon () {
       return this.tempState.overtime ? 'stop' : this.tempState.running ? 'pause' : 'play'
     },
-    
+
     playPauseTitle () {
       return this.tempState.overtime ? 'Stop' : (this.tempState.running ? 'Pause' : 'Start') + ' timer'
     },
-    
+
     cssProps () {
       const progress = this.tempState.secondsRemaining / this.totalSeconds
       const arcAngle = progress * 100 // Grows counterclockwise as timer decreases
-      
+
       return {
         '--rotation-factor': progress.toString() + 'turn',
         '--arc-angle': arcAngle.toString(),
         '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen'
       }
     },
-    
+
     continueOnComplete: {
       get () {
         return this.settings.continueOnComplete
@@ -219,7 +219,7 @@ export default {
         })
       }
     },
-    
+
     secondReminderEnabled: {
       get () {
         return this.settings.secondReminderEnabled
@@ -231,7 +231,7 @@ export default {
         })
       }
     },
-    
+
     secondReminderMinutes: {
       get () {
         return this.settings.secondReminderMinutes
@@ -243,12 +243,12 @@ export default {
         })
       }
     },
-    
+
     secondReminderSeconds () {
       return -(this.secondReminderMinutes * 60)
     }
   },
-  
+
   watch: {
     'settings.activeMinutes': function () {
       if (this.tempState.active) {
@@ -256,14 +256,14 @@ export default {
       }
     }
   },
-  
+
   mounted: function () {
     this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
     this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
   },
-  
+
   methods: {
-    
+
     ...mapActions([
       'startTask',
       'updateTaskTimer',
@@ -274,7 +274,7 @@ export default {
     ...mapMutations([
       'updateTempState'
     ]),
-    
+
     onTimerClick () {
       if (this.disabled || this.tempState.running) {
         return
@@ -286,12 +286,12 @@ export default {
         this.newRestMinutes = this.settings.restMinutes
       }
     },
-    
+
     onSkipTimerClick () {
       this.clearNotifications()
       this.finishTimer()
     },
-    
+
     async changeMinutes () {
       await this.updateSetting({
         key: this.tempState.active ? 'activeMinutes' : 'restMinutes',
@@ -301,12 +301,12 @@ export default {
       this.timer.setSeconds(this.totalSeconds)
       this.editing = false
     },
-    
+
     toggleTimer () {
       this.requestPermission()
 
       this.clearNotifications()
-      
+
       if (this.tempState.overtime) {
         this.updateTempState({ key: 'overtime', value: false })
         this.resetTimer()
@@ -323,7 +323,7 @@ export default {
         this.timer.start()
       }
     },
-    
+
     decrementTimer (secondsRemaining) {
       if (this.tempState.running) {
         this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining })
@@ -343,17 +343,17 @@ export default {
         }
       }
     },
-    
+
     endInterval () {
       if (this.tempState.active && this.tempState.running) {
         this.stopTask()
       }
     },
-    
+
     finishTimer (secondsRemaining = null) {
       const fromCountdownFinish = typeof secondsRemaining === 'number'
       let notify = false
-      
+
       if (fromCountdownFinish) { // If this came from the countdown finishing
         this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining }) // reset secondsRemaining
         if (!this.tempState.overtime) { // If we're not in overtime
@@ -365,7 +365,7 @@ export default {
       } else if (this.tempState.overtime) {
         this.updateTempState({ key: 'overtime', value: false })
       }
-      
+
       // Notify interval finish
       if (notify) {
         if (this.tempState.active) {
@@ -374,7 +374,7 @@ export default {
           this.notify('Finished Break, Time to Work!')
         }
       }
-      
+
       // If this was a manual finishTimer, or we're not continuing into overtime, then reset the timer
       if (!fromCountdownFinish || !this.tempState.active || !this.tempState.overtime) {
         this.resetTimer()
@@ -382,7 +382,7 @@ export default {
         this.decrementTimer(this.tempState.secondsRemaining)
       }
     },
-    
+
     resetTimer () {
       this.timer.clear()
       this.endInterval()
@@ -415,13 +415,13 @@ $circle-thickness: 18px;
     margin: 0;
     z-index: 2;
   }
-  
+
   #edit-wrapper {
     height: 48px;
     max-width: 110px;
     margin-bottom: 16px;
   }
-  
+
   #edit-wrapper > input {
     height: 100%;
     font-size: 1.2rem;
@@ -439,7 +439,7 @@ $circle-thickness: 18px;
       margin-right: 20px !important;
     }
   }
-  
+
   #play-pause-btn {
     color: variables.$white;
     background-color: variables.$dark-primary;
@@ -481,7 +481,7 @@ $circle-thickness: 18px;
   .form-group {
     margin-bottom: 0.5rem;
   }
-  
+
   fieldset .form-group:last-child {
     margin-bottom: 0;
   }

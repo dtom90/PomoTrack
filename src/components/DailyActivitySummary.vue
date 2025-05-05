@@ -2,28 +2,28 @@
   <div>
     <div class="d-flex">
       <div class="flex-1 text-right align-self-center">
-        <b-button
+        <BButton
           v-show="selectedDay !== null"
           variant="light"
           class="rounded-circle"
           @click="daysBack++"
         >
           <font-awesome-icon icon="chevron-left" />
-        </b-button>
+        </BButton>
       </div>
       <div class="flex-1">
         <h4>{{ selectedDayRelative }}</h4>
         <h6>{{ selectedDayDisplay }}</h6>
       </div>
       <div class="flex-1 text-left align-self-center">
-        <b-button
+        <BButton
           :disabled="daysBack === 0"
           variant="light"
           class="rounded-circle"
           @click="daysBack--"
         >
           <font-awesome-icon icon="chevron-right" />
-        </b-button>
+        </BButton>
       </div>
     </div>
     <h5 class="my-3">
@@ -58,7 +58,7 @@ export default {
   name: 'DailyActivitySummary',
   components: { CompleteStatus },
   mixins: [time],
-  
+
   props: {
     filteredActivity: {
       type: Array,
@@ -66,29 +66,29 @@ export default {
       default: null
     }
   },
-  
+
   data () {
     return {
       daysBack: 0
     }
   },
-  
+
   computed: {
     ...mapState([
       'allActivity',
       'tagActivity'
     ]),
-    
+
     ...mapGetters([
       'completedTasks'
     ]),
-    
+
     // filteredActivity () {
     //   return this.tagId
     //     ? this.tagActivity
     //     : this.allActivity
     // },
-    
+
     selectedDay () {
       let daysBack = -1
       let day = null
@@ -103,7 +103,7 @@ export default {
       }
       return null
     },
-    
+
     selectedDayRelative () {
       if (this.selectedDay === null) {
         return 'No Activity Yet'
@@ -115,11 +115,11 @@ export default {
       }
       return null
     },
-    
+
     selectedDayDisplay () {
       return this.selectedDay === null ? 'No Activity Yet' : this.displayFullDateHuman(this.selectedDay)
     },
-    
+
     selectedDayActivity () {
       if (this.selectedDay === null) {
         return []
@@ -133,7 +133,7 @@ export default {
         return sum
       }, {})).sort((a, b) => b[1] - a[1])
     },
-    
+
     totalTime () {
       if (this.selectedDay === null) {
         return 0

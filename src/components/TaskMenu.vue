@@ -1,6 +1,6 @@
 <template>
   <div ref="taskMenu">
-    <b-dropdown
+    <BDropdown
       :disabled="!taskId"
       right
       variant="light"
@@ -9,9 +9,9 @@
       <template #button-content>
         <font-awesome-icon icon="ellipsis-vertical" />
       </template>
-      
+
       <div>
-        <b-dropdown-item-button
+        <BDropdownItemButton
           variant="danger"
           title="Archive task"
           @click="archiveTask({taskId: taskId})"
@@ -22,9 +22,9 @@
           <span v-if="isArchived">
             <span>Unarchive</span>
           </span>
-        </b-dropdown-item-button>
+        </BDropdownItemButton>
       </div>
-    </b-dropdown>
+    </BDropdown>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'TaskMenu',
-  
+
   props: {
     taskId: {
       type: String,
@@ -44,7 +44,7 @@ export default {
       default: false
     }
   },
-  
+
   methods: {
     ...mapActions([
       'archiveTask'

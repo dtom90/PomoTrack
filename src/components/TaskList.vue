@@ -11,7 +11,7 @@
       <TaskFilterDropdown v-if="!isCompletedList" />
 
       <!-- Done List Menu -->
-      <b-dropdown
+      <BDropdown
         v-if="isCompletedList"
         :id="btnId"
         right
@@ -24,30 +24,30 @@
           <font-awesome-icon icon="ellipsis-vertical" />
         </template>
 
-        <b-dropdown-item
+        <BDropdownItem
           id="archive-btn"
           variant="danger"
           title="Archive all list tasks"
           @click="archiveTasks"
         >
           Archive All
-        </b-dropdown-item>
-      </b-dropdown>
+        </BDropdownItem>
+      </BDropdown>
     </div>
 
-    <b-input-group
+    <BInputGroup
       v-if="!isCompletedList"
       id="todo-input-section"
       class="my-3"
     >
       <!-- New Task Input Field -->
-      <b-form-input
+      <BFormInput
         id="new-task"
         v-model="newTaskName"
         placeholder="Enter new task.."
         @keyup.enter="addNewTask"
       />
-    </b-input-group>
+    </BInputGroup>
 
     <!-- Incomplete Tasks -->
     <draggable
