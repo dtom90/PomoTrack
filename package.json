@@ -10,7 +10,7 @@
   "repository": "https://github.com/dtom90/PomoTrack",
   "version": "0.18.5",
   "private": true,
-  "main": "main.js",
+  "main": "electron.js",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -20,7 +20,7 @@
     "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder",
     "electron:build:beta": "npm run build && electron-builder --mac dir -c.productName=\"PomoTrackBeta\"",
-    "electron:run:beta": "./dist_electron/mac/\"PomoTrackBeta\".app/Contents/MacOS/\"PomoTrack Beta\" --inspect",
+    "electron:run:beta": "./dist_electron/mac/PomoTrackBeta.app/Contents/MacOS/PomoTrackBeta --inspect",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -81,7 +81,7 @@
     },
     "files": [
       "dist_web/**/*",
-      "main.js",
+      "electron.js",
       "preload.js",
       "package.json"
     ],
