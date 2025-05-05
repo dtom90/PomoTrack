@@ -11,6 +11,8 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 if (isDevelopment) {
   app.setName('PomoTrack Dev')
 }
+const productName = app.getName();
+log.info(`App name: ${productName}`);
 
 // Configure logging
 autoUpdater.logger = log;
@@ -77,101 +79,73 @@ function createWindow() {
   });
 }
 
-async function checkForUpdates() {
-  log.info('checkForUpdates function called via IPC');
+// --- Auto Update ---
+
+async function checkForUpdates () {
   try {
-    const result = await autoUpdater.checkForUpdates();
-    if (result && result.updateInfo) {
-       log.info('Update check result:', result.updateInfo);
-       // Additional logic based on result.updateInfo can go here
-       // The 'update-available' or 'update-not-available' events will handle user feedback
-    } else {
-      log.info('No update check result received or no update info present.');
-      // Optionally send a status if nothing obvious happened
-      // sendStatusToWindow('No update information received.');
+    const result = await autoUpdater.checkForUpdates()
+    if (result && result.updateInfo.version === app.getVersion()) {
+      sendStatusToWindow('You are using the latest version of PomoTrack! (' + app.getVersion() + ')')
     }
   } catch (error) {
-    log.error('Error during explicit update check:', error);
-    sendStatusToWindow(`Error checking for updates: ${error.message}`);
+    sendStatusToWindow('An error occurred while checking for updates.')
+    log.error(error)
   }
 }
 
-// --- Auto Updater Event Listeners (from old script) ---
-
 autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...');
-});
+  log.info('Checking for update...')
+})
 
 autoUpdater.on('update-not-available', (info) => {
-  log.info('Update not available.', info);
-  sendStatusToWindow('Update not available.');
-});
+  log.info('Update not available.')
+  log.info(info)
+})
 
 autoUpdater.on('update-available', (info) => {
-  log.info('Update available.', info);
-  sendStatusToWindow(`Update available: v${info.version}. Prompting user...`);
-  dialog.showMessageBox({
-    type: 'info',
-    title: 'Update Available',
-    message: `A new version (v${info.version}) of PomoTrack is available.`,
-    detail: 'Do you want to download it now?',
+  log.info(info)
+  const result = dialog.showMessageBoxSync({
+    type: 'question',
     buttons: ['Download', 'Later'],
-    defaultId: 0, // Default to Download
-    cancelId: 1 // If they close the dialog, it's like clicking Later
-  }).then(({ response }) => {
-    if (response === 0) {
-      log.info('User chose to download update.');
-      sendStatusToWindow('Downloading update...');
-      autoUpdater.downloadUpdate();
-    } else {
-       log.info('User chose not to download update yet.');
-       sendStatusToWindow('Update download deferred.');
-    }
-  });
-});
+    defaultId: 0,
+    cancelId: 1,
+    title: 'Update Available',
+    message: 'Update for PomoTrack is available. Would you like to download it now?',
+    detail: 'Version ' + info.version
+  })
+  if (result === 0) {
+    log.info('autoUpdater.downloadUpdate...')
+    autoUpdater.downloadUpdate()
+  }
+})
 
 autoUpdater.on('error', (err) => {
-  log.error('Error in auto-updater:', err);
-  sendStatusToWindow(`Error in auto-updater: ${err.message || err}`);
-});
+  sendStatusToWindow('Error in auto-updater. ' + err)
+})
 
 autoUpdater.on('download-progress', (progressObj) => {
-  const logMessage = `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred}/${progressObj.total})`;
-  log.info(logMessage);
-  // Optional: send progress to window if you have UI for it
-  // mainWindow.webContents.send('download-progress', progressObj.percent);
-  sendStatusToWindow(`Downloading update: ${Math.round(progressObj.percent)}%`);
-});
+  let logMessage = 'Download speed: ' + progressObj.bytesPerSecond
+  logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%'
+  logMessage = logMessage + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+  log.info(logMessage)
+})
 
 autoUpdater.on('update-downloaded', (info) => {
-  log.info('Update downloaded.', info);
-  sendStatusToWindow(`Update v${info.version} downloaded. Prompting user to install...`);
-  dialog.showMessageBox({
-    type: 'info',
+  log.info(info)
+  const result = dialog.showMessageBoxSync({
+    type: 'question',
+    buttons: ['Install & Restart', 'Later'],
+    defaultId: 0,
+    cancelId: 1,
     title: 'Update Ready',
-    message: `Update v${info.version} has been downloaded.`,
-    detail: 'Restart the application to apply the update?',
-    buttons: ['Restart Now', 'Later'],
-    defaultId: 0, // Default to Restart
-    cancelId: 1
-  }).then(({ response }) => {
-    if (response === 0) {
-      log.info('User chose to quit and install.');
-      sendStatusToWindow('Restarting to install update...');
-      // Ensure app quits cleanly before installing
-      setImmediate(() => {
-         app.removeAllListeners("window-all-closed") // Prevent loop
-         if (mainWindow) {
-            mainWindow.close(); // Close the window first
-         }
-         autoUpdater.quitAndInstall();
-      })
-    } else {
-      log.info('User chose to install update later.');
-      sendStatusToWindow('Update installation deferred.');
-    }
-  });
-});
+    message: 'The update has been downloaded. Do you want to install it now?'
+  })
+
+  if (result === 0) {
+    log.info('autoUpdater.quitAndInstall...')
+    autoUpdater.quitAndInstall()
+  }
+})
 
 // --- App Lifecycle Events ---
 
@@ -191,6 +165,8 @@ if (!gotTheLock) {
 
 
 app.whenReady().then(() => {
+  const appDataPath = app.getPath('appData');
+  log.info('App Data Path:', appDataPath);
   log.info('App is ready.');
 
   // Handle the checkForUpdates IPC call from renderer
