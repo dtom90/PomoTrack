@@ -1,13 +1,19 @@
-/* eslint-disable brace-style */
+import tinycolor from 'tinycolor2';
 
-import tinycolor from 'tinycolor2'
+// Define the structure of the HSL object returned by tinycolor
+interface HslColor {
+  h: number;
+  s: number;
+  l: number;
+  a: number; // tinycolor includes alpha
+}
 
-function getTextColor (bgColor) {
-  const hsl = tinycolor(bgColor).toHsl()
-  const saturation = hsl.s * 100
-  const lightness = hsl.l * 100
-  const hue = hsl.h // Get the hue value (0-360 degrees)
-  
+function getTextColor(bgColor: string): string {
+  const hsl: HslColor = tinycolor(bgColor).toHsl();
+  const saturation: number = hsl.s * 100;
+  const lightness: number = hsl.l * 100;
+  const hue: number = hsl.h; // Get the hue value (0-360 degrees)
+
   // RULE 1: SPECIFIC HUE RANGE RULE
   // If hue is between 35 and 200
   // AND lightness is between 49% and 75%
@@ -18,13 +24,13 @@ function getTextColor (bgColor) {
       h: hsl.h,
       s: hsl.s,
       l: 0.28 // 28% lightness
-    }).toHexString()
+    }).toHexString();
   }
   // RULE 2: HIGH SATURATION RULE
   // If color is very saturated (>95%) AND not too bright (<75%)
   // THEN: Use white text
   if (saturation > 95 && lightness < 75) {
-    return '#FFFFFF'
+    return '#FFFFFF';
   }
   // RULE 3: BRIGHTNESS RULE
   // If color is bright (lightness > 70%)
@@ -34,14 +40,14 @@ function getTextColor (bgColor) {
       h: hsl.h,
       s: hsl.s,
       l: 0.28 // 28% lightness
-    }).toHexString()
+    }).toHexString();
   }
   // RULE 4: DEFAULT RULE
   // For all other colors
   // THEN: Use white text
   else {
-    return '#FFFFFF'
+    return '#FFFFFF';
   }
 }
 
-export default getTextColor
+export default getTextColor;
