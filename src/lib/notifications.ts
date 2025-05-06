@@ -45,7 +45,7 @@ export function useNotifications () {
     }
   }
 
-  const requestPermission = async (): Promise<void> => {
+  const requestNotificationPermission = async (): Promise<void> => {
     if (!('Notification' in window && Notification)) {
       alert('This browser does not support system notifications')
     } else {
@@ -70,7 +70,7 @@ export function useNotifications () {
 
   const toggleEnableNotifications = async (): Promise<void> => {
     if (!notificationsEnabled.value) {
-      await requestPermission()
+      await requestNotificationPermission()
     }
   }
 
@@ -80,6 +80,7 @@ export function useNotifications () {
 
   return {
     notificationsEnabled,
+    requestNotificationPermission,
     refreshNotificationsEnabled,
     toggleEnableNotifications,
     notify,

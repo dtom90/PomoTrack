@@ -139,263 +139,245 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue'
+import { useStore } from 'vuex'
 import CountdownTimer from '../lib/CountdownTimer'
-import notifications from '../lib/notifications'
+import { useNotifications } from '../lib/notifications'
+import { useTime } from '../lib/time'
 import TimerDial from './TimerDial.vue'
-import time from '../lib/time'
+import type { TempState } from '@/types'
 
-export default {
-
-  name: 'Timer',
-
-  components: {
-    TimerDial
+// Props
+const props = defineProps({
+  taskId: {
+    type: String,
+    default: null
   },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
 
-  mixins: [
-    time,
-    notifications
-  ],
+// Store and Notifications
+const store = useStore()
+const { requestNotificationPermission, notify, clearNotifications } = useNotifications()
+const { settings, tempState, displayCountdownTime } = useTime()
 
-  props: {
-    taskId: {
-      type: String,
-      default: null
-    },
-    disabled: {
-      type: Boolean,
-      default: false
+// State
+const timer = ref<CountdownTimer | null>(null)
+const editing = ref(false)
+const newActiveMinutes = ref(0)
+const newRestMinutes = ref(0)
+const secondReminderDisplayed = ref(false)
+
+// Computed Properties
+const totalSeconds = computed(() => {
+  return (tempState.value.active ? (settings.value.activeMinutes ?? 0) : (settings.value.restMinutes ?? 0)) * 60
+})
+
+const progress = computed(() => {
+  if (!totalSeconds.value) {
+    return {
+      '--rotation-factor': '0turn',
+      '--arc-angle': '0',
+      '--countdown-color': tempState.value.active ? 'red' : 'darkseagreen'
     }
-  },
+  }
+  const currentProgress = tempState.value.secondsRemaining / totalSeconds.value
+  const arcAngle = currentProgress * 100 // Grows counterclockwise as timer decreases
+  return {
+    '--rotation-factor': currentProgress.toString() + 'turn',
+    '--arc-angle': arcAngle.toString(),
+    '--countdown-color': tempState.value.active ? 'red' : 'darkseagreen'
+  }
+})
 
-  data: () => ({
-    editing: false,
-    newActiveMinutes: 0,
-    newRestMinutes: 0,
-    secondReminderDisplayed: false,
-    timer: null
-  }),
+const playPauseIcon = computed(() => {
+  return tempState.value.overtime ? 'stop' : tempState.value.running ? 'pause' : 'play'
+})
 
-  computed: {
+const playPauseTitle = computed(() => {
+  return tempState.value.overtime ? 'Stop' : (tempState.value.running ? 'Pause' : 'Start') + ' timer'
+})
 
-    ...mapState([
-      'tempState',
-      'settings'
-    ]),
+const cssProps = computed(() => {
+  return progress.value
+})
 
-    totalSeconds () {
-      return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
-    },
+const continueOnComplete = computed({
+  get: () => settings.value.continueOnComplete,
+  async set (value) {
+    await store.dispatch('updateSetting', {
+      key: 'continueOnComplete',
+      value
+    })
+  }
+})
 
-    playPauseIcon () {
-      return this.tempState.overtime ? 'stop' : this.tempState.running ? 'pause' : 'play'
-    },
+const secondReminderEnabled = computed({
+  get: () => settings.value.secondReminderEnabled,
+  async set (value) {
+    await store.dispatch('updateSetting', {
+      key: 'secondReminderEnabled',
+      value
+    })
+  }
+})
 
-    playPauseTitle () {
-      return this.tempState.overtime ? 'Stop' : (this.tempState.running ? 'Pause' : 'Start') + ' timer'
-    },
+const secondReminderMinutes = computed({
+  get: () => settings.value.secondReminderMinutes ?? 0,
+  async set (value) {
+    await store.dispatch('updateSetting', {
+      key: 'secondReminderMinutes',
+      value: Number(value)
+    })
+  }
+})
 
-    cssProps () {
-      const progress = this.tempState.secondsRemaining / this.totalSeconds
-      const arcAngle = progress * 100 // Grows counterclockwise as timer decreases
+const secondReminderSeconds = computed(() => {
+  return -((secondReminderMinutes.value ?? 0) * 60)
+})
 
-      return {
-        '--rotation-factor': progress.toString() + 'turn',
-        '--arc-angle': arcAngle.toString(),
-        '--countdown-color': this.tempState.active ? 'red' : 'darkseagreen'
-      }
-    },
+// Methods
+const updateTempState = (payload: { key: keyof TempState, value: TempState[keyof TempState] }) => {
+  store.commit('updateTempState', payload)
+}
 
-    continueOnComplete: {
-      get () {
-        return this.settings.continueOnComplete
-      },
-      async set (value) {
-        await this.updateSetting({
-          key: 'continueOnComplete',
-          value
-        })
-      }
-    },
+const onTimerClick = () => {
+  if (props.disabled || tempState.value.running) {
+    return
+  }
+  editing.value = true
+  if (tempState.value.active) {
+    newActiveMinutes.value = settings.value.activeMinutes ?? 0
+  } else {
+    newRestMinutes.value = settings.value.restMinutes ?? 0
+  }
+}
 
-    secondReminderEnabled: {
-      get () {
-        return this.settings.secondReminderEnabled
-      },
-      async set (value) {
-        await this.updateSetting({
-          key: 'secondReminderEnabled',
-          value
-        })
-      }
-    },
+const onSkipTimerClick = () => {
+  clearNotifications()
+  finishTimer()
+}
 
-    secondReminderMinutes: {
-      get () {
-        return this.settings.secondReminderMinutes
-      },
-      async set (value) {
-        await this.updateSetting({
-          key: 'secondReminderMinutes',
-          value
-        })
-      }
-    },
+const changeMinutes = async () => {
+  await store.dispatch('updateSetting', {
+    key: tempState.value.active ? 'activeMinutes' : 'restMinutes',
+    value: tempState.value.active ? newActiveMinutes.value : newRestMinutes.value
+  })
+  updateTempState({ key: 'secondsRemaining', value: totalSeconds.value })
+  timer.value?.setSeconds(totalSeconds.value)
+  editing.value = false
+}
 
-    secondReminderSeconds () {
-      return -(this.secondReminderMinutes * 60)
+const toggleTimer = () => {
+  requestNotificationPermission()
+  clearNotifications()
+
+  if (tempState.value.overtime) {
+    updateTempState({ key: 'overtime', value: false })
+    resetTimer()
+  } else if (tempState.value.running) {
+    timer.value?.pause()
+    endInterval()
+    updateTempState({ key: 'running', value: false })
+  } else {
+    if (tempState.value.active) { // start an active interval
+      store.dispatch('startTask', { taskId: props.taskId })
+    } else { // this is a rest interval, simply toggle running
+      updateTempState({ key: 'running', value: !tempState.value.running })
     }
-  },
+    timer.value?.start()
+  }
+}
 
-  watch: {
-    'settings.activeMinutes': function () {
-      if (this.tempState.active) {
-        this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
+const decrementTimer = (secondsRemaining: number) => {
+  if (tempState.value.running) {
+    updateTempState({ key: 'secondsRemaining', value: secondsRemaining })
+    if (tempState.value.active) {
+      store.dispatch('updateTaskTimer', { taskId: props.taskId })
+      if (tempState.value.overtime && !secondReminderDisplayed.value && tempState.value.secondsRemaining <= secondReminderSeconds.value) {
+        notify('Finished Working, Take a Break!')
+        secondReminderDisplayed.value = true
       }
     }
-  },
-
-  mounted: function () {
-    this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
-    this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
-  },
-
-  methods: {
-
-    ...mapActions([
-      'startTask',
-      'updateTaskTimer',
-      'stopTask',
-      'updateSetting'
-    ]),
-
-    ...mapMutations([
-      'updateTempState'
-    ]),
-
-    onTimerClick () {
-      if (this.disabled || this.tempState.running) {
-        return
-      }
-      this.editing = true
-      if (this.tempState.active) {
-        this.newActiveMinutes = this.settings.activeMinutes
-      } else {
-        this.newRestMinutes = this.settings.restMinutes
-      }
-    },
-
-    onSkipTimerClick () {
-      this.clearNotifications()
-      this.finishTimer()
-    },
-
-    async changeMinutes () {
-      await this.updateSetting({
-        key: this.tempState.active ? 'activeMinutes' : 'restMinutes',
-        value: this.tempState.active ? this.newActiveMinutes : this.newRestMinutes
-      })
-      this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
-      this.timer.setSeconds(this.totalSeconds)
-      this.editing = false
-    },
-
-    toggleTimer () {
-      this.requestPermission()
-
-      this.clearNotifications()
-
-      if (this.tempState.overtime) {
-        this.updateTempState({ key: 'overtime', value: false })
-        this.resetTimer()
-      } else if (this.tempState.running) {
-        this.timer.pause()
-        this.endInterval()
-        this.updateTempState({ key: 'running', value: false })
-      } else {
-        if (this.tempState.active) { // start an active interval
-          this.startTask({ taskId: this.taskId })
-        } else { // this is a rest interval, simply toggle running
-          this.updateTempState({ key: 'running', value: !this.tempState.running })
-        }
-        this.timer.start()
-      }
-    },
-
-    decrementTimer (secondsRemaining) {
-      if (this.tempState.running) {
-        this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining })
-        if (this.tempState.active) {
-          this.updateTaskTimer({ taskId: this.taskId })
-          if (this.tempState.overtime && !this.secondReminderDisplayed && this.tempState.secondsRemaining <= this.secondReminderSeconds) {
-            this.notify('Finished Working, Take a Break!')
-            this.secondReminderDisplayed = true
-          }
-        }
-      } else {
-        if (this.tempState.overtime) {
-          this.updateTempState({ key: 'overtime', value: false })
-          this.resetTimer()
-        } else {
-          this.timer.pause()
-        }
-      }
-    },
-
-    endInterval () {
-      if (this.tempState.active && this.tempState.running) {
-        this.stopTask()
-      }
-    },
-
-    finishTimer (secondsRemaining = null) {
-      const fromCountdownFinish = typeof secondsRemaining === 'number'
-      let notify = false
-
-      if (fromCountdownFinish) { // If this came from the countdown finishing
-        this.updateTempState({ key: 'secondsRemaining', value: secondsRemaining }) // reset secondsRemaining
-        if (!this.tempState.overtime) { // If we're not in overtime
-          notify = true // Set notify to true
-          if (this.continueOnComplete && this.tempState.active) { // If continueOnComplete is set, go into overtime
-            this.updateTempState({ key: 'overtime', value: true })
-          }
-        }
-      } else if (this.tempState.overtime) {
-        this.updateTempState({ key: 'overtime', value: false })
-      }
-
-      // Notify interval finish
-      if (notify) {
-        if (this.tempState.active) {
-          this.notify('Finished Working, Take a Break!')
-        } else {
-          this.notify('Finished Break, Time to Work!')
-        }
-      }
-
-      // If this was a manual finishTimer, or we're not continuing into overtime, then reset the timer
-      if (!fromCountdownFinish || !this.tempState.active || !this.tempState.overtime) {
-        this.resetTimer()
-      } else {
-        this.decrementTimer(this.tempState.secondsRemaining)
-      }
-    },
-
-    resetTimer () {
-      this.timer.clear()
-      this.endInterval()
-      this.updateTempState({ key: 'activeTaskID', value: null })
-      this.updateTempState({ key: 'running', value: false })
-      this.updateTempState({ key: 'active', value: !this.tempState.active })
-      this.timer = new CountdownTimer(this.totalSeconds, this.decrementTimer, this.finishTimer)
-      this.updateTempState({ key: 'secondsRemaining', value: this.totalSeconds })
-      this.secondReminderDisplayed = false
+  } else {
+    if (tempState.value.overtime) {
+      updateTempState({ key: 'overtime', value: false })
+      resetTimer()
+    } else {
+      timer.value?.pause()
     }
   }
 }
 
+const endInterval = () => {
+  if (tempState.value.active && tempState.value.running) {
+    store.dispatch('stopTask')
+  }
+}
+
+const finishTimer = (secondsRemaining: number | null = null) => {
+  const fromCountdownFinish = typeof secondsRemaining === 'number'
+  let doNotify = false
+
+  if (fromCountdownFinish) {
+    updateTempState({ key: 'secondsRemaining', value: secondsRemaining! })
+    if (!tempState.value.overtime) {
+      doNotify = true
+      if (continueOnComplete.value && tempState.value.active) {
+        updateTempState({ key: 'overtime', value: true })
+      }
+    }
+  } else if (tempState.value.overtime) {
+    updateTempState({ key: 'overtime', value: false })
+  }
+
+  if (doNotify) {
+    if (tempState.value.active) {
+      notify('Finished Working, Take a Break!')
+    } else {
+      notify('Finished Break, Time to Work!')
+    }
+  }
+
+  if (!fromCountdownFinish || !tempState.value.active || !tempState.value.overtime) {
+    resetTimer()
+  } else {
+    decrementTimer(tempState.value.secondsRemaining)
+  }
+}
+
+const resetTimer = () => {
+  timer.value?.clear()
+  endInterval()
+  updateTempState({ key: 'activeTaskID', value: null })
+  updateTempState({ key: 'running', value: false })
+  updateTempState({ key: 'active', value: !tempState.value.active })
+  timer.value = new CountdownTimer(totalSeconds.value, decrementTimer, finishTimer)
+  updateTempState({ key: 'secondsRemaining', value: totalSeconds.value })
+  secondReminderDisplayed.value = false
+}
+
+// Watchers
+watch(() => settings.value.activeMinutes, () => {
+  if (tempState.value.active) {
+    timer.value = new CountdownTimer(totalSeconds.value, decrementTimer, finishTimer)
+    // If timer was running, preserve state? Current logic resets. For simplicity, stick to reset.
+    // If not running and active, update seconds remaining for new activeMinutes
+    if (!tempState.value.running) {
+      updateTempState({ key: 'secondsRemaining', value: totalSeconds.value })
+    }
+  }
+})
+
+// Lifecycle Hooks
+onMounted(() => {
+  updateTempState({ key: 'secondsRemaining', value: totalSeconds.value })
+  timer.value = new CountdownTimer(totalSeconds.value, decrementTimer, finishTimer)
+})
 </script>
 
 <style scoped lang="scss">

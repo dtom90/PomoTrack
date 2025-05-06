@@ -14,59 +14,59 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useTime } from '../lib/time'
 
-export default {
-  name: 'TimerDial',
-  
-  props: {
-    size: {
-      type: Number,
-      default: 300
-    },
-    circleThickness: {
-      type: Number,
-      default: 18
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  size: {
+    type: Number,
+    default: 300
   },
-  
-  computed: {
-    ...mapState([
-      'tempState',
-      'settings'
-    ]),
-    
-    totalSeconds () {
-      return (this.tempState.active ? this.settings.activeMinutes : this.settings.restMinutes) * 60
-    },
-    
-    progress () {
-      return this.tempState.secondsRemaining / this.totalSeconds
-    },
-    
-    cssProps () {
-      const arcAngle = this.progress * 100 // Grows counterclockwise as timer decreases
-      
-      // Determine the countdown color based on disabled state
-      const countdownColor = this.disabled
-        ? 'var(--dark-quaternary)'
-        : (this.tempState.active ? 'var(--error-red)' : 'darkseagreen')
-      
-      return {
-        '--rotation-factor': this.progress.toString() + 'turn',
-        '--arc-angle': arcAngle.toString(),
-        '--countdown-color': countdownColor,
-        '--dial-size': `${this.size}px`,
-        '--circle-thickness': `${this.circleThickness}px`
-      }
-    }
+  circleThickness: {
+    type: Number,
+    default: 18
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
-}
+})
+
+const { settings, tempState } = useTime()
+
+const totalSeconds = computed(() => {
+  return (
+    (tempState.value.active
+      ? (settings.value.activeMinutes ?? 0)
+      : (settings.value.restMinutes ?? 0)) * 60
+  )
+})
+
+const progress = computed(() => {
+  if (!totalSeconds.value) return 0 // Avoid division by zero
+  return tempState.value.secondsRemaining / totalSeconds.value
+})
+
+const cssProps = computed(() => {
+  const currentProgressValue = progress.value // progress already handles totalSeconds being 0
+  const arcAngle = currentProgressValue * 100 // Grows counterclockwise as timer decreases
+
+  // Determine the countdown color based on disabled state
+  const countdownColor = props.disabled
+    ? 'var(--dark-quaternary)'
+    : tempState.value.active
+      ? 'var(--error-red)'
+      : 'darkseagreen'
+
+  return {
+    '--rotation-factor': currentProgressValue.toString() + 'turn',
+    '--arc-angle': arcAngle.toString(),
+    '--countdown-color': countdownColor,
+    '--dial-size': `${props.size}px`,
+    '--circle-thickness': `${props.circleThickness}px`
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -93,6 +93,7 @@ export default {
   border: variables.$dark-quaternary var(--circle-thickness) solid;
 }
 
+//noinspection CssInvalidFunction,CssInvalidPropertyValue
 .red-arc-reducer {
   position: absolute;
   top: 0;
