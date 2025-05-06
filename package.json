@@ -13,8 +13,8 @@
   "main": "electron.js",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "build": "npm run build-only && npm run type-check",
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
@@ -32,7 +32,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "bootstrap": "^5.3.5",
-    "bootstrap-vue-next": "^0.29.0",
+    "bootstrap-vue-next": "^0.29.1",
     "chartjs-plugin-annotation": "^3.1.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "color-manager": "https://github.com/dtom90/color-manager",
