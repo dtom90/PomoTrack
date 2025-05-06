@@ -6,7 +6,7 @@
     @show="refreshNotificationsEnabled"
   >
     <BDropdownItemButton
-      v-b-tooltip.hover.left="notificationsEnabled ? 'Notifications are enabled (to disable, revoke in URL settings)' : 'Enable notifications'"
+      vBTooltip.hover.left="notificationsEnabled ? 'Notifications are enabled (to disable, revoke in URL settings)' : 'Enable notifications'"
       :disabled="notificationsEnabled"
       @click.stop="toggleEnableNotifications"
     >
@@ -14,7 +14,8 @@
         type="checkbox"
         :checked="notificationsEnabled"
         :disabled="notificationsEnabled"
-      > Enable Notifications
+      >
+      Enable Notifications
     </BDropdownItemButton>
     <BDropdownItemButton>
       <b-form-checkbox
@@ -26,7 +27,7 @@
     </BDropdownItemButton>
     <BDropdownDivider />
     <BDropdownText>
-      App version: {{ $appVersion }}
+      App version: {{ appVersion }}
     </BDropdownText>
     <BDropdownItemButton
       v-if="isInElectron"
@@ -37,47 +38,45 @@
   </b-nav-item-dropdown>
 </template>
 
-<script>
-import { mapActions } from 'vuex'
-import notifications from '../../lib/notifications'
-import isElectron from '../../lib/isElectron'
+<script setup lang="ts">
+import { ref, computed, getCurrentInstance } from 'vue'
+import { useStore } from 'vuex'
+import isElectron from '@/lib/isElectron'
+import { useNotifications } from '@/lib/notifications'
 
-export default {
-  name: 'NavbarOptionsDropdown',
+// Global properties (e.g., app version)
+const appVersion = getCurrentInstance()?.appContext.config.globalProperties.$appVersion ?? 'N/A'
 
-  mixins: [notifications],
+// Store
+const store = useStore()
 
-  data () {
-    return {
-      isInElectron: isElectron()
-    }
-  },
+// --- Use Notifications Composable ---
+const { notificationsEnabled, refreshNotificationsEnabled, toggleEnableNotifications } = useNotifications()
 
-  computed: {
-    timeFormat24: {
-      get () {
-        return this.$store.state.settings.timeFormat24
-      },
-      set (value) {
-        this.updateSetting(
-          { key: 'timeFormat24', value }
-        )
-      }
-    }
-  },
+// --- Component Specific State ---
+const isInElectron = ref(isElectron())
 
-  methods: {
-    ...mapActions([
-      'updateSetting'
-    ]),
+// --- Component Specific Computed ---
+const timeFormat24 = computed({
+  get: () => store.state.settings.timeFormat24 as boolean,
+  set: (value: boolean) => {
+    store.dispatch('updateSetting', { key: 'timeFormat24', value })
+  }
+})
 
-    checkForUpdates () {
-      window.electronAPI.checkForUpdates()
-    }
+// --- Component Specific Methods ---
+const checkForUpdates = () => {
+  if (window.electronAPI) {
+    window.electronAPI.checkForUpdates()
+  } else {
+    console.warn('Electron API not available.')
   }
 }
+
 </script>
 
 <style scoped>
-
+.time-format-checkbox {
+  margin-bottom: 0; /* Align checkbox properly in dropdown */
+}
 </style>

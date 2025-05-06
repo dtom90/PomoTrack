@@ -32,61 +32,52 @@
   </nav>
 </template>
 
-<script>
-import time from '../../lib/time'
-import { mapMutations, mapActions } from 'vuex'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useStore } from 'vuex'
+import dayjs from 'dayjs'
+import type { Settings } from '@/types'
 import NavbarTagsDropdown from './NavbarTagsDropdown.vue'
 import NavbarArchiveDropdown from './NavbarArchiveDropdown.vue'
 import NavbarOptionsDropdown from './NavbarOptionsDropdown.vue'
 
-export default {
-  name: 'Navbar',
+const store = useStore()
 
-  components: {
-    NavbarArchiveDropdown,
-    NavbarTagsDropdown,
-    NavbarOptionsDropdown
-  },
+// State
+const currentDate = ref<Date | null>(null)
+const settings = computed<Settings>(() => store.state.settings)
+let intervalId: number | undefined
 
-  mixins: [time],
-
-  data: function () {
-    return {
-      currentDate: null,
-      currentMinute: null
-    }
-  },
-
-  computed: {
-
-    displayTime () {
-      return this.displayTimeHuman(this.currentDate)
-    }
-  },
-
-  mounted () {
-    this.updateTime()
-    setInterval(this.updateTime, 1000)
-  },
-
-  methods: {
-    ...mapMutations([
-      'updateTempState'
-    ]),
-    ...mapActions([
-      'openActivityModal'
-    ]),
-
-    updateTime () {
-      this.currentDate = new Date()
-    },
-
-    openAllActivity () {
-      this.updateTempState({ key: 'modalTagId', value: null })
-      this.openActivityModal()
-    }
+// Computed
+const displayTime = computed(() => {
+  if (!currentDate.value) {
+    return ''
   }
+  const timeFormat = settings.value?.timeFormat24 ? 'H:mm' : 'h:mm A'
+  return dayjs(currentDate.value).format(timeFormat)
+})
+
+// Methods
+const updateTime = () => {
+  currentDate.value = new Date()
 }
+
+const openAllActivity = () => {
+  store.commit('updateTempState', { key: 'modalTagId', value: null })
+  store.dispatch('openActivityModal')
+}
+
+// Lifecycle Hooks
+onMounted(() => {
+  updateTime()
+  intervalId = window.setInterval(updateTime, 1000)
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+})
 </script>
 
 <style scoped lang="scss">
