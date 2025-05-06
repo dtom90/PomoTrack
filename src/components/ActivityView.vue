@@ -89,6 +89,7 @@ import ActivityChart from './ActivityChart.vue'
 import IntervalDropdownForm from './IntervalDropdownForm.vue'
 import {
   msToMinutes,
+  stringToMs,
   displayDateHuman,
   displayDateISO,
   dateDiffInDays,
@@ -122,7 +123,7 @@ const props = defineProps({
     default: '#2020FF'
   },
   log: {
-    type: Array as () => TaskLog[],
+    type: Array as () => ModalActivityItem[] | TaskLog[],
     default: () => []
   }
 })
@@ -186,33 +187,40 @@ interface DailyActivityItem {
 
 const dailyActivityComputed = computed<[string, DailyActivityItem][]>(() => {
   const dailyActivity: Record<string, DailyActivityItem> = {}
-  let day: string
+  let day
 
   if (isTaskActivity.value) {
-    const task = tasks.value.find(t => t.id === props.taskId)
+    const task = tasks.value.find(task => task.id === props.taskId)
     if (task?.completed) {
       day = displayDateISO(task.completed)
-      dailyActivity[day] = { log: [{ completed: task.completed }] } // Simplified log structure for completed task
-    }
-  } else {
-    for (const event of props.log) {
-      if (event.started) { // Ensure event.started exists
-        day = displayDateISO(event.started)
-        if (day in dailyActivity) {
-          dailyActivity[day].log.push(event)
-        } else {
-          dailyActivity[day] = { log: [event] }
-        }
-      }
+      dailyActivity[day] = { log: [{ completed: task.completed }] }
     }
   }
 
-  return Object.entries(dailyActivity).sort((a, b) => {
-    return displayDateISO(b[0]) > displayDateISO(a[0]) ? 1 : -1
-  }).map(([dayKey, activityItem]) => {
-    activityItem.timeSpent = calculateTimeSpent(activityItem.log)
-    return [dayKey, activityItem]
-  })
+  // Create dailyActivity Object from a copy of descending log
+  for (const event of [...props.log].reverse()) {
+    const timestamp = 'started' in event ? event.started : event.completed
+    if (!timestamp) continue
+    day = displayDateISO(timestamp)
+    if (day in dailyActivity) {
+      dailyActivity[day].log.push(event)
+    } else {
+      dailyActivity[day] = { log: [event] }
+    }
+  }
+
+  for (const day in dailyActivity) {
+    dailyActivity[day].log.sort((a, b) => {
+      const aTime = a.completed || a.started
+      const bTime = b.completed || b.started
+      if (!aTime || !bTime) return 0
+      return bTime - aTime
+    })
+  }
+
+  const dailyActivityArray = Object.entries(dailyActivity)
+  dailyActivityArray.sort(([day1], [day2]) => stringToMs(day2) - stringToMs(day1))
+  return dailyActivityArray
 })
 
 // Chart helper functions (moved inside setup and refactored)
@@ -253,7 +261,7 @@ const getDailyChartData = () => {
 }
 
 const getWeeklyChartData = () => {
-  const weeklyActivity: Record<string, { log: TaskLog[] }> = {}
+  const weeklyActivity: Record<string, { log: ModalActivityItem[] }> = {}
   let week: string
 
   for (const event of props.log) {
@@ -281,7 +289,7 @@ const getWeeklyChartData = () => {
 }
 
 const getMonthlyChartData = () => {
-  const monthlyActivity: Record<string, { log: TaskLog[] }> = {}
+  const monthlyActivity: Record<string, { log: ModalActivityItem[] }> = {}
   let month: string
 
   for (const event of props.log) {

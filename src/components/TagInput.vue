@@ -37,66 +37,73 @@
   </BDropdown>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex'
-import TagButton from './TagButton.vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+import TagButton from './TagButton.vue';
 
-export default {
-  name: 'TagInput',
-
-  components: {
-    TagButton
-  },
-
-  props: {
-    taskId: {
-      type: String,
-      required: true
-    }
-  },
-
-  data: () => ({
-    inputTagName: '',
-    filteredTags: []
-  }),
-
-  computed: {
-    ...mapGetters([
-      'availableTags'
-    ])
-  },
-
-  methods: {
-    ...mapActions([
-      'addTaskTagById',
-      'addTaskTagByName'
-    ]),
-
-    updateTagOptions () {
-      this.filteredTags = this.availableTags(this.taskId, this.inputTagName)
-    },
-
-    async addTagById (tagId) {
-      await this.addTaskTagById({ taskId: this.taskId, tagId })
-      this.resetInput()
-    },
-
-    async addTagByName () {
-      if (this.inputTagName && this.inputTagName.length) {
-        await this.addTaskTagByName({ taskId: this.taskId, tagName: this.inputTagName })
-        this.$refs.dropdown.hide()
-        this.resetInput()
-      }
-    },
-
-    resetInput () {
-      this.inputTagName = ''
-      this.updateTagOptions()
-      this.$refs.addTagInput.focus()
-      this.$refs.dropdown.show()
-    }
-  }
+interface Tag {
+  id: string;
+  tagName: string;
 }
+
+type RootState = object;
+
+type AvailableTagsGetter = (taskId: string, filterText: string) => Tag[];
+
+interface BDropdownComponent {
+  hide: () => void;
+  show: () => void;
+}
+
+interface BFormInputComponent {
+  focus: () => void;
+}
+
+const props = defineProps({
+  taskId: {
+    type: String,
+    required: true
+  }
+});
+
+const store = useStore<RootState>();
+
+const inputTagName = ref('');
+const filteredTags = ref<Tag[]>([]);
+
+const dropdown = ref<BDropdownComponent | null>(null);
+const addTagInput = ref<BFormInputComponent | null>(null);
+
+const availableTags = computed<AvailableTagsGetter>(() => store.getters.availableTags);
+
+const updateTagOptions = () => {
+  if (props.taskId) {
+    filteredTags.value = availableTags.value(props.taskId, inputTagName.value);
+  }
+};
+
+const addTagById = async (tagId: string) => {
+  if (props.taskId) {
+    await store.dispatch('addTaskTagById', { taskId: props.taskId, tagId });
+    resetInput();
+  }
+};
+
+const addTagByName = async () => {
+  if (props.taskId && inputTagName.value && inputTagName.value.length) {
+    await store.dispatch('addTaskTagByName', { taskId: props.taskId, tagName: inputTagName.value });
+    dropdown.value?.hide();
+    resetInput();
+  }
+};
+
+const resetInput = () => {
+  inputTagName.value = '';
+  updateTagOptions();
+  addTagInput.value?.focus();
+  dropdown.value?.show();
+};
 </script>
 
 <style>

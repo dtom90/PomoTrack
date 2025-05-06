@@ -40,58 +40,60 @@
   </BModal>
 </template>
 
-<script>
-import { mapState, mapActions, mapMutations } from 'vuex'
-import DailyActivitySummary from './DailyActivitySummary.vue'
-import ActivityView from './ActivityView.vue'
-import TagSettingsButton from './TagSettingsButton.vue'
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import DailyActivitySummary from './DailyActivitySummary.vue';
+import ActivityView from './ActivityView.vue';
+import TagSettingsButton from './TagSettingsButton.vue';
+import type { ModalActivityItem } from '@/types'; // Changed from './Log.vue' and LogEvent
 
-export default {
-  name: 'ActivityModal',
-
-  components: {
-    TagSettingsButton,
-    DailyActivitySummary,
-    ActivityView
-  },
-
-  computed: {
-    ...mapState([
-      'tags',
-      'modalActivity',
-      'tempState',
-      'isActivityModalVisible'
-    ]),
-
-    tag: function () {
-      return this.tags[this.tempState.modalTagId]
-    },
-
-    modalVisible: {
-      get () {
-        return this.isActivityModalVisible
-      },
-      set (value) {
-        this.setActivityModalVisible(value)
-      }
-    }
-  },
-
-  methods: {
-    ...mapActions([
-      'loadAllActivity',
-      'loadTagActivity'
-    ]),
-    ...mapMutations([
-      'unloadModalActivity',
-      'setActivityModalVisible'
-    ]),
-
-    onModalHidden () {
-      this.unloadModalActivity()
-    }
-  }
+// Local type definitions based on original component's usage and Vuex state
+interface Tag {
+  id: string; // Assumed from usage: tag.id, tempState.modalTagId
+  tagName: string;
+  color: string;
 }
+
+interface TempState {
+  modalTagId: string | null; // From v-if="!tempState.modalTagId"
+}
+
+// Define a type for the root state to be used with useStore
+interface RootState {
+  tags: Record<string, Tag>; // From this.tags[this.tempState.modalTagId]
+  modalActivity: ModalActivityItem[] | null; // Changed from LogEvent
+  tempState: TempState;
+  isActivityModalVisible: boolean;
+}
+
+const store = useStore<RootState>();
+
+// Reactive state from Vuex store
+const modalActivity = computed(() => store.state.modalActivity);
+const tempState = computed(() => store.state.tempState);
+const tags = computed(() => store.state.tags);
+
+// Computed property for the specific tag, matching original logic
+const tag = computed<Tag | undefined>(() => {
+  if (tempState.value.modalTagId && tags.value) {
+    return tags.value[tempState.value.modalTagId];
+  }
+  return undefined;
+});
+
+// Computed property for modal visibility, matching original logic
+const modalVisible = computed({
+  get: () => store.state.isActivityModalVisible,
+  set: (value: boolean) => {
+    store.commit('setActivityModalVisible', value);
+  }
+});
+
+// Methods, matching original logic
+const onModalHidden = () => {
+  store.commit('unloadModalActivity');
+};
 </script>
 
 <style scoped>

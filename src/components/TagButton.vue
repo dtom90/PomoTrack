@@ -24,84 +24,74 @@
   </div>
 </template>
 
-<script>
-import { mapMutations } from 'vuex'
-import getTextColor from '../lib/getTextColor'
+<script setup lang="ts">
+import { ref, computed, watch, type PropType } from 'vue';
+import getTextColor from '../lib/getTextColor';
 
-export default {
-  name: 'TagButton',
-
-  props: {
-    tag: {
-      type: Object,
-      required: true
-    },
-    tagId: {
-      type: String,
-      required: true
-    },
-    selectText: {
-      type: String,
-      default: 'View tag activity'
-    },
-    selectTag: {
-      type: Function,
-      default: null
-    },
-    removeText: {
-      type: String,
-      default: 'Remove tag from task'
-    },
-    removeTag: {
-      type: Function,
-      default: null
-    },
-    mini: {
-      type: Boolean,
-      default: false
-    },
-    unselected: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  data () {
-    return {
-      textColor: '#FFFFFF'
-    }
-  },
-  
-  watch: {
-    'tag.color': {
-      handler (newVal) {
-        this.textColor = getTextColor(newVal)
-      },
-      immediate: true
-    }
-  },
-  
-  computed: {
-    tagButtonStyle() {
-      return {
-        backgroundColor: this.tag.color,
-        color: this.textColor
-      };
-    }
-  },
-  
-  methods: {
-    ...mapMutations([
-      'updateTempState'
-    ]),
-
-    onSelectTag () {
-      if (this.selectTag) {
-        this.selectTag({ tagId: this.tagId })
-      }
-    }
-  }
+// Interface for the tag prop
+interface Tag {
+  tagName: string;
+  color: string;
 }
+
+// Type for function props
+type TagActionFunc = (payload: { tagId: string }) => void;
+
+const props = defineProps({
+  tag: {
+    type: Object as PropType<Tag>,
+    required: true
+  },
+  tagId: {
+    type: String,
+    required: true
+  },
+  selectText: {
+    type: String,
+    default: 'View tag activity'
+  },
+  selectTag: {
+    type: Function as PropType<TagActionFunc>,
+    default: null
+  },
+  removeText: {
+    type: String,
+    default: 'Remove tag from task'
+  },
+  removeTag: {
+    type: Function as PropType<TagActionFunc>,
+    default: null
+  },
+  mini: {
+    type: Boolean,
+    default: false
+  },
+  unselected: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const textColor = ref('#FFFFFF');
+
+watch(() => props.tag.color, (newColor) => {
+  if (newColor) {
+    textColor.value = getTextColor(newColor);
+  }
+}, { immediate: true });
+
+const tagButtonStyle = computed(() => {
+  return {
+    backgroundColor: props.tag.color,
+    color: textColor.value
+  };
+});
+
+const onSelectTag = () => {
+  if (props.selectTag) {
+    props.selectTag({ tagId: props.tagId });
+  }
+};
 </script>
 
 <style scoped lang="scss">

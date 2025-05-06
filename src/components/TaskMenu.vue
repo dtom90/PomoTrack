@@ -28,31 +28,30 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from 'vuex'
+<script setup lang="ts">
+import { useStore } from 'vuex';
+import type { PropType } from 'vue';
 
-export default {
-  name: 'TaskMenu',
-
-  props: {
-    taskId: {
-      type: String,
-      default: null
-    },
-    isArchived: {
-      type: Boolean,
-      default: false
-    }
+defineProps({
+  taskId: {
+    type: String as PropType<string | null>,
+    default: null
   },
-
-  methods: {
-    ...mapActions([
-      'archiveTask'
-    ])
+  isArchived: {
+    type: Boolean,
+    default: false
   }
-}
+});
+
+const store = useStore();
+
+const archiveTask = (payload: { taskId: string | null }) => {
+  if (payload.taskId) { // Ensure taskId is not null before dispatching
+    store.dispatch('archiveTask', payload);
+  }
+};
 </script>
 
 <style scoped>
-
+/* Add any component-specific styles here */
 </style>

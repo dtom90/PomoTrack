@@ -9,69 +9,92 @@
   >
     <TagEditMenu
       ref="tagEditMenu"
-      :tag-id="tagId"
+      :tag-id="props.tagId"
       @update-tag="handleDropdownHide"
     />
   </BDropdown>
 </template>
 
-<script>
-import TagEditMenu from './TagEditMenu.vue'
-import { mapActions, mapState } from 'vuex'
-import getTextColor from '../lib/getTextColor'
-export default {
-  name: 'TagSettingsButton',
+<script setup lang="ts">
+import { ref, computed, onMounted, watch, type PropType, nextTick } from 'vue';
+import { useStore } from 'vuex';
+import TagEditMenu from './TagEditMenu.vue';
+import getTextColor from '../lib/getTextColor';
 
-  components: {
-    TagEditMenu
-  },
+interface Tag {
+  tagName: string;
+  color: string;
+}
 
-  props: {
-    tagId: {
-      type: String,
-      default: null
-    }
-  },
+interface RootState {
+  tags: Record<string, Tag>;
+}
 
-  computed: {
-    ...mapState([
-      'tags'
-    ]),
-    tag: function () {
-      return this.tags[this.tagId]
-    }
-  },
+interface BDropdownComponent {
+  $el: HTMLElement;
+  hide: () => void;
+}
 
-  mounted () {
-    if (this.tag) {
-      this.setButtonColor()
-    }
-  },
+const props = defineProps({
+  tagId: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+});
 
-  methods: {
-    ...mapActions([
-      'updateTag',
-      'deleteTag'
-    ]),
+const store = useStore<RootState>();
 
-    setButtonColor () {
-      this.$el.querySelector('.dropdown-toggle').style.setProperty('background-color', this.tag.color)
-      this.$el.querySelector('.dropdown-toggle').style.setProperty('color', getTextColor(this.tag.color))
-    },
+const dropdown = ref<BDropdownComponent | null>(null);
+const tagEditMenu = ref<InstanceType<typeof TagEditMenu> | null>(null);
 
-    handleDropdownShow () {
-      if (!this.tag) {
-        return
-      }
-      this.$refs.tagEditMenu.refreshTagNameAndColor()
-    },
+const tag = computed<Tag | undefined>(() => {
+  if (props.tagId && store.state.tags) {
+    return store.state.tags[props.tagId];
+  }
+  return undefined;
+});
 
-    handleDropdownHide () {
-      this.setButtonColor()
-      this.$refs.dropdown.hide()
+const setButtonColor = () => {
+  if (tag.value && dropdown.value?.$el) {
+    const toggleButton = dropdown.value.$el.querySelector('.dropdown-toggle') as HTMLElement | null;
+    if (toggleButton) {
+      toggleButton.style.backgroundColor = tag.value.color;
+      toggleButton.style.color = getTextColor(tag.value.color);
     }
   }
-}
+};
+
+const handleDropdownShow = () => {
+  if (!tag.value) {
+    return;
+  }
+  if (tagEditMenu.value && typeof tagEditMenu.value.refreshTagNameAndColor === 'function') {
+    tagEditMenu.value.refreshTagNameAndColor();
+  }
+};
+
+const handleDropdownHide = () => {
+  setButtonColor();
+  if (dropdown.value && typeof dropdown.value.hide === 'function') {
+    dropdown.value.hide();
+  }
+};
+
+onMounted(() => {
+  if (tag.value) {
+    nextTick(() => {
+      setButtonColor();
+    });
+  }
+});
+
+watch(tag, (newTagValue) => {
+  if (newTagValue) {
+    nextTick(() => {
+      setButtonColor();
+    });
+  }
+}, { deep: true });
 </script>
 
 <style lang="scss">
