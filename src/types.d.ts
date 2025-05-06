@@ -1,5 +1,5 @@
 export interface PomoTrackState {
-  tasks: Task[];
+  tasks: TaskForState[];
   tags: { [key: string]: Tag };
   tagOrder: string[];
   selectedTaskLogs: TaskLog[];
@@ -14,9 +14,13 @@ export interface Task {
   name: string;
   notes: string;
   order: number;
-  created_at: Date;
-  completed: boolean;
+  created_at: number;
+  completed: number;
   archived: boolean;
+}
+
+export interface TaskForState extends Task {
+  tags: string[];
 }
 
 export interface Tag {
