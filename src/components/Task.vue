@@ -36,7 +36,7 @@ import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
 
 export default {
-  
+
   name: 'Task',
   components: { TaskTagList, Checkbox, TimerDial },
   props: {
@@ -45,9 +45,9 @@ export default {
       required: true
     }
   },
-  
+
   computed: {
-    
+
     ...mapState([
       'tags',
       'tagOrder',
@@ -56,33 +56,29 @@ export default {
       'tasks'
     ]),
 
-    // Find the task object from the store using taskId
     task () {
       return this.tasks.find(t => t.id === this.taskId)
     },
-    
+
     active () {
-      // Use taskId directly if task might not be found immediately
       return this.settings.selectedTaskID === this.taskId
     },
-    
+
     checked () {
-      // Ensure task exists before accessing properties
-      return this.task ? this.task.completed !== null : false
+      return this.task ? !!this.task.completed : false
     },
-    
+
     displayCountdownIndicator () {
-      // Use taskId directly
       return this.tempState.activeTaskID === this.taskId
     }
   },
-  
+
   methods: {
     ...mapActions([
       'selectTask'
     ])
   }
-  
+
 }
 </script>
 

@@ -19,7 +19,7 @@
         >
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
-              <CompleteStatus :completed="task.completed !== null" />
+              <CompleteStatus :completed="!!task.completed" />
               <span class="ms-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">

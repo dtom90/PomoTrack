@@ -1,10 +1,13 @@
+import type { ActionContext } from 'vuex'
+import type { PomoTrackState, Task, TaskForState, Tag, TaskLog, TaskTagMap, SettingKv } from '@/types'
 import dexieDb from './dexieDb'
 import { nanoid } from 'nanoid'
+// @ts-expect-error color-manager is not typed yet (TODO)
 import ColorManager from 'color-manager'
 import { toRaw } from 'vue'
 
 const actions = {
-  async loadInitialData ({ commit }) {
+  async loadInitialData ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
     const tasks = await dexieDb.tasks.orderBy('order').toArray()
     const tags = await dexieDb.tags.orderBy('order').toArray()
     const taskTagMaps = await dexieDb.taskTagMap.toArray()
@@ -12,61 +15,70 @@ const actions = {
     const logs = await dexieDb.logs.toArray()
     // If any logs were running but not stopped, stop them.
     for (const log of logs) {
-      if (!log.stopped) {
+      if (!log.stopped && log.timeSpent) {
         log.stopped = log.started + log.timeSpent
         await dexieDb.logs.put(log)
       }
     }
-    let selectedTaskLogs = []
+    let selectedTaskLogs: TaskLog[] = []
     for (const setting of settings) {
       if (setting.key === 'selectedTaskID' && setting.value) {
-        selectedTaskLogs = await dexieDb.logs.where('taskId').equals(setting.value).toArray()
+        const selectedTaskID = setting.value as string
+        selectedTaskLogs = await dexieDb.logs.where('taskId').equals(selectedTaskID).toArray()
       }
     }
     commit('loadInitialData', { tasks, tags, taskTagMaps, settings, selectedTaskLogs })
   },
 
-  async loadAllActivity ({ commit }) {
+  async loadAllActivity ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
     const logs = await dexieDb.logs.orderBy('started').reverse().toArray()
     commit('setModalActivity', { logs })
   },
 
-  async loadTagActivity ({ state, commit }) {
+  async loadTagActivity ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!state.tempState.modalTagId) {
+      return
+    }
     const taskMaps = await dexieDb.taskTagMap.where('tagId').equals(state.tempState.modalTagId).toArray()
     const taskIds = taskMaps.map(taskMap => taskMap.taskId)
     const logs = await dexieDb.logs.where('taskId').anyOf(taskIds).toArray()
     commit('setModalActivity', { logs })
   },
 
-  async addTask ({ state, commit, dispatch }, { name }) {
+  async addTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { name }: { name: string }) {
     const taskName = name.trim()
     if (taskName) {
       try {
         const order = state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
-        const newTask = {
+        const newTask: Task = {
           id: 'task-' + nanoid(),
           name: taskName,
           notes: '',
           order,
           created_at: Date.now(),
-          completed: null,
-          archived: null
+          completed: undefined,
+          archived: undefined
         }
 
         await handleDexieError(dexieDb.tasks.add(newTask), 'tasks.add', newTask)
 
+        const taskForState: TaskForState = {
+          ...newTask,
+          tags: []
+        }
+
         if (state.settings.addSelectedTags && state.settings.selectedTagIds.length) {
-          const taskTagMaps = state.settings.selectedTagIds.map(tagId => ({
+          const taskTagMaps: TaskTagMap[] = state.settings.selectedTagIds.map((tagId: string) => ({
             id: 'taskTag-' + nanoid(),
             taskId: newTask.id,
             tagId
           }))
           await handleDexieError(dexieDb.taskTagMap.bulkAdd(taskTagMaps), 'taskTagMap.bulkAdd', taskTagMaps)
-          newTask.tags = taskTagMaps.map(taskTagMap => taskTagMap.tagId)
+          taskForState.tags = taskTagMaps.map((taskTagMap: TaskTagMap) => taskTagMap.tagId)
         } else {
-          newTask.tags = []
+          taskForState.tags = []
         }
-        commit('addTask', { task: newTask })
+        commit('addTask', { task: taskForState })
         await dispatch('updateSetting', { key: 'selectedTaskID', value: newTask.id })
       } catch (error) {
         console.error('Failed to complete addTask operation:', error)
@@ -74,38 +86,38 @@ const actions = {
     }
   },
 
-  async updateTaskName ({ state, commit }, { taskId, name }) {
+  async updateTaskName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, name }: { taskId: string, name: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
-      const taskUpdates = { name }
+      const taskUpdates: Partial<Task> = { name }
       await dexieDb.tasks.update(taskId, taskUpdates)
       commit('updateTask', { taskId, taskUpdates })
     }
   },
 
-  async updateTaskNotes ({ state, commit }, { taskId, notes }) {
+  async updateTaskNotes ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, notes }: { taskId: string, notes: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
-      const taskUpdates = { notes }
+      const taskUpdates: Partial<Task> = { notes }
       await dexieDb.tasks.update(taskId, taskUpdates)
       commit('updateTask', { taskId, taskUpdates })
     }
   },
 
-  async reorderIncompleteTasks ({ state, commit }, { newIncompleteTaskOrder }) {
+  async reorderIncompleteTasks ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newIncompleteTaskOrder }: { newIncompleteTaskOrder: TaskForState[] }) {
     try {
-      const incompleteTasks = state.tasks.filter(t => !t.completed)
-      const completedTasks = state.tasks.filter(t => t.completed)
+      const incompleteTasks: TaskForState[] = state.tasks.filter(t => !t.completed)
+      const completedTasks: TaskForState[] = state.tasks.filter(t => t.completed)
       const origLength = incompleteTasks.length
       if (newIncompleteTaskOrder.length === origLength) {
-        const fullTaskOrder = newIncompleteTaskOrder.concat(completedTasks)
+        const fullTaskOrder: TaskForState[] = newIncompleteTaskOrder.concat(completedTasks)
         for (const [i, task] of fullTaskOrder.entries()) {
           task.order = i
         }
-        await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw)), 'tasks.bulkPut reorder (same length)', fullTaskOrder.map(toRaw))
+        await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw) as Task[]), 'tasks.bulkPut reorder (same length)', fullTaskOrder.map(toRaw))
         commit('setTasks', { tasks: fullTaskOrder })
       } else {
-        const reorderTaskIds = {}
+        const reorderTaskIds: { [key: string]: boolean } = {}
         newIncompleteTaskOrder.forEach(task => {
           reorderTaskIds[task.id] = true
         })
@@ -117,11 +129,11 @@ const actions = {
           }
         }
         if (incompleteTasks.length === origLength) { // ensure that the length has not changed
-          const fullTaskOrder = incompleteTasks.concat(completedTasks)
+          const fullTaskOrder: TaskForState[] = incompleteTasks.concat(completedTasks)
           for (const [i, task] of fullTaskOrder.entries()) {
             task.order = i
           }
-          await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw)), 'tasks.bulkPut reorder (different length)', fullTaskOrder.map(toRaw))
+          await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw) as Task[]), 'tasks.bulkPut reorder (different length)', fullTaskOrder.map(toRaw))
           commit('setTasks', { tasks: fullTaskOrder })
         }
       }
@@ -130,12 +142,12 @@ const actions = {
     }
   },
 
-  async startTask ({ state, commit, dispatch }, { taskId }) {
+  async startTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
     await dispatch('stopTask')
 
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
-      const log = {
+      const log: TaskLog = {
         id: 'log-' + nanoid(),
         taskId,
         started: Date.now(),
@@ -147,7 +159,7 @@ const actions = {
     }
   },
 
-  async updateTaskTimer ({ state, commit }, { taskId }) {
+  async updateTaskTimer ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
       const runningLog = await dexieDb.logs.where('taskId').equals(taskId).and(log => log.stopped == null).first()
@@ -159,7 +171,7 @@ const actions = {
     }
   },
 
-  async stopTask ({ commit }) {
+  async stopTask ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
     const runningLog = await dexieDb.logs.filter(log => log.stopped === null).first()
     if (runningLog) {
       runningLog.stopped = Date.now()
@@ -169,10 +181,10 @@ const actions = {
     }
   },
 
-  async completeTask ({ state, commit, dispatch }, { taskId }) {
+  async completeTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
-      let completedValue = null
+      let completedValue = undefined
       if (!task.completed) {
         if (task.id === state.tempState.activeTaskID && state.tempState.running) {
           await dispatch('stopTask')
@@ -185,7 +197,7 @@ const actions = {
     }
   },
 
-  async archiveTask ({ state, commit }, { taskId }) {
+  async archiveTask ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
       const taskUpdates = { archived: !task.archived }
@@ -194,8 +206,8 @@ const actions = {
     }
   },
 
-  async archiveTasks ({ getters, commit }) {
-    const completedTasks = getters.completedTasksFiltered.filter(t => !t.archived)
+  async archiveTasks ({ getters, commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    const completedTasks: TaskForState[] = getters.completedTasksFiltered.filter((t: TaskForState) => !t.archived)
     if (completedTasks.length === 0) {
       alert('No completed tasks to archive')
       return
@@ -209,27 +221,28 @@ const actions = {
     }
   },
 
-  async addInterval ({ state, commit }, { taskId, started, timeSpent, stopped }) {
+  async addInterval ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, started, timeSpent, stopped }: { taskId: string, started: number, timeSpent: number, stopped: number }) {
     const task = state.tasks.find(t => t.id === taskId)
     if (task) {
       const log = {
         id: 'log-' + nanoid(),
         taskId,
-        started: started,
-        stopped: stopped,
-        timeSpent: timeSpent
-      }
+        started,
+        timeSpent,
+        stopped
+      } as TaskLog
       await dexieDb.logs.add(log)
       commit('updateLog', { taskId, log })
     }
   },
 
-  async getLogById ({ }, { logId }) {
+  async getLogById ({ }, { logId }: { logId: string }): Promise<TaskLog | undefined> {
     return await dexieDb.logs.where('id').equals(logId).first()
   },
 
-  async updateInterval ({ commit }, { logId, started, timeSpent, stopped }) {
+  async updateInterval ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { logId, started, timeSpent, stopped }: { logId: string, started: number, timeSpent: number, stopped: number }) {
     const log = await dexieDb.logs.get(logId)
+    if (!log) return
     log.started = started
     log.stopped = stopped
     log.timeSpent = timeSpent
@@ -237,27 +250,29 @@ const actions = {
     commit('updateLog', { taskId: log.taskId, log })
   },
 
-  async deleteInterval ({ commit }, { logId }) {
+  async deleteInterval ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { logId }: { logId: string }) {
     const log = await dexieDb.logs.get(logId)
+    if (!log) return
     await dexieDb.logs.delete(logId)
     commit('deleteInterval', { taskId: log.taskId, logId })
   },
 
-  async addTaskTagByName ({ state, commit }, { taskId, tagName }) {
+  async addTaskTagByName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagName }: { taskId: string, tagName: string }) {
+    console.log('addTaskTagByName', taskId, tagName)
     tagName = tagName.trim()
     if (tagName) {
       const task = state.tasks.find(t => t.id === taskId)
       if (task) {
         let tag = await dexieDb.tags.where('tagName').equals(tagName).first()
         const isNewTag = !tag
-        if (isNewTag) {
+        if (!tag) {
           const colors = Object.values(state.tags).map(tag => tag.color)
           const colorManager = new ColorManager(colors)
           const maxOrder = await dexieDb.tags.orderBy('order').last()
           const order = maxOrder ? maxOrder.order + 1 : 0
           tag = {
             id: 'tag-' + nanoid(),
-            tagName: tagName,
+            tagName,
             color: colorManager.getRandomColor(),
             order
           }
@@ -273,7 +288,7 @@ const actions = {
     }
   },
 
-  async addTaskTagById ({ state, commit }, { taskId, tagId }) {
+  async addTaskTagById ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagId }: { taskId: string, tagId: string }) {
     const task = state.tasks.find(t => t.id === taskId)
     const tag = state.tags[tagId]
     if (task && tag) {
@@ -286,14 +301,14 @@ const actions = {
     }
   },
 
-  async updateTag ({ commit }, { tagId, ...tagUpdates }) {
+  async updateTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { tagId, ...tagUpdates }: { tagId: string } & Partial<Tag>) {
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
     if (!tag) {
       alert('Error: the tag you are trying to update does not exist. Please refresh the page and try again.')
       return
     }
 
-    if ('tagName' in tagUpdates) {
+    if ('tagName' in tagUpdates && tagUpdates.tagName) {
       const existingTagWithName = await dexieDb.tags
         .where('tagName').equals(tagUpdates.tagName)
         .and(tag => tag.id !== tagId)
@@ -309,8 +324,8 @@ const actions = {
     commit('updateTag', { tagId, tagUpdates })
   },
 
-  async reorderTags ({ state, commit }, { newOrder }) {
-    const reorderedTags = []
+  async reorderTags ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newOrder }: { newOrder: string[] }) {
+    const reorderedTags: Tag[] = []
     for (const [i, tagId] of newOrder.entries()) {
       const tag = state.tags[tagId]
       if (tag.order !== i) {
@@ -318,14 +333,14 @@ const actions = {
       }
       reorderedTags.push(toRaw(tag))
     }
-    await dexieDb.tags.bulkPut(reorderedTags)
+    await handleDexieError(dexieDb.tags.bulkPut(reorderedTags), 'tags.bulkPut reorder', reorderedTags)
     commit('updateTagOrder', { reorderedTags })
   },
 
-  async removeTaskTag ({ commit }, { taskId, tagId }) {
+  async removeTaskTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagId }: { taskId: string, tagId: string }) {
     await dexieDb.taskTagMap
       .where('taskId').equals(taskId)
-      .and(taskTagMap => taskTagMap.tagId === tagId)
+      .and((taskTagMap: TaskTagMap) => taskTagMap.tagId === tagId)
       .delete()
 
     const newTags = await dexieDb.taskTagMap.where('taskId').equals(taskId).toArray()
@@ -333,8 +348,9 @@ const actions = {
     commit('updateTask', { taskId, taskUpdates: { tags: newTagIds } })
   },
 
-  async deleteTag ({ commit }, { tagId }) {
+  async deleteTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
+    if (!tag) return
     if (confirm(`Are you sure you want to delete the tag "${tag.tagName}"?\nAll tasks with this tag will lose the tag.`)) {
       await dexieDb.taskTagMap.where('tagId').equals(tagId).delete()
       await dexieDb.tags.where('id').equals(tagId).delete()
@@ -342,7 +358,7 @@ const actions = {
     }
   },
 
-  async selectTask ({ dispatch, commit }, { taskId }) {
+  async selectTask ({ dispatch, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string | null }) {
     await dispatch('updateSetting', { key: 'selectedTaskID', value: taskId })
     if (taskId) {
       const selectedTaskLogs = await dexieDb.logs.where('taskId').equals(taskId).toArray()
@@ -352,28 +368,28 @@ const actions = {
     }
   },
 
-  async addTagFilter ({ state, dispatch }, { tagId }) {
+  async addTagFilter ({ state, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
     const selectedTagIds = state.settings.selectedTagIds
     selectedTagIds.push(tagId)
     await dispatch('updateSetting', { key: 'selectedTagIds', value: selectedTagIds })
   },
 
-  async removeTagFilter ({ state, dispatch }, { tagId }) {
+  async removeTagFilter ({ state, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
     const selectedTagIds = state.settings.selectedTagIds.filter(selectedTagId => selectedTagId !== tagId)
     await dispatch('updateSetting', { key: 'selectedTagIds', value: selectedTagIds })
   },
 
-  async updateSetting ({ commit }, { key, value }) {
-    await dexieDb.settings.put({ key, value: toRaw(value) })
+  async updateSetting ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { key, value }: SettingKv) {
+    await handleDexieError(dexieDb.settings.put({ key, value: toRaw(value) }), 'settings.put', { key, value: toRaw(value) })
     commit('updateSetting', { key, value })
   },
 
-  async removeAllTagFilters ({ dispatch }) {
-    await dexieDb.settings.put({ key: 'selectedTagIds', value: [] })
+  async removeAllTagFilters ({ dispatch }: ActionContext<PomoTrackState, PomoTrackState>) {
+    await handleDexieError(dexieDb.settings.put({ key: 'selectedTagIds', value: [] }), 'settings.put removeAllTagFilters')
     await dispatch('updateSetting', { key: 'selectedTagIds', value: [] })
   },
 
-  openActivityModal ({ state, commit, dispatch }) {
+  openActivityModal ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>) {
     if (!state.tempState.modalTagId) {
       dispatch('loadAllActivity')
     } else {
@@ -382,13 +398,13 @@ const actions = {
     commit('setActivityModalVisible', true)
   },
 
-  closeActivityModal ({ commit }) {
+  closeActivityModal ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
     commit('setActivityModalVisible', false)
   }
 }
 
 // Helper function for Dexie calls
-async function handleDexieError (dexiePromise, context = 'database operation', entity) {
+async function handleDexieError<T> (dexiePromise: Promise<T>, context = 'database operation', entity?: unknown): Promise<T> {
   try {
     return await dexiePromise
   } catch (error) {

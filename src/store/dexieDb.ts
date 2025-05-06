@@ -1,12 +1,12 @@
 import Dexie, { type Table } from 'dexie';
-import type { Task, Tag, TaskLog, TaskTagMap, Settings } from '@/types';
+import type { Task, Tag, TaskLog, TaskTagMap, SettingKv } from '@/types';
 
 export class PomoTrackDatabase extends Dexie {
   tasks!: Table<Task>;
   tags!: Table<Tag>;
   taskTagMap!: Table<TaskTagMap>;
   logs!: Table<TaskLog>;
-  settings!: Table<Settings>;
+  settings!: Table<SettingKv>;
 
   constructor() {
     super('PomoTrackDatabase');

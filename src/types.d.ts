@@ -15,8 +15,8 @@ export interface Task {
   notes: string;
   order: number;
   created_at: number;
-  completed: number;
-  archived: boolean;
+  completed: number | undefined;
+  archived: boolean | undefined;
 }
 
 export interface TaskForState extends Task {
@@ -33,17 +33,12 @@ export interface Tag {
 export interface TaskLog {
   id: string;
   taskId: string;
-  started: Date;
-  stopped: Date;
-  timeSpent: number;
+  started: number;
+  stopped: number | null;
+  timeSpent: number | null;
 }
 
-export interface ModalActivityItem {
-  id?: string;
-  taskId?: string;
-  started?: Date;
-  stopped?: Date;
-  timeSpent?: number;
+export interface ModalActivityItem extends Partial<TaskLog> {
   task?: string;
   tagIds?: string[];
   completed?: number;

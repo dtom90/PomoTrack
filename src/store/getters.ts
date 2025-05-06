@@ -22,13 +22,13 @@ const getters: GetterTree<PomoTrackState, PomoTrackState> = {
 
   completedTasks (state): TaskForState[] {
     let completedTasks = state.tasks.filter((t: TaskForState) => t.completed)
-    completedTasks = completedTasks.sort((a: TaskForState, b: TaskForState) => a.completed - b.completed)
+    completedTasks = completedTasks.sort((a: TaskForState, b: TaskForState) => (a.completed ?? 0) - (b.completed ?? 0))
     return completedTasks
   },
 
   completedTasksFiltered (state): TaskForState[] {
     let completedTasks = state.tasks.filter((t: TaskForState) => t.completed)
-    completedTasks = completedTasks.sort((a: TaskForState, b: TaskForState) => a.completed - b.completed)
+    completedTasks = completedTasks.sort((a: TaskForState, b: TaskForState) => (a.completed ?? 0) - (b.completed ?? 0))
     return state.settings.selectedTagIds.length > 0
       ? (
         state.settings.filterOperator === 'and'

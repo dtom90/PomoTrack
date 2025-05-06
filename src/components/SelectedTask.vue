@@ -234,7 +234,7 @@ export default {
     },
 
     checked () {
-      return this.selectedTask && this.selectedTask.completed !== null
+      return this.selectedTask && !!this.selectedTask.completed
     },
 
     taskTags () {
