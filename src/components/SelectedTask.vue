@@ -19,7 +19,7 @@
           <Checkbox
             v-if="selectedTask"
             size="large"
-            :checked="checked"
+            :checked="!!selectedTask?.completed"
             :task-id="selectedTask.id"
           />
         </div>
@@ -62,7 +62,7 @@
         <TaskMenu
           v-if="selectedTask || isEmptyState"
           :task-id="selectedTask && selectedTask.id"
-          :is-archived="selectedTask && selectedTask.archived"
+          :is-archived="selectedTask?.archived"
         />
       </div>
     </div>
@@ -72,7 +72,7 @@
       <div id="countdown-section">
         <div v-show="isEmptyState || (selectedTask && !selectedTask.completed && (!tempState.running || !tempState.activeTaskID || tempState.activeTaskID === selectedTask.id))">
           <Timer
-            :task-id="tempState.activeTaskID || (selectedTask && selectedTask.id)"
+            :task-id="tempState.activeTaskID ?? selectedTask?.id"
             :disabled="isEmptyState"
           />
         </div>
@@ -112,14 +112,14 @@
             v-if="selectedTask.notes && !editingNotes"
             id="display-notes"
             class="notes-input-and-display"
-            @click="editNotes"
+            @click="editNotesLocal"
             v-html="displayNotes"
           />
           <!-- eslint-enable vue/no-v-html -->
 
           <!-- Editing Mode -->
           <BInputGroup
-            v-if="editingNotes || !selectedTask.notes"
+            v-if="editingNotes || (selectedTask && !selectedTask.notes)"
           >
             <b-form-textarea
               ref="notesInput"
@@ -127,7 +127,7 @@
               placeholder="Enter notes here.."
               class="notes-input-and-display"
               no-resize
-              @click="editNotes"
+              @click="editNotesLocal"
               @blur="saveNotes"
               @keydown.enter="handleNotesEnter"
               @input="adjustTextareaHeight"
@@ -164,165 +164,155 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, watch, nextTick } from 'vue'
+import { useStore } from 'vuex'
 import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
 import ActivityView from './ActivityView.vue'
 import TaskMenu from './TaskMenu.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 import Timer from './Timer.vue'
+import { marked, type Tokens } from 'marked'
+import DOMPurify from 'dompurify'
+import type { BFormInput, BFormTextarea } from 'bootstrap-vue-next'
+import type { Task, TempState, ModalActivityItem } from '@/types' // Assuming central types
 
+// Marked and DOMPurify setup
 marked.setOptions({
   breaks: true
 })
 
 const renderer = new marked.Renderer()
-const linkRenderer = renderer.link
-renderer.link = (href, title, text) => {
-  const html = linkRenderer.call(renderer, href, title, text)
-  return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
+// TODO: fix link renderer
+// const linkRenderer = renderer.link;
+// renderer.link = ({ href, title, tokens }: Tokens.Link) => {
+//   const text = new Parser().parse(tokens).trim();
+//   const html = linkRenderer.call(renderer, href, title || '', text);
+//   return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ')
+// }
+
+renderer.paragraph = (token: Tokens.Paragraph) => {
+  return `<p class="custom-p">${token.raw}</p>`;
+};
+
+interface Props {
+  heightClass?: string
 }
-// add class to span tags
-renderer.paragraph = ({tokens}) => tokens.map(token => `<p class="custom-p">${token.text}</p>`).join('');
 
-export default {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = withDefaults(defineProps<Props>(), {
+  heightClass: 'full-height'
+})
 
-  name: 'SelectedTask',
+const store = useStore()
 
-  components: {
-    Timer,
-    Checkbox,
-    TaskTagList,
-    ActivityView,
-    TaskMenu
-  },
+// Template refs
+const taskNameInput = ref<InstanceType<typeof BFormInput> | null>(null)
+const notesInput = ref<InstanceType<typeof BFormTextarea> | null>(null)
 
-  props: {
-    heightClass: {
-      type: String,
-      default: 'full-height'
-    }
-  },
+// Data properties converted to refs
+const possibleEdit = ref(true)
+const editingName = ref(false)
+const editingNotes = ref(false)
+const newTaskName = ref<string | null>(null)
 
-  data: () => ({
-    possibleEdit: true,
-    editingName: false,
-    editingNotes: false,
-    newTaskName: null
-  }),
+// Vuex State
+const tempState = computed<TempState>(() => store.state.tempState)
+const selectedTaskID = computed<string | null>(() => store.state.selectedTaskID)
+const selectedTaskLogs = computed<ModalActivityItem[]>(() => store.state.selectedTaskLogs)
 
-  computed: {
+// Vuex Getters
+const selectedTask = computed<Task | null>(() => store.getters.selectedTask)
+const anyTasks = computed<boolean>(() => store.getters.anyTasks)
 
-    ...mapState([
-      'tasks',
-      'tempState',
-      'tagOrder',
-      'selectedTaskID',
-      'selectedTaskLogs',
-      'tags'
-    ]),
+// Computed properties
+const isEmptyState = computed(() => !anyTasks.value)
 
-    ...mapGetters([
-      'selectedTask',
-      'anyTasks'
-    ]),
+const taskTags = computed(() => (selectedTask.value as Task & { tags?: unknown[] | unknown })?.tags);
 
-    isEmptyState () {
-      return !this.anyTasks
-    },
-
-    checked () {
-      return this.selectedTask && !!this.selectedTask.completed
-    },
-
-    taskTags () {
-      return this.selectedTask.tags
-    },
-
-    displayNotes () {
-      const sanitizedNotes = DOMPurify.sanitize(this.selectedTask.notes)
-      return marked(sanitizedNotes, { renderer })
-    }
-
-  },
-
-  watch: {
-    selectedTaskID () {
-      this.editingName = false
-      this.editingNotes = false
-      this.newTaskName = this.selectedTask ? this.selectedTask.name : null
-    }
-  },
-
-  methods: {
-
-    ...mapActions([
-      'addTask',
-      'updateTaskName',
-      'updateTaskNotes',
-      'startTask',
-      'removeTaskTag'
-    ]),
-
-    editName () {
-      if (this.possibleEdit) {
-        this.newTaskName = this.selectedTask.name
-        this.editingName = true
-        this.$nextTick(() => this.$refs.taskNameInput.focus())
-      }
-      this.possibleEdit = true
-    },
-
-    async saveName () {
-      if (!this.newTaskName || !this.newTaskName.trim().length) {
-        this.editingName = false
-        return
-      }
-
-      if (this.isEmptyState) {
-        // Create new task
-        await this.addTask({ name: this.newTaskName })
-      } else {
-        // Update existing task
-        await this.updateTaskName({ taskId: this.selectedTask.id, name: this.newTaskName })
-      }
-      this.editingName = false
-    },
-
-    editNotes () {
-      this.editingNotes = true
-      this.$nextTick(() => {
-        this.$refs.notesInput.focus()
-        this.adjustTextareaHeight()
-      })
-    },
-
-    handleNotesEnter (event) {
-      if (event.shiftKey) {
-        return // Allow the newline to occur
-      }
-      this.saveNotes()
-    },
-
-    async saveNotes () {
-      await this.updateTaskNotes({ taskId: this.selectedTask.id, notes: this.selectedTask.notes })
-      this.editingNotes = false
-    },
-
-    async continueTimerHere () {
-      await this.startTask({ taskId: this.selectedTask.id })
-    },
-
-    adjustTextareaHeight () {
-      const textarea = this.$refs.notesInput.$el
-      // Reset height to auto to get the correct scrollHeight
-      textarea.style.height = 'auto'
-      // Set the height to match the content
-      textarea.style.height = textarea.scrollHeight + 'px'
-    }
+const displayNotes = computed(() => {
+  if (selectedTask.value && selectedTask.value.notes) {
+    const sanitizedNotes = DOMPurify.sanitize(selectedTask.value.notes)
+    return marked(sanitizedNotes, { renderer })
   }
+  return ''
+})
+
+// Watchers
+watch(selectedTaskID, () => {
+  editingName.value = false
+  editingNotes.value = false
+  newTaskName.value = selectedTask.value ? selectedTask.value.name : null
+})
+
+// Methods
+const addTask = (payload: { name: string }) => store.dispatch('addTask', payload)
+const updateTaskName = (payload: { taskId: string; name: string }) => store.dispatch('updateTaskName', payload)
+const updateTaskNotes = (payload: { taskId: string; notes: string | null }) => store.dispatch('updateTaskNotes', payload)
+const startTask = (payload: { taskId: string }) => store.dispatch('startTask', payload)
+
+const editName = () => {
+  if (possibleEdit.value && selectedTask.value) {
+    newTaskName.value = selectedTask.value.name
+    editingName.value = true
+    nextTick(() => taskNameInput.value?.focus())
+  }
+  possibleEdit.value = true
+}
+
+const saveName = async () => {
+  if (!newTaskName.value || !newTaskName.value.trim().length) {
+    editingName.value = false
+    return
+  }
+
+  if (isEmptyState.value) {
+    await addTask({ name: newTaskName.value })
+  } else if (selectedTask.value) {
+    await updateTaskName({ taskId: selectedTask.value.id, name: newTaskName.value })
+  }
+  editingName.value = false
+}
+
+const editNotesLocal = () => {
+  editingNotes.value = true
+  nextTick(() => {
+    notesInput.value?.focus()
+    adjustTextareaHeight()
+  })
+}
+
+const handleNotesEnter = (event: KeyboardEvent) => {
+  if (event.shiftKey) {
+    return
+  }
+  saveNotes()
+}
+
+const saveNotes = async () => {
+  if (selectedTask.value) {
+    await updateTaskNotes({ taskId: selectedTask.value.id, notes: selectedTask.value.notes })
+  }
+  editingNotes.value = false
+}
+
+const continueTimerHere = async () => {
+  if (selectedTask.value) {
+    await startTask({ taskId: selectedTask.value.id })
+  }
+}
+
+const adjustTextareaHeight = () => {
+  if (notesInput.value && notesInput.value.$el) {
+    const textarea = notesInput.value.$el as HTMLTextAreaElement
+    textarea.style.height = 'auto'
+    textarea.style.height = textarea.scrollHeight + 'px'
+  }
+}
+
+// Ensure initial newTaskName is set if selectedTask exists on mount
+if (selectedTask.value) {
+  newTaskName.value = selectedTask.value.name
 }
 </script>
 
