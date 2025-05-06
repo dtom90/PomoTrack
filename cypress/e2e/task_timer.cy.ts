@@ -46,6 +46,18 @@ describe('task timer', () => {
     })
   })
 
+  it('starts a task timer and displays total time spent', () => {
+    // Arrange
+
+    // Act
+    cy.get('button > svg.fa-play').click()
+
+    // Assert
+    cy.get('#task-log h6').within(() => {
+      cy.contains('Time Spent: 2 seconds')
+    })
+  })
+
   it('stops a task timer and updates log', () => {
     // Arrange
     cy.get('button > svg.fa-play').click()
@@ -243,7 +255,7 @@ describe('task timer', () => {
     })
   })
 
-  it.only('should stop timer when task completed and not continue next task', () => {
+  it('should stop timer when task completed and not continue next task', () => {
     // Arrange
     cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
       .click()
@@ -252,14 +264,14 @@ describe('task timer', () => {
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
     cy.get('button > svg.fa-gear').click()
     cy.get('.form-check').contains('Continue Timer on Interval Complete').click()
-  
+
     cy.get('button > svg.fa-play').click()
     cy.get('#countdown-container').contains('0:03')
     cy.get('#countdown-container').contains('0:02')
-  
+
     // Act
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').last().click()
-  
+
     // Assert
     cy.get('#incomplete-task-list .task').click()
     cy.get('button#active-task-container').should('not.exist')

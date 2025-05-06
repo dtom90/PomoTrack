@@ -68,8 +68,6 @@ const timeFormat24 = computed({
 const checkForUpdates = () => {
   if (window.electronAPI) {
     window.electronAPI.checkForUpdates()
-  } else {
-    console.warn('Electron API not available.')
   }
 }
 

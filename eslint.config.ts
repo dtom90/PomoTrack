@@ -19,6 +19,13 @@ export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
 
   {
+    files: ['src/**/*.{ts,mts,tsx,vue}'],
+    rules: {
+      'no-console': 'error',
+    },
+  },
+
+  {
     files: ['**/*.vue'],
     rules: {
       'vue/multi-word-component-names': 'off',

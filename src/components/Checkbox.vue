@@ -40,9 +40,9 @@ const props = withDefaults(defineProps<{
 })
 
 // Validate size prop (included for completeness, though type restricts it)
-if (props.size && !['small', 'large'].includes(props.size)) {
-  console.warn(`Invalid prop: 'size' must be 'small' or 'large', received '${props.size}'.`)
-}
+// if (props.size && !['small', 'large'].includes(props.size)) {
+//   console.warn(`Invalid prop: 'size' must be 'small' or 'large', received '${props.size}'.`)
+// }
 
 // Store access
 const store = useStore()

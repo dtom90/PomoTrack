@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import './styles/main.scss';
 
 import { createApp } from 'vue'

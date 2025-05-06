@@ -11,7 +11,6 @@ declare global {
 
 if (isElectron() && window.electronAPI) {
   window.electronAPI.onMessage((data: unknown) => {
-    console.log('Received electron message in notifications module:', data)
     alert(`Electron Message: ${String(data)}`)
   })
 }

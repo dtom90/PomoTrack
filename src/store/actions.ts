@@ -79,8 +79,9 @@ const actions = {
           taskForState.tags = []
         }
         commit('addTask', { task: taskForState })
-        await dispatch('updateSetting', { key: 'selectedTaskID', value: newTask.id })
+        await dispatch('selectTask', { taskId: newTask.id })
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to complete addTask operation:', error)
       }
     }
@@ -138,6 +139,7 @@ const actions = {
         }
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to complete reorderIncompleteTasks operation:', error)
     }
   },
@@ -258,7 +260,6 @@ const actions = {
   },
 
   async addTaskTagByName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagName }: { taskId: string, tagName: string }) {
-    console.log('addTaskTagByName', taskId, tagName)
     tagName = tagName.trim()
     if (tagName) {
       const task = state.tasks.find(t => t.id === taskId)
@@ -408,6 +409,7 @@ async function handleDexieError<T> (dexiePromise: Promise<T>, context = 'databas
   try {
     return await dexiePromise
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(`Dexie error during ${context}:`, error, 'entity(ies):', entity)
     throw error
   }
