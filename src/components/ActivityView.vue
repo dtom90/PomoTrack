@@ -216,6 +216,7 @@ const dailyActivityComputed = computed<[string, DailyActivityItem][]>(() => {
       if (!aTime || !bTime) return 0
       return bTime - aTime
     })
+    dailyActivity[day].timeSpent = calculateTimeSpent(dailyActivity[day].log)
   }
 
   const dailyActivityArray = Object.entries(dailyActivity)

@@ -8,7 +8,7 @@
     </h5>
 
     <!-- Time Spent on Task -->
-    <h6>Time Spent: {{ displayDuration(timeSpent) }}</h6>
+    <h6>Time Spent: {{ displayDuration(props.timeSpent) }}</h6>
 
     <!-- Task Activity Log -->
     <table
@@ -70,7 +70,7 @@ import { useTime } from '../lib/time'
 import type { ModalActivityItem } from '@/types';
 
 // Props definition
-defineProps({
+const props = defineProps({
   day: {
     type: String as PropType<string | null>,
     default: null

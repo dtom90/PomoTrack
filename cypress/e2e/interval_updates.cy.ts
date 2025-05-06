@@ -80,6 +80,26 @@ describe('interval updates', () => {
         cy.get('td').contains('Stopped')
       })
     })
+
+    it('should add an interval then create a new task. new task log should be blank', () => {
+      // Arrange
+      cy.contains('Activity Log').scrollIntoView()
+      cy.get('.activity-view img[alt="Add interval"]').click()
+      cy.get('.activity-view .b-form-group').contains('Duration:').within(() => {
+        cy.get('input').type('{enter}')
+      })
+
+      // Act
+      cy.get('#incomplete-tasks-section input[placeholder="Enter new task.."]')
+        .click()
+        .type('My Second Task{enter}')
+
+      // Assert
+      cy.get('#task-log').within(() => {
+        cy.contains('Time Spent:').should('not.exist')
+      })
+    })
+
   })
 
   describe('interval updates', () => {

@@ -1,35 +1,43 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-light bg-light">
-    <b-navbar-brand href="#">
+  <BNavbar toggleable="md" variant="light">
+    <BNavbarBrand href="#">
       PomoTrack
-    </b-navbar-brand>
+    </BNavbarBrand>
 
     <div id="time-container">
       <span>{{ displayTime }}</span>
     </div>
 
     <div class="navbar-menu d-flex flex-column align-items-end">
-      <b-navbar-toggle target="nav-collapse" />
-      <b-collapse
-        id="nav-collapse"
-        is-nav
+      <BNavbarToggle target="nav-offcanvas-responsive" />
+      <BOffcanvas
+        id="nav-offcanvas-responsive"
+        title="Menu"
+        placement="end"
+        responsive="md"
+        aria-labelledby="nav-offcanvas-responsive-label"
       >
-        <b-navbar-nav class="ms-auto">
-          <NavbarTagsDropdown />
+        <BOffcanvasHeader class="d-md-none">
+          <BOffcanvasTitle id="nav-offcanvas-responsive-label">Menu</BOffcanvasTitle>
+        </BOffcanvasHeader>
+        <BOffcanvasBody>
+          <BNavbarNav class="ms-auto">
+            <NavbarTagsDropdown />
 
-          <NavbarArchiveDropdown />
+            <NavbarArchiveDropdown />
 
-          <b-nav-item @click="openAllActivity">
-            <span>
-              All Activity
-            </span>
-          </b-nav-item>
+            <BNavItem @click="openAllActivity">
+              <span>
+                All Activity
+              </span>
+            </BNavItem>
 
-          <NavbarOptionsDropdown />
-        </b-navbar-nav>
-      </b-collapse>
+            <NavbarOptionsDropdown />
+          </BNavbarNav>
+        </BOffcanvasBody>
+      </BOffcanvas>
     </div>
-  </nav>
+  </BNavbar>
 </template>
 
 <script setup lang="ts">

@@ -159,4 +159,3 @@ export const displayChartDurationNewline = (mins: number): string => humanizeDur
 );
 
 export { dayjs };
-
