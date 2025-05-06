@@ -29,7 +29,7 @@
         :log="modalActivity"
       />
       <ActivityView
-        v-else
+        v-else-if="tag"
         id="tagActivity"
         :tag-id="tag.id"
         :label="tag.tagName"
@@ -46,28 +46,9 @@ import { useStore } from 'vuex';
 import DailyActivitySummary from './DailyActivitySummary.vue';
 import ActivityView from './ActivityView.vue';
 import TagSettingsButton from './TagSettingsButton.vue';
-import type { ModalActivityItem } from '@/types'; // Changed from './Log.vue' and LogEvent
+import type { Tag } from '@/types';
 
-// Local type definitions based on original component's usage and Vuex state
-interface Tag {
-  id: string; // Assumed from usage: tag.id, tempState.modalTagId
-  tagName: string;
-  color: string;
-}
-
-interface TempState {
-  modalTagId: string | null; // From v-if="!tempState.modalTagId"
-}
-
-// Define a type for the root state to be used with useStore
-interface RootState {
-  tags: Record<string, Tag>; // From this.tags[this.tempState.modalTagId]
-  modalActivity: ModalActivityItem[] | null; // Changed from LogEvent
-  tempState: TempState;
-  isActivityModalVisible: boolean;
-}
-
-const store = useStore<RootState>();
+const store = useStore();
 
 // Reactive state from Vuex store
 const modalActivity = computed(() => store.state.modalActivity);

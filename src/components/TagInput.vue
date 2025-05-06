@@ -41,15 +41,9 @@
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import TagButton from './TagButton.vue';
+import type { Tag } from '@/types';
 
-interface Tag {
-  id: string;
-  tagName: string;
-}
-
-type RootState = object;
-
-type AvailableTagsGetter = (taskId: string, filterText: string) => Tag[];
+const store = useStore();
 
 interface BDropdownComponent {
   hide: () => void;
@@ -67,15 +61,13 @@ const props = defineProps({
   }
 });
 
-const store = useStore<RootState>();
-
 const inputTagName = ref('');
 const filteredTags = ref<Tag[]>([]);
 
 const dropdown = ref<BDropdownComponent | null>(null);
 const addTagInput = ref<BFormInputComponent | null>(null);
 
-const availableTags = computed<AvailableTagsGetter>(() => store.getters.availableTags);
+const availableTags = computed(() => store.getters.availableTags);
 
 const updateTagOptions = () => {
   if (props.taskId) {

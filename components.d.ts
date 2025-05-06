@@ -57,4 +57,7 @@ declare module 'vue' {
     Timer: typeof import('./src/components/Timer.vue')['default']
     TimerDial: typeof import('./src/components/TimerDial.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vBTooltip: typeof import('bootstrap-vue-next/directives/BTooltip')['vBTooltip']
+  }
 }

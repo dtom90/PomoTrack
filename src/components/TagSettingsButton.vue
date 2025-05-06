@@ -8,8 +8,9 @@
     @show="handleDropdownShow"
   >
     <TagEditMenu
+      v-if="tagId"
       ref="tagEditMenu"
-      :tag-id="props.tagId"
+      :tag-id="tagId"
       @update-tag="handleDropdownHide"
     />
   </BDropdown>

@@ -4,7 +4,7 @@
     <BDropdownForm @submit.prevent="updateTag">
       <BInputGroup>
         <BFormInput
-          :id="`tag-name-input-${tagId}`"
+          :id="`tag-name-input-${props.tagId}`"
           ref="tagNameInput"
           v-model="tagName"
           title="Rename tag"
@@ -33,7 +33,7 @@
     </BButton>
 
     <BButton
-      :id="`delete-tag-btn-${tagId}`"
+      :id="`delete-tag-btn-${props.tagId}`"
       title="Delete tag"
       variant="danger"
       class="w-100"
@@ -44,88 +44,84 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
 import { SketchPicker } from 'vue-color';
-import getTextColor from '../lib/getTextColor'
-import { mapActions, mapState } from 'vuex'
+import getTextColor from '../lib/getTextColor';
+import { useStore } from 'vuex';
+import type { Tag } from '@/types';
 
-export default {
-  name: 'TagEditMenu',
-
-  components: {
-    'sketch-picker': SketchPicker
-  },
-
-  props: {
-    tagId: {
-      type: String,
-      required: true
-    }
-  },
-
-  data () {
-    return {
-      tagName: '',
-      tagColor: '#000000',
-      textColor: '#FFFFFF'
-    }
-  },
-
-  computed: {
-    ...mapState([
-      'tags'
-    ]),
-    tag: function () {
-      return this.tags[this.tagId]
-    }
-  },
-
-  watch: {
-    tagColor: {
-      handler (newVal) {
-        this.textColor = getTextColor(newVal)
-      },
-      immediate: true
-    }
-  },
-
-  mounted () {
-    this.refreshTagNameAndColor()
-
-    // override the above event listener for the tag name input
-    this.$refs.tagNameInput.$el.addEventListener('mousedown', (event) => {
-      event.stopPropagation()
-    })
-    // NOTE: the input element, due to being withing draggable, cannot be highlighted
-    // orignally thought it was just in firefox for some reason (chrome works) but now it seems to be in chrome too
-  },
-
-  methods: {
-    ...mapActions([
-      'updateTag',
-      'deleteTag'
-    ]),
-
-    refreshTagNameAndColor () {
-      this.tagName = this.tag.tagName
-      this.tagColor = this.tag.color
-      this.textColor = getTextColor(this.tagColor)
-    },
-
-    async updateTagAction () {
-      await this.updateTag({
-        tagId: this.tagId,
-        tagName: this.tagName,
-        color: this.tagColor
-      })
-      this.$emit('update-tag')
-    },
-
-    deleteTagAction () {
-      this.deleteTag({ tagId: this.tagId })
-    }
-  }
+interface Props {
+  tagId: string;
 }
+
+const props = defineProps<Props>();
+
+const emit = defineEmits(['update-tag']);
+
+const store = useStore();
+
+interface BFormInputInstance extends ComponentPublicInstance {
+  $el: HTMLElement;
+}
+
+const tagNameInput = ref<BFormInputInstance | null>(null);
+const tagName = ref('');
+const tagColor = ref('#000000');
+const textColor = ref('#FFFFFF');
+
+const tags = computed(() => store.state.tags);
+const tag = computed<Tag | undefined>(() => tags.value[props.tagId]);
+
+watch(tagColor, (newVal) => {
+  textColor.value = getTextColor(newVal);
+}, { immediate: true });
+
+const refreshTagNameAndColor = () => {
+  if (tag.value) {
+    tagName.value = tag.value.tagName;
+    tagColor.value = tag.value.color;
+    textColor.value = getTextColor(tagColor.value);
+  }
+};
+
+const updateTagAction = async () => {
+  await store.dispatch('updateTag', {
+    tagId: props.tagId,
+    tagName: tagName.value,
+    color: tagColor.value
+  });
+  emit('update-tag');
+};
+
+const deleteTagAction = () => {
+  store.dispatch('deleteTag', { tagId: props.tagId });
+};
+
+onMounted(() => {
+  refreshTagNameAndColor();
+
+  nextTick(() => {
+    if (tagNameInput.value) {
+      const inputElement = tagNameInput.value.$el;
+      if (inputElement instanceof HTMLElement) {
+        inputElement.addEventListener('mousedown', (event) => {
+            event.stopPropagation();
+        });
+      }
+    }
+  });
+});
+
+const updateTag = () => {
+  updateTagAction();
+};
+
+defineExpose({
+  refreshTagNameAndColor
+});
+
 </script>
 
 <style scoped>
