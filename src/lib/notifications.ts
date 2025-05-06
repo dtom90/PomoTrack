@@ -74,10 +74,15 @@ export function useNotifications () {
     }
   }
 
+  const clearNotifications = (): void => {
+    store.commit('clearNotifications')
+  }
+
   return {
     notificationsEnabled,
     refreshNotificationsEnabled,
     toggleEnableNotifications,
-    notify
+    notify,
+    clearNotifications
   }
 }

@@ -100,118 +100,77 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import Task from './Task.vue'
 import TaskFilterDropdown from './TaskFilterDropdown.vue'
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
-import isElectron from '../lib/isElectron'
+import type { TaskForState } from '@/types'
 
-export default {
-
-  name: 'TaskList',
-
-  components: {
-    Task,
-    draggable,
-    TaskFilterDropdown
-  },
-
-  props: {
-    title: {
-      type: String,
-      default: 'To Do'
-    }
-  },
-
-  data: () => ({
-    newTaskName: '',
-    isFilterMenuOpen: false,
-    sortingOptions: ['Recent', 'Oldest'],
-    sortOrder: 'Recent',
-    isDragging: false,
-    isInElectron: isElectron()
-  }),
-
-  computed: {
-    ...mapState([
-      'tempState',
-      'settings',
-      'tags',
-      'tasks'
-    ]),
-    ...mapGetters([
-      'incompleteTasks',
-      'completedTasksFiltered',
-      'selectedTask'
-    ]),
-    isCompletedList () {
-      return this.title === 'Done'
-    },
-    btnId () {
-      return this.isCompletedList ? 'completedSettingsButton' : 'todoSettingsButton'
-    },
-    selectId () {
-      return (this.completed ? 'completed' : 'toDo') + 'OrderGroupSelect'
-    },
-    filterBtnStyle () {
-      return {
-        '--filter-btn-background-color': this.settings.selectedTagIds.length > 0 ? this.tags[this.settings.selectedTagIds[0]].color : 'white'
-      }
-    },
-    filterButtonTooltip () {
-      if (this.tasks.length === 0) {
-        return 'Add a task enable filtering'
-      } else if (Object.keys(this.tags).length === 0) {
-        return 'Add a tag to a task to enable filtering'
-      }
-      return 'Filter tasks'
-    },
-    incompleteTaskList: {
-      get () {
-        let incompleteTasks = this.settings.selectedTagIds.length > 0
-          ? this.incompleteTasks.filter(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-          : this.incompleteTasks
-        incompleteTasks = incompleteTasks.filter(t => !t.archived)
-        return incompleteTasks
-      },
-      set (newIncompleteTaskOrder) {
-        this.reorderIncompleteTasks({ newIncompleteTaskOrder })
-      }
-    },
-
-    completedTaskList () {
-      let completedTasks = this.completedTasksFiltered
-      completedTasks = completedTasks.filter(t => !t.archived)
-      return completedTasks && this.sortOrder !== 'Oldest'
-        ? completedTasks.slice().reverse()
-        : completedTasks
-    }
-  },
-
-  methods: {
-
-    ...mapActions([
-      'addTask',
-      'selectTask',
-      'addTagFilter',
-      'removeTagFilter',
-      'reorderIncompleteTasks',
-      'archiveTasks',
-      'updateSetting'
-    ]),
-
-    ...mapMutations([
-      'updateTempState'
-    ]),
-
-    addNewTask () {
-      this.addTask({
-        name: this.newTaskName
-      })
-      this.newTaskName = ''
-    }
+// Define props
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'To Do'
   }
+})
+
+// Store access
+const store = useStore()
+
+// Reactive state (from data)
+const newTaskName = ref('')
+const isDragging = ref(false)
+const sortOrder = ref('Recent') // Assuming 'Recent' is the default
+
+// Computed properties (from mapState, mapGetters, and computed)
+const settings = computed(() => store.state.settings)
+const incompleteTasksGetter = computed(() => store.getters.incompleteTasks)
+const completedTasksFilteredGetter = computed(() => store.getters.completedTasksFiltered)
+
+const isCompletedList = computed(() => props.title === 'Done')
+
+const btnId = computed(() => {
+  return isCompletedList.value ? 'completedSettingsButton' : 'todoSettingsButton'
+})
+
+const incompleteTaskList = computed<TaskForState[]>({
+  get() {
+    if (!settings.value || !incompleteTasksGetter.value) return []
+    let filteredTasks = settings.value.selectedTagIds.length > 0
+      ? incompleteTasksGetter.value.filter((task: TaskForState) =>
+          settings.value.selectedTagIds.every((tagId: string) => task.tags.includes(tagId))
+        )
+      : incompleteTasksGetter.value
+    filteredTasks = filteredTasks.filter((t: TaskForState) => !t.archived)
+    return filteredTasks
+  },
+  set(newIncompleteTaskOrder: TaskForState[]) {
+    store.dispatch('reorderIncompleteTasks', { newIncompleteTaskOrder })
+  }
+})
+
+const completedTaskList = computed<TaskForState[]>(() => {
+  if (!completedTasksFilteredGetter.value) return []
+  const filteredCompletedTasks = completedTasksFilteredGetter.value.filter((t: TaskForState) => !t.archived)
+  return filteredCompletedTasks && sortOrder.value !== 'Oldest'
+    ? filteredCompletedTasks.slice().reverse()
+    : filteredCompletedTasks
+})
+
+// Methods (from methods and mapActions/mapMutations)
+const addNewTask = () => {
+  if (newTaskName.value.trim()) {
+    store.dispatch('addTask', {
+      name: newTaskName.value.trim()
+    })
+    newTaskName.value = ''
+  }
+}
+
+const archiveTasks = () => {
+  store.dispatch('archiveTasks')
 }
 </script>
 
