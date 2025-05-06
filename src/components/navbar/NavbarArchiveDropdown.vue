@@ -1,7 +1,7 @@
 <template>
   <b-nav-item-dropdown
     id="archive-dropdown"
-    ref="dropdown"
+    ref="dropdownRef"
     text="Archive"
     no-caret
     boundary="viewport"
@@ -15,11 +15,10 @@
         <BDropdownItem
           v-for="task of archivedTasks"
           :key="task.id"
-          @click.stop="onTaskClick"
         >
           <div class="d-flex">
             <div class="flex-1 d-flex align-items-center">
-              <CompleteStatus :completed="task.completed !== null" />
+              <CompleteStatus :completed="!!task.completed" />
               <span class="ms-4 text-wrap">{{ task.name }}</span>
             </div>
             <div class="text-right">
@@ -66,55 +65,45 @@
   </b-nav-item-dropdown>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import CompleteStatus from '@/components/CompleteStatus.vue'
+import type { Task } from '@/types' // Assuming Task type is available
+import {
+  BNavItemDropdown,
+  BDropdownHeader,
+  BDropdownDivider,
+  BDropdownItem,
+  BButton
+} from 'bootstrap-vue-next'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-export default {
-  name: 'NavbarArchiveDropdown',
+// Store
+const store = useStore()
 
-  components: { CompleteStatus },
+// Refs
+const dropdownRef = ref<InstanceType<typeof BNavItemDropdown> | null>(null)
+const activeSubmenu = ref<string | null>(null)
 
-  data () {
-    return {
-      activeSubmenu: null
-    }
-  },
+// Computed
+const archivedTasks = computed<Task[]>(() => store.getters.archivedTasks)
 
-  computed: {
-    ...mapGetters([
-      'archivedTasks'
-    ])
-  },
-
-  methods: {
-    ...mapActions([
-      'archiveTask'
-    ]),
-
-    onTaskClick () {
-      this.$refs.dropdown.show()
-    },
-
-    toggleSubmenu (taskId) {
-      this.$refs.dropdown.show() // Keep dropdown open after submenu is toggled
-      if (this.activeSubmenu === taskId) {
-        this.activeSubmenu = null
-      } else {
-        this.activeSubmenu = taskId
-      }
-    },
-
-    closeSubmenu () {
-      this.activeSubmenu = null
-    },
-
-    unarchiveTask (taskId) {
-      this.archiveTask({ taskId, archived: false })
-      this.closeSubmenu()
-    }
-  }
+// Methods
+const toggleSubmenu = (taskId: string) => {
+  dropdownRef.value?.show() // Keep dropdown open
+  activeSubmenu.value = activeSubmenu.value === taskId ? null : taskId
 }
+
+const closeSubmenu = () => {
+  activeSubmenu.value = null
+}
+
+const unarchiveTask = (taskId: string) => {
+  store.dispatch('archiveTask', { taskId, archived: false })
+  closeSubmenu()
+}
+
 </script>
 
 <style scoped>
@@ -135,6 +124,7 @@ export default {
   width: 500px !important;
 }
 
+/*noinspection CssUnusedSymbol*/
 .dropdown-header {
   text-align: left;
 }

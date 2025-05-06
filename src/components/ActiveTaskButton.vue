@@ -6,7 +6,7 @@
     <button
       id="active-task-button"
       class="btn btn-light border d-flex justify-content-center align-items-center oval-border"
-      @click="selectTask({ taskId: activeTask.id })"
+      @click="selectTaskHandler"
     >
       <TimerDial
         :size="60"
@@ -24,31 +24,30 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import TimerDial from './TimerDial.vue'
-import time from '../lib/time'
-export default {
-  name: 'ActiveTaskButton',
-  
-  components: {
-    TimerDial
-  },
+import { useTime } from '../lib/time'
 
-  mixins: [
-    time
-  ],
-  
-  computed: {
-    ...mapGetters([
-      'activeTask'
-    ])
-  },
-  
-  methods: {
-    ...mapActions(['selectTask'])
+// Get store instance
+const store = useStore()
+
+// Composables
+const { displayCountdownTime } = useTime()
+
+// Computed properties (replacing mapGetters)
+const activeTask = computed(() => store.getters.activeTask)
+
+// Methods (replacing mapActions)
+const selectTaskHandler = () => {
+  if (activeTask.value) {
+    store.dispatch('selectTask', { taskId: activeTask.value.id })
   }
 }
+
+// Props (if any, none in the original so defineProps is not strictly needed unless future props are added)
+// defineProps({ ... })
 </script>
 
 <style scoped lang="scss">

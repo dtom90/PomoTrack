@@ -50,7 +50,7 @@ describe('notifications', () => {
 
     // Assert
     cy.get('@requestPermissionStub').should('have.been.called')
-    cy.get('@NotificationSpy').should('be.calledWith', 'Permissions to notify you have been granted!')
+    cy.get('@NotificationSpy').should('be.calledWith', 'PomoTrack', { body: 'Permissions to notify you have been granted!' })
   })
 
   it('should alert user when permissions are denied', () => {
@@ -110,7 +110,7 @@ describe('notifications', () => {
     // Assert
     cy.get('@NotificationSpy')
       .should('have.been.calledOnce')
-      .and('have.been.calledWith', 'Finished Working, Take a Break!')
+      .and('have.been.calledWith', 'PomoTrack', { body: 'Finished Working, Take a Break!' })
   })
 
   it('show alert on timer complete when notifications not enabled', () => {
@@ -197,14 +197,14 @@ describe('notifications', () => {
     // Assert
     cy.get('@requestPermissionStub').should('have.been.called')
     cy.get('@NotificationSpy')
-      .should('have.been.calledWith', 'Permissions to notify you have been granted!')
+      .should('have.been.calledWith', 'PomoTrack', { body: 'Permissions to notify you have been granted!' })
     cy.get('div').contains('25:00').click()
     cy.get('#countdown-container input[type="number"]:visible').clear().type('0.05{enter}')
     cy.get('button > svg.fa-play').click()
     cy.get('@NotificationSpy')
       .should('have.been.calledTwice')
-      .and('have.been.calledWith', 'Permissions to notify you have been granted!')
-      .and('have.been.calledWith', 'Finished Working, Take a Break!')
+      .and('have.been.calledWith', 'PomoTrack', { body: 'Permissions to notify you have been granted!' })
+      .and('have.been.calledWith', 'PomoTrack', { body: 'Finished Working, Take a Break!' })
     cy.get('@NotificationCloseSpy').should('have.been.called')
   })
 

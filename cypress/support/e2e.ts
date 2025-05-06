@@ -28,8 +28,7 @@ Cypress.on('window:before:load', (win) => {
 })
 
 beforeEach(() => {
-  const hostname = Cypress.env('POMOTRACK_HOSTNAME') || 'localhost'
-  cy.visit(`http://${hostname}:5173`)
+  cy.visit('/')
   cy.contains('PomoTrack')
   indexedDB.databases().then((databases) => {
     databases.forEach((db) => {

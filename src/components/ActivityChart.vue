@@ -8,37 +8,79 @@
       class="chart-container-body"
     >
       <Bar
-        :data="chartData"
-        :options="chartOptions"
+        :data="props.chartData" 
+        :options="computedChartOptions" 
       />
     </div>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { 
+  Chart as ChartJS, 
+  Title, 
+  Tooltip, 
+  Legend, 
+  BarElement, 
+  CategoryScale, 
+  LinearScale, 
+  type ChartOptions as ChartJsOptions, 
+  type TooltipItem 
+} from 'chart.js'
 import ChartPluginDataLabels from 'chartjs-plugin-datalabels'
-import ChartPluginAnnotation from 'chartjs-plugin-annotation'
+import ChartPluginAnnotation, { type AnnotationOptions } from 'chartjs-plugin-annotation'
 import { displayChartDuration, displayChartDurationNewline } from '../lib/time'
 import cloneDeep from 'lodash.clonedeep'
 import getTextColor from '../lib/getTextColor'
+import type { PropType } from 'vue';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale, ChartPluginDataLabels, ChartPluginAnnotation)
 
-const defaultChartOptions = {
+interface ChartDataset {
+  label?: string;
+  backgroundColor?: string | string[];
+  data: (number | null)[];
+}
+
+interface ChartDataProps {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+const props = defineProps({
+  chartData: {
+    type: Object as PropType<ChartDataProps>,
+    required: true
+  },
+  target: {
+    type: Number as PropType<number | null>,
+    default: null
+  }
+})
+
+const chartContainer = ref<HTMLElement | null>(null)
+const chartContainerBody = ref<HTMLElement | null>(null)
+
+const defaultChartOptionsInternal: ChartJsOptions<'bar'> = {
+  responsive: true,
   maintainAspectRatio: false,
   scales: {
     y: {
-      scaleLabel: {
+      title: {
         display: true,
-        labelString: 'Time Spent'
+        text: 'Time Spent'
       },
+      min: 0,
       ticks: {
-        beginAtZero: true,
         maxTicksLimit: 7,
-        stepSize: 0.5,
-        callback: mins => displayChartDurationNewline(mins).split('\n')
+        callback: (value: string | number) => {
+          if (typeof value === 'number') {
+            return displayChartDurationNewline(value).split('\n');
+          }
+          return value;
+        }
       }
     }
   },
@@ -50,16 +92,17 @@ const defaultChartOptions = {
       displayColors: false,
       position: 'nearest',
       callbacks: {
-        title: (tooltipItems) => tooltipItems[0].dataset.label,
-        label: tooltipItem => tooltipItem.label + ':',
-        afterLabel: tooltipItem => displayChartDuration(tooltipItem.raw)
+        title: (tooltipItems: TooltipItem<'bar'>[]) => tooltipItems[0]?.dataset.label || '',
+        label: (tooltipItem: TooltipItem<'bar'>) => tooltipItem.label ? tooltipItem.label + ':' : '',
+        afterLabel: (tooltipItem: TooltipItem<'bar'>) => displayChartDuration(tooltipItem.raw as number)
       }
     },
     datalabels: {
       anchor: 'end',
       align: 'start',
       clip: true,
-      formatter: displayChartDurationNewline
+      formatter: (value: number) => displayChartDurationNewline(value),
+      color: '#000' 
     },
     annotation: {
       annotations: {}
@@ -77,9 +120,14 @@ const defaultChartOptions = {
   }
 }
 
-const baseTargetLine = Object.freeze({
+interface BaseTargetLineParts {
+  targetLine: Extract<AnnotationOptions, { type: 'line' }>;
+  label: Extract<AnnotationOptions, { type: 'label' }>;
+}
+
+const baseTargetLine = Object.freeze<BaseTargetLineParts>({
   targetLine: {
-    type: 'line',
+    type: 'line' as const,
     scaleID: 'y',
     value: 0,
     borderColor: 'red',
@@ -87,110 +135,101 @@ const baseTargetLine = Object.freeze({
   },
   label: {
     display: true,
-    type: 'label',
+    type: 'label' as const,
     yValue: 0,
     position: {
-      y: 'start'
+      y: 'start' as const
     },
     backgroundColor: 'red',
     content: ''
   }
 })
 
-function chartOptions (target = null) {
-  const chartOptions = cloneDeep(defaultChartOptions)
-  if (target) {
-    const annotations = cloneDeep(baseTargetLine)
-    annotations.targetLine.value = target
-    annotations.label.yValue = target
-    annotations.label.content = 'Target: ' + displayChartDuration(target)
-    chartOptions.plugins.annotation.annotations = annotations
+const observer = ref<ResizeObserver | null>(null)
+
+const computedChartOptions = computed<ChartJsOptions<'bar'>>(() => {
+  const opts = cloneDeep(defaultChartOptionsInternal);
+  if (props.target !== null && props.target !== undefined) {
+    const annotationsEntry = cloneDeep(baseTargetLine); 
+    annotationsEntry.targetLine.value = props.target;
+    if (annotationsEntry.label) { 
+      annotationsEntry.label.yValue = props.target;
+      annotationsEntry.label.content = 'Target: ' + displayChartDuration(props.target);
+    }
+    
+    opts.plugins = opts.plugins || {};
+    opts.plugins.annotation = opts.plugins.annotation || { annotations: {} };
+    if (!opts.plugins.annotation.annotations) {
+        opts.plugins.annotation.annotations = {};
+    }
+    const currentAnnotations = opts.plugins.annotation.annotations as Record<string, AnnotationOptions>; 
+    currentAnnotations['targetLine'] = annotationsEntry.targetLine as AnnotationOptions; 
+    currentAnnotations['targetLabel'] = annotationsEntry.label as AnnotationOptions;
   }
-  return chartOptions
-}
 
-export default {
-  name: 'BarChart',
-  components: { Bar },
-
-  props: {
-    chartData: {
-      type: Object,
-      required: true
-    },
-
-    target: {
-      type: Number,
-      default: null
-    }
-  },
-
-  data: function () {
-    return {
-      chartOptions: {},
-      observer: null
-    }
-  },
-
-  watch: {
-    target: function (newTarget) {
-      this.chartOptions = chartOptions(newTarget)
-    },
-
-    chartData: function (newChartData, oldChartData) {
-      this.updateWith()
-      this.chartOptions.plugins.datalabels.color = getTextColor(newChartData.datasets[0].backgroundColor)
-      if (newChartData.datasets[0].label !== oldChartData.datasets[0].label) {
-        this.$nextTick(() => {
-          this.scrollRight()
-        })
+  if (props.chartData?.datasets?.[0]?.backgroundColor) {
+    if (opts.plugins?.datalabels) {
+      const bgColor = props.chartData.datasets[0].backgroundColor;
+      if (Array.isArray(bgColor)) {
+        opts.plugins.datalabels.color = getTextColor(bgColor[0] || '#000000'); 
+      } else if (bgColor) {
+        opts.plugins.datalabels.color = getTextColor(bgColor);
       }
     }
-  },
+  }
+  return opts;
+});
 
-  mounted () {
-    this.chartOptions = chartOptions(this.target, true)
-    this.chartOptions.plugins.datalabels.color = getTextColor(this.chartData.datasets[0].backgroundColor)
-    this.updateWith()
-    this.$nextTick(() => {
-      this.scrollRight()
-    })
-    this.observeWidthChange()
-  },
+const updateWidth = () => {
+  if (!chartContainerBody.value || !chartContainer.value || !props.chartData?.labels) return
+  chartContainerBody.value.style.width = Math.max(
+    chartContainer.value.clientWidth,
+    140 + 140 * props.chartData.labels.length
+  ) + 'px'
+}
 
-  beforeUnmount () {
-    if (this.observer) {
-      this.observer.disconnect()
-    }
-  },
-
-  methods: {
-    updateWith () {
-      if (!this.$refs.chartContainerBody) return
-      this.$refs.chartContainerBody.style.width = Math.max(
-        this.$refs.chartContainer.clientWidth,
-        140 + 140 * this.chartData.labels.length
-      ) + 'px'
-    },
-
-    scrollRight () {
-      this.$refs.chartContainer.scrollLeft = this.$refs.chartContainer.scrollWidth
-    },
-
-    observeWidthChange () {
-      const chartContainer = this.$refs.chartContainer
-      if (!chartContainer) return
-
-      this.observer = new ResizeObserver(() => {
-        this.updateWith()
-      })
-
-      this.observer.observe(chartContainer)
-    }
+const scrollRight = () => {
+  if (chartContainer.value) {
+    chartContainer.value.scrollLeft = chartContainer.value.scrollWidth
   }
 }
 
-export { defaultChartOptions }
+const observeWidthChange = () => {
+  if (!chartContainer.value) return
+  observer.value = new ResizeObserver(() => {
+    updateWidth()
+  })
+  observer.value.observe(chartContainer.value)
+}
+
+watch(() => props.chartData, (newChartData, oldChartData) => {
+  updateWidth()
+  if (newChartData?.datasets?.[0]?.label !== oldChartData?.datasets?.[0]?.label) {
+    nextTick(() => {
+      scrollRight()
+    })
+  }
+}, { deep: true })
+
+onMounted(() => {
+  updateWidth()
+  nextTick(() => {
+    scrollRight()
+  })
+  observeWidthChange()
+})
+
+onBeforeUnmount(() => {
+  if (observer.value) {
+    observer.value.disconnect()
+  }
+})
+
+// Expose methods to be called from parent
+defineExpose({
+  scrollRight
+});
+
 </script>
 
 <style scoped>

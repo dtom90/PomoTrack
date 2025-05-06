@@ -22,17 +22,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'CompleteStatus',
-
-  props: {
-    completed: {
-      type: Boolean,
-      default: false
-    }
+<script setup lang="ts">
+defineProps({
+  completed: {
+    type: Boolean,
+    default: false
   }
-}
+});
 </script>
 
 <style scoped lang="scss">

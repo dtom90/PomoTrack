@@ -1,7 +1,7 @@
 <template>
   <b-nav-item-dropdown
     id="navbarTagsDropdown"
-    ref="dropdown"
+    ref="dropdownRef"
     text="Tags"
     no-caret
     boundary="viewport"
@@ -12,7 +12,7 @@
 
     <draggable
       v-model="tagOrder"
-      :item-key="(tagId) => tagId"
+      :item-key="(tagId: string) => tagId"
       ghost-class="draggable-ghost"
       :animation="200"
       @start="isDragging = true"
@@ -63,7 +63,7 @@
             @click.stop
           >
             <TagEditMenu
-              :ref="`tagEditMenu-${tagId}`"
+              :ref="(el) => setTagEditMenuRef(tagId, el)"
               :tag-id="tagId"
               @update-tag="closeSubmenu"
             />
@@ -74,97 +74,73 @@
   </b-nav-item-dropdown>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onBeforeUpdate } from 'vue'
+import { useStore } from 'vuex'
+import type { Tag } from '@/types'
 import TagButton from '../TagButton.vue'
 import TagEditMenu from '../TagEditMenu.vue'
-import { mapActions, mapState } from 'vuex'
 import draggable from 'vuedraggable'
+import type { BNavItemDropdown } from 'bootstrap-vue-next'
 
-export default {
-  name: 'NavbarTagsDropdown',
+const store = useStore()
 
-  components: {
-    TagButton,
-    TagEditMenu,
-    draggable
-  },
+const dropdownRef = ref<InstanceType<typeof BNavItemDropdown> | null>(null)
+const tagEditMenuRefs = ref<Record<string, InstanceType<typeof TagEditMenu>>>({})
+const activeSubmenu = ref<string | null>(null)
+const isDragging = ref(false)
 
-  data () {
-    return {
-      activeSubmenu: null,
-      tagEdits: {},
-      isDragging: false
+onBeforeUpdate(() => {
+  tagEditMenuRefs.value = {}
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setTagEditMenuRef = (tagId: string, el: any) => {
+  if (el) {
+    tagEditMenuRefs.value[tagId] = el as InstanceType<typeof TagEditMenu>
+  }
+}
+
+const tags = computed<Record<string, Tag>>(() => store.state.tags)
+const tagOrder = computed<string[]>({
+  get: () => store.state.tagOrder,
+  set: (newOrder: string[]) => {
+    store.dispatch('reorderTags', { newOrder })
+  }
+})
+
+watch(activeSubmenu, (tagId) => {
+  if (tagId) {
+    const tag = tags.value[tagId]
+    if (tag && tagEditMenuRefs.value[tagId]) {
+      tagEditMenuRefs.value[tagId].refreshTagNameAndColor?.()
     }
-  },
+  }
+})
 
-  computed: {
-    ...mapState([
-      'tags'
-    ]),
-    tagOrder: {
-      get () {
-        return this.$store.state.tagOrder
-      },
-      set (newOrder) {
-        this.reorderTags({ newOrder })
-      }
-    }
-  },
+const toggleSubmenu = (tagId: string) => {
+  dropdownRef.value?.show()
+  activeSubmenu.value = activeSubmenu.value === tagId ? null : tagId
+}
 
-  watch: {
-    activeSubmenu (tagId) {
-      if (tagId) {
-        const tag = this.tags[tagId]
-        if (tag) {
-          this.$refs[`tagEditMenu-${tagId}`].refreshTagNameAndColor()
-        }
-      }
-    }
-  },
+const closeSubmenu = () => {
+  activeSubmenu.value = null
+}
 
-  mounted () {
-    // Prevent clicking within the submenus from dragging the tag buttons
-    this.$el.querySelectorAll('.tag-submenu').forEach(submenu => {
+const onDragEnd = () => {
+  isDragging.value = false
+  dropdownRef.value?.show()
+}
+
+onMounted(() => {
+  if (dropdownRef.value?.$el) {
+    dropdownRef.value.$el.querySelectorAll('.tag-submenu').forEach((submenu: Element) => {
       submenu.addEventListener('mousedown', (event) => {
         event.preventDefault()
       })
     })
-  },
-
-  methods: {
-    ...mapActions([
-      'updateTag',
-      'deleteTag',
-      'reorderTags'
-    ]),
-
-    toggleSubmenu (tagId) {
-      this.$refs.dropdown.show() // Keep dropdown open after submenu is toggled
-      if (this.activeSubmenu === tagId) {
-        this.activeSubmenu = null
-      } else {
-        this.activeSubmenu = tagId
-      }
-    },
-
-    closeSubmenu () {
-      this.activeSubmenu = null
-    },
-
-    createNewTag () {
-      this.$emit('create-new-tag')
-    },
-
-    manageTags () {
-      this.$emit('manage-tags')
-    },
-
-    onDragEnd () {
-      this.isDragging = false
-      this.$refs.dropdown.show() // Keep dropdown open after drag ends
-    }
   }
-}
+})
 </script>
 
 <style scoped lang="scss">

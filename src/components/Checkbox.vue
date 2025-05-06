@@ -4,16 +4,16 @@
       :class="[
         'checkbox-container',
         {
-          'checkbox-large': size === 'large' && !disabled,
+          'checkbox-large': props.size === 'large' && !props.disabled,
         }
       ]"
     >
       <input
-        :checked="checked"
-        :class="'task-checkbox' + (disabled ? '' : ' enabled-checkbox')"
+        :checked="props.checked"
+        :class="'task-checkbox' + (props.disabled ? '' : ' enabled-checkbox')"
         type="checkbox"
-        :title="'Mark task ' + (checked ? 'in' : '') + 'complete'"
-        :disabled="disabled"
+        :title="'Mark task ' + (props.checked ? 'in' : '') + 'complete'"
+        :disabled="props.disabled"
         @change="onCheckboxClick"
       >
       <span class="check-custom" />
@@ -21,46 +21,46 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from 'vuex'
-import notifications from '../lib/notifications'
+<script setup lang="ts">
+import { useStore } from 'vuex'
+import { defineProps, withDefaults } from 'vue'
+import { useNotifications } from '@/lib/notifications'
 
-export default {
-  name: 'Checkbox',
-  
-  mixins: [notifications],
-  
-  props: {
-    checked: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    taskId: {
-      type: String,
-      default: null
-    },
-    size: {
-      type: String,
-      default: 'small',
-      validator: value => ['small', 'large'].includes(value)
-    }
-  },
-  
-  methods: {
-    ...mapActions([
-      'completeTask'
-    ]),
-    
-    onCheckboxClick () {
-      this.clearNotifications()
-      this.completeTask({ taskId: this.taskId })
-    }
+// Define props with defaults and validator
+const props = withDefaults(defineProps<{
+  checked?: boolean
+  disabled?: boolean
+  taskId?: string | null
+  size?: 'small' | 'large'
+}>(), {
+  checked: false,
+  disabled: false,
+  taskId: null,
+  size: 'small'
+})
+
+// Validate size prop (included for completeness, though type restricts it)
+if (props.size && !['small', 'large'].includes(props.size)) {
+  console.warn(`Invalid prop: 'size' must be 'small' or 'large', received '${props.size}'.`)
+}
+
+// Store access
+const store = useStore()
+
+const { clearNotifications } = useNotifications()
+
+// Methods
+const completeTask = (payload: { taskId: string | null }) => {
+  if (payload.taskId) { // Only dispatch if taskId is present
+    store.dispatch('completeTask', payload)
   }
 }
+
+const onCheckboxClick = () => {
+  clearNotifications()
+  completeTask({ taskId: props.taskId })
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -79,12 +79,12 @@ export default {
     width: variables.$checkbox-size;
     height: variables.$checkbox-size;
   }
-  
+
   &.checkbox-large {
     min-width: variables.$checkbox-large-size;
     width: variables.$checkbox-large-size;
     height: variables.$checkbox-large-size;
-    
+
     > * {
       width: variables.$checkbox-large-size;
       height: variables.$checkbox-large-size;

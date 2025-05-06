@@ -75,66 +75,50 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useStore } from 'vuex'
 import Navbar from './navbar/Navbar.vue'
 import TaskList from './TaskList.vue'
-import ActiveTaskButtonButton from './ActiveTaskButton.vue'
+import ActiveTaskButton from './ActiveTaskButton.vue'
 import SelectedTask from './SelectedTask.vue'
 import ActivityModal from './ActivityModal.vue'
+import type { Settings, TempState } from '@/types'
 
-import { mapState } from 'vuex'
+// Store access
+const store = useStore()
+const settings = computed<Settings>(() => store.state.settings)
+const tempState = computed<TempState>(() => store.state.tempState)
 
-export default {
+// Local reactive state
+const windowWidth = ref(window.innerWidth)
 
-  name: 'App',
+// Computed properties
+const showActive = computed(() => {
+  return tempState.value.activeTaskID && (settings.value.selectedTaskID !== tempState.value.activeTaskID)
+})
 
-  components: {
-    ActiveTaskButton: ActiveTaskButtonButton,
-    Navbar,
-    TaskList,
-    SelectedTask,
-    ActivityModal
-  },
+const heightClass = computed(() => {
+  return (showActive.value ? 'partial' : 'full') + '-height'
+})
 
-  data () {
-    return {
-      windowWidth: window.innerWidth
-    }
-  },
+const isNarrowScreen = computed(() => {
+  return windowWidth.value < 768
+})
 
-  computed: {
-
-    ...mapState([
-      'tempState',
-      'settings'
-    ]),
-
-    showActive () {
-      return this.tempState.activeTaskID && (this.settings.selectedTaskID !== this.tempState.activeTaskID)
-    },
-
-    heightClass () {
-      return (this.showActive ? 'partial' : 'full') + '-height'
-    },
-
-    isNarrowScreen () {
-      return this.windowWidth < 768
-    }
-  },
-  mounted () {
-    window.addEventListener('resize', this.handleResize)
-  },
-
-  beforeUnmount () {
-    window.removeEventListener('resize', this.handleResize)
-  },
-
-  methods: {
-    handleResize () {
-      this.windowWidth = window.innerWidth
-    }
-  }
+// Methods
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
 }
+
+// Lifecycle hooks
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
 <style lang="scss">

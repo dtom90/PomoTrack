@@ -7,9 +7,9 @@
     variant="light"
     no-caret
     @show="dropdownWillShow"
-    @shown="dropdownShown = true"
-    @hide="dropdownWillHide"
-    @hidden="dropdownShown = false"
+    @shown="onDropdownShown"
+    @hide="onDropdownHidden"
+    @hidden="onDropdownHidden"
   >
     <template v-slot:button-content>
       <font-awesome-icon
@@ -40,7 +40,7 @@
         Started:
         <VueCtkDateTimePicker
           :model-value="startTime"
-          :format="displayDateTimeFormat()"
+          :format="displayDateTimeFormat"
           :right="true"
           @update:model-value="onStartTimeInput"
         />
@@ -70,7 +70,7 @@
         Stopped:
         <VueCtkDateTimePicker
           :model-value="stopTime"
-          :format="displayDateTimeFormat()"
+          :format="displayDateTimeFormat"
           :right="true"
           @update:model-value="onStopTimeInput"
         />
@@ -88,7 +88,7 @@
         v-if="logId"
         variant="danger"
         class="w-100 mt-3"
-        @click="deleteInterval({ logId })"
+        @click="deleteIntervalHandler"
       >
         Delete Interval
       </BButton>
@@ -96,175 +96,198 @@
   </BDropdown>
 </template>
 
-<script>
-import { mapActions } from 'vuex'
-import time from '../lib/time'
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { useStore } from 'vuex'
+import {
+  msToMinutes,
+  minutesToMs,
+  stringToMs,
+  useTime
+} from '../lib/time'
+// @ts-expect-error This library is not typed
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker'
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
+import type { BDropdown } from 'bootstrap-vue-next'
+import type { TaskLog } from '@/types'
 
-export default {
-  name: 'IntervalDropdownForm',
-
-  components: {
-    VueCtkDateTimePicker
+const props = defineProps({
+  taskId: {
+    type: String,
+    default: null
   },
+  logId: {
+    type: String,
+    default: null
+  }
+})
 
-  mixins: [time],
+const store = useStore()
+const { displayDateTimeFormat, displayDateTimeHuman: localDisplayDateTimeHumanFn } = useTime()
 
-  props: {
-    taskId: {
-      type: String,
-      default: null
-    },
-    logId: {
-      type: String,
-      default: null
+const addIntervalDropdown = ref<InstanceType<typeof BDropdown> | null>(null)
+const appendMinutesInput = ref<HTMLInputElement | null>(null)
+
+const dropdownShown = ref(false)
+const startTime = ref<string | null>(null)
+const durationMinutes = ref<number>(25)
+const stopTime = ref<string | null>(localDisplayDateTimeHumanFn())
+const anchored = ref<string[]>(props.logId ? ['stopTime', 'startTime'] : ['stopTime', 'durationMinutes'])
+const log = ref<TaskLog | null>(null)
+
+const startLockIcon = computed(() => anchored.value.includes('startTime') ? 'lock' : 'unlock')
+const durationLockIcon = computed(() => anchored.value.includes('durationMinutes') ? 'lock' : 'unlock')
+const stopLockIcon = computed(() => anchored.value.includes('stopTime') ? 'lock' : 'unlock')
+const isActiveLog = computed(() => log.value !== null && log.value.stopped === null)
+
+const updateStartTime = () => {
+  if (stopTime.value && durationMinutes.value > 0) {
+    const start = stringToMs(stopTime.value) - minutesToMs(durationMinutes.value)
+    startTime.value = localDisplayDateTimeHumanFn(start)
+  }
+}
+
+const updateDurationMinutes = () => {
+  if (startTime.value && stopTime.value) {
+    const duration = stringToMs(stopTime.value) - stringToMs(startTime.value)
+    durationMinutes.value = msToMinutes(duration)
+  }
+}
+
+const updateStopTime = () => {
+  if (startTime.value && durationMinutes.value > 0) {
+    const stop = stringToMs(startTime.value) + minutesToMs(durationMinutes.value)
+    stopTime.value = localDisplayDateTimeHumanFn(stop)
+  }
+}
+
+const dropdownWillShow = async () => {
+  if (props.logId) {
+    log.value = await store.dispatch('getLogById', { logId: props.logId })
+    if (log.value) {
+      startTime.value = localDisplayDateTimeHumanFn(log.value.started)
+      durationMinutes.value = msToMinutes(log.value.timeSpent || 0)
+      stopTime.value = log.value.stopped ? localDisplayDateTimeHumanFn(log.value.stopped) : null
+      anchored.value = ['stopTime', 'startTime']
     }
-  },
+  } else {
+    durationMinutes.value = 25
+    stopTime.value = localDisplayDateTimeHumanFn()
+    updateStartTime()
+    anchored.value = ['stopTime', 'durationMinutes']
+    log.value = null
+  }
+}
 
-  data: function () {
-    return {
-      dropdownShown: false,
-      dropdownHide: null,
-      intentionalEnter: false,
-      startTime: null,
-      durationMinutes: 25,
-      stopTime: this.displayDateTimeHuman(),
-      anchored: ['stopTime', (this.logId ? 'startTime' : 'durationMinutes')],
-      log: null
+const onStartTimeInput = (newValue: string) => {
+  startTime.value = newValue
+  if (!anchored.value.includes('startTime')) {
+    anchored.value.shift()
+    anchored.value.push('startTime')
+  }
+  if (anchored.value.includes('durationMinutes')) {
+    updateStopTime()
+  } else if (anchored.value.includes('stopTime')) {
+    updateDurationMinutes()
+  }
+  if (anchored.value[1] === 'startTime') {
+    if (stopTime.value && durationMinutes.value > 0 && anchored.value[0] === 'stopTime') {
+      updateDurationMinutes()
+    } else if (stopTime.value && durationMinutes.value > 0 && anchored.value[0] === 'durationMinutes') {
+      updateStopTime()
     }
-  },
-
-  computed: {
-    startLockIcon () {
-      return this.anchored.includes('startTime') ? 'lock' : 'unlock'
-    },
-    durationLockIcon () {
-      return this.anchored.includes('durationMinutes') ? 'lock' : 'unlock'
-    },
-    stopLockIcon () {
-      return this.anchored.includes('stopTime') ? 'lock' : 'unlock'
-    },
-    isActiveLog () {
-      return this.log !== null && this.log.stopped === null
-    }
-  },
-
-  methods: {
-    ...mapActions([
-      'addInterval',
-      'getLogById',
-      'updateInterval',
-      'deleteInterval'
-    ]),
-
-    async dropdownWillShow () {
-      if (this.logId) {
-        this.log = await this.getLogById({ logId: this.logId })
-        this.startTime = this.displayDateTimeHuman(this.log.started)
-        this.durationMinutes = this.msToMinutes(this.log.timeSpent)
-        this.stopTime = this.log.stopped ? this.displayDateTimeHuman(this.log.stopped) : null
-      } else {
-        this.stopTime = this.displayDateTimeHuman()
-        this.updateStartTime()
-      }
-    },
-
-    onStartTimeInput (newValue) {
-      this.startTime = newValue
-      if (!this.anchored.includes('startTime')) {
-        this.anchored.shift()
-        this.anchored.push('startTime')
-      }
-      if (this.anchored.includes('durationMinutes')) {
-        this.updateStopTime()
-      } else if (this.anchored.includes('stopTime')) {
-        this.updateDurationMinutes()
-      }
-      const start = this.stringToMs(this.stopTime) - this.minutesToMs(this.durationMinutes)
-      this.startTime = this.displayDateTimeHuman(start)
-    },
-    onDurationMinutesInput (newValue) {
-      this.durationMinutes = newValue
-      if (!this.anchored.includes('durationMinutes')) {
-        this.anchored.shift()
-        this.anchored.push('durationMinutes')
-      }
-      if (this.anchored.includes('startTime')) {
-        this.updateStopTime()
-      } else if (this.anchored.includes('stopTime')) {
-        this.updateStartTime()
-      }
-    },
-    onStopTimeInput (newValue) {
-      this.stopTime = newValue
-      if (!this.anchored.includes('stopTime')) {
-        this.anchored.shift()
-        this.anchored.push('stopTime')
-      }
-      if (this.anchored.includes('durationMinutes')) {
-        this.updateStartTime()
-      } else if (this.anchored.includes('startTime')) {
-        this.updateDurationMinutes()
-      }
-    },
-
-    updateStartTime () {
-      this.startTime = this.displayDateTimeHuman(this.stringToMs(this.stopTime) - this.minutesToMs(this.durationMinutes))
-    },
-
-    updateDurationMinutes () {
-      this.durationMinutes = this.msToMinutes(this.stringToMs(this.stopTime) - this.stringToMs(this.startTime))
-    },
-
-    updateStopTime () {
-      this.stopTime = this.displayDateTimeHuman(this.stringToMs(this.startTime) + this.minutesToMs(this.durationMinutes))
-    },
-
-    dropdownWillHide (event) {
-      if (!this.intentionalEnter) {
-        this.dropdownHide = event
-        setTimeout(this.clearDropdownHide, 1000)
-      } else {
-        this.intentionalEnter = false
-      }
-    },
-
-    clearDropdownHide () {
-      this.dropdownHide = null
-    },
-
-    handleBlur (event) {
-      if (event.sourceCapabilities === null && this.dropdownHide !== null) {
-        setTimeout(() => {
-          this.$refs.addIntervalDropdown.show()
-          setTimeout(() => event.target.focus(), 50)
-        }, 50)
-      }
-    },
-
-    onSubmit (event) {
-      this.intentionalEnter = true
-      event.preventDefault()
-      if (this.logId) {
-        this.updateInterval({
-          logId: this.logId,
-          started: this.stringToMs(this.startTime),
-          timeSpent: this.minutesToMs(this.durationMinutes),
-          stopped: this.stringToMs(this.stopTime)
-        })
-      } else {
-        this.addInterval({
-          taskId: this.taskId,
-          started: this.stringToMs(this.startTime),
-          timeSpent: this.minutesToMs(this.durationMinutes),
-          stopped: this.stringToMs(this.stopTime)
-        })
-      }
-      this.$refs.addIntervalDropdown.hide()
+  } else {
+    if (stopTime.value && durationMinutes.value > 0) {
+      const calculatedStart = stringToMs(stopTime.value) - minutesToMs(durationMinutes.value)
+      startTime.value = localDisplayDateTimeHumanFn(calculatedStart)
     }
   }
 }
+
+const onDurationMinutesInput = (newValue: string | number) => {
+  durationMinutes.value = Math.max(0, typeof newValue === 'string' ? parseFloat(newValue) : newValue)
+  if (!anchored.value.includes('durationMinutes')) {
+    anchored.value.shift()
+    anchored.value.push('durationMinutes')
+  }
+  if (anchored.value.includes('startTime')) {
+    updateStopTime()
+  } else if (anchored.value.includes('stopTime')) {
+    updateStartTime()
+  }
+}
+
+const onStopTimeInput = (newValue: string) => {
+  stopTime.value = newValue
+  if (!anchored.value.includes('stopTime')) {
+    anchored.value.shift()
+    anchored.value.push('stopTime')
+  }
+  if (anchored.value.includes('startTime')) {
+    updateDurationMinutes()
+  } else if (anchored.value.includes('durationMinutes')) {
+    updateStartTime()
+  }
+}
+
+const onSubmit = async () => {
+  if (durationMinutes.value <= 0) {
+    if (appendMinutesInput.value && typeof appendMinutesInput.value.focus === 'function') {
+      appendMinutesInput.value.focus()
+    }
+    return
+  }
+
+  const intervalData = {
+    started: stringToMs(startTime.value!),
+    timeSpent: minutesToMs(durationMinutes.value),
+    taskId: props.taskId,
+    logId: props.logId
+  }
+
+  if (props.logId) {
+    await store.dispatch('updateInterval', intervalData)
+  } else {
+    await store.dispatch('addInterval', intervalData)
+  }
+  if (addIntervalDropdown.value && typeof addIntervalDropdown.value.hide === 'function') {
+    addIntervalDropdown.value.hide()
+  }
+}
+
+const deleteIntervalHandler = async () => {
+  if (props.logId) {
+    await store.dispatch('deleteInterval', { logId: props.logId })
+    if (addIntervalDropdown.value && typeof addIntervalDropdown.value.hide === 'function') {
+      addIntervalDropdown.value.hide()
+    }
+  }
+}
+
+const handleBlur = () => {
+  // Original method was empty, kept for consistency if any @blur binding relies on it
+}
+
+const onDropdownShown = () => {
+  dropdownShown.value = true
+}
+
+const onDropdownHidden = () => {
+  dropdownShown.value = false
+  if (!props.logId) {
+    durationMinutes.value = 25
+    stopTime.value = localDisplayDateTimeHumanFn()
+    updateStartTime()
+    anchored.value = ['stopTime', 'durationMinutes']
+    log.value = null
+  }
+}
+
+watch(() => props.logId, (newLogId, oldLogId) => {
+  if (newLogId !== oldLogId) {
+    dropdownWillShow()
+  }
+})
 </script>
 
 <style>

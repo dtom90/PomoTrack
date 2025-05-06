@@ -1,7 +1,7 @@
 <template>
   <BDropdown
     ref="dropdown"
-    vBTooltip.hover.left="filterButtonTooltip"
+    v-b-tooltip.hover.left="filterButtonTooltip"
     :disabled="Object.keys(tags).length === 0"
     placement="right-start"
     boundary="viewport"
@@ -18,7 +18,7 @@
       <div class="d-flex justify-content-between">
         <div>Filter by Tag</div>
         <a
-          :href="settings.selectedTagIds.length ? '#' : null"
+          :href="settings.selectedTagIds.length ? '#' : undefined"
           @click="clearAllTags"
         >Clear All</a>
       </div>
@@ -40,7 +40,7 @@
       v-for="tagId in tagOrder"
       :key="tagId"
       :class="unselectedTags.includes(tagId) ? '' : 'selected'"
-      @click="itemClicked(tagId, $event)"
+      @click="itemClicked(tagId)"
     >
       <TagButton
         :tag="tags[tagId]"
@@ -51,115 +51,101 @@
   </BDropdown>
 </template>
 
-<script>
-import TagButton from './TagButton.vue'
-import { mapGetters, mapState, mapActions } from 'vuex'
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
+import { useStore } from 'vuex';
+import TagButton from './TagButton.vue';
+import type { Tag, TaskForState, Settings } from '@/types'; // Assuming types are defined in @/types
 
-export default {
-  name: 'TaskFilterDropdown',
+const store = useStore();
 
-  components: {
-    TagButton
+const dropdown = ref<ComponentPublicInstance | null>(null);
+
+// Vuex State
+const tags = computed<Record<string, Tag>>(() => store.state.tags);
+const tagOrder = computed<string[]>(() => store.state.tagOrder);
+const tasks = computed<TaskForState[]>(() => store.state.tasks);
+const selectedTask = computed<TaskForState | null>(() => store.state.selectedTask);
+const settings = computed<Settings>(() => store.state.settings);
+
+// Vuex Getters
+const unselectedTags = computed<string[]>(() => store.getters.unselectedTags);
+const incompleteTasks = computed<TaskForState[]>(() => store.getters.incompleteTasks);
+const completedTasksFiltered = computed<TaskForState[]>(() => store.getters.completedTasksFiltered);
+
+// Computed properties
+const filterBtnStyle = computed(() => {
+  return {
+    '--filter-btn-background-color': settings.value.selectedTagIds.length > 0 && tags.value[settings.value.selectedTagIds[0]]
+      ? tags.value[settings.value.selectedTagIds[0]].color
+      : 'white',
+  };
+});
+
+const filterButtonTooltip = computed(() => {
+  if (tasks.value.length === 0) {
+    return 'Add a task enable filtering';
+  } else if (Object.keys(tags.value).length === 0) {
+    return 'Add a tag to a task to enable filtering';
+  }
+  return 'Filter tasks';
+});
+
+const addSelectedTags = computed({
+  get: () => settings.value.addSelectedTags,
+  set: (value: boolean) => {
+    store.dispatch('updateSetting', { key: 'addSelectedTags', value });
   },
+});
 
-  props: {
-    taskTags: {
-      type: Array,
-      default: null
+// Methods
+const itemClicked = (tagId: string) => {
+  toggleSelectedTag({ tagId });
+};
+
+const toggleSelectedTag = async ({ tagId }: { tagId: string }) => {
+  if (!settings.value.selectedTagIds.includes(tagId)) {
+    await store.dispatch('addTagFilter', { tagId });
+  } else {
+    await store.dispatch('removeTagFilter', { tagId });
+  }
+  await updateSelectedTask();
+};
+
+const updateSelectedTask = () => {
+  if (!selectedTask.value || (selectedTask.value && !(
+    (settings.value.filterOperator === 'or' && settings.value.selectedTagIds.some(tag => selectedTask.value!.tags.includes(tag))) ||
+    (settings.value.filterOperator === 'and' && settings.value.selectedTagIds.every(tag => selectedTask.value!.tags.includes(tag)))
+  ))) {
+    let tasksWithTag: TaskForState | undefined;
+    if (settings.value.filterOperator === 'or') {
+      tasksWithTag = incompleteTasks.value.find(task => settings.value.selectedTagIds.some(tag => task.tags.includes(tag)));
+    } else {
+      tasksWithTag = incompleteTasks.value.find(task => settings.value.selectedTagIds.every(tag => task.tags.includes(tag)));
     }
-  },
 
-  computed: {
-    ...mapGetters([
-      'unselectedTags',
-      'incompleteTasks',
-      'completedTasksFiltered'
-    ]),
-
-    ...mapState([
-      'tags',
-      'tagOrder',
-      'tasks',
-      'selectedTask',
-      'settings'
-    ]),
-
-    filterBtnStyle () {
-      return {
-        '--filter-btn-background-color': this.settings.selectedTagIds.length > 0 ? this.tags[this.settings.selectedTagIds[0]].color : 'white'
-      }
-    },
-
-    filterButtonTooltip () {
-      if (this.tasks.length === 0) {
-        return 'Add a task enable filtering'
-      } else if (Object.keys(this.tags).length === 0) {
-        return 'Add a tag to a task to enable filtering'
-      }
-      return 'Filter tasks'
-    },
-
-    addSelectedTags: {
-      get () {
-        return this.settings.addSelectedTags
-      },
-      set (value) {
-        this.updateSetting({ key: 'addSelectedTags', value })
-      }
-    }
-  },
-
-  methods: {
-    ...mapActions([
-      'addTagFilter',
-      'removeTagFilter',
-      'selectTask',
-      'removeAllTagFilters',
-      'updateSetting'
-    ]),
-
-    itemClicked (tagId) {
-      this.toggleSelectedTag({ tagId })
-    },
-
-    async toggleSelectedTag ({ tagId }) {
-      if (!this.settings.selectedTagIds.includes(tagId)) {
-        await this.addTagFilter({ tagId })
+    if (!tasksWithTag) {
+      const CTasksFiltered = completedTasksFiltered.value.filter(t => !t.archived);
+      if (settings.value.filterOperator === 'or') {
+        tasksWithTag = CTasksFiltered.find(task => settings.value.selectedTagIds.some(tag => task.tags.includes(tag)));
       } else {
-        await this.removeTagFilter({ tagId })
+        tasksWithTag = CTasksFiltered.find(task => settings.value.selectedTagIds.every(tag => task.tags.includes(tag)));
       }
-      await this.updateSelectedTask()
-    },
+    }
 
-    updateSelectedTask () {
-      // Select some task with the selected tags
-      if (!this.selectedTask || (this.selectedTask && !(
-        (this.settings.filterOperator === 'or' && this.settings.selectedTagIds.some(tag => this.selectedTask.tags.includes(tag))) ||
-        (this.settings.filterOperator === 'and' && this.settings.selectedTagIds.every(tag => this.selectedTask.tags.includes(tag)))
-      ))) {
-        let tasksWithTag = this.settings.filterOperator === 'or'
-          ? this.incompleteTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-          : this.incompleteTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-        if (!tasksWithTag) {
-          let completedTasks = this.completedTasksFiltered
-          completedTasks = completedTasks.filter(t => !t.archived)
-          tasksWithTag = this.settings.filterOperator === 'or'
-            ? completedTasks.find(task => this.settings.selectedTagIds.some(tag => task.tags.includes(tag)))
-            : completedTasks.find(task => this.settings.selectedTagIds.every(tag => task.tags.includes(tag)))
-        }
-        if (tasksWithTag) {
-          this.selectTask({ taskId: tasksWithTag.id })
-        } else {
-          this.selectTask({ taskId: null })
-        }
-      }
-    },
-
-    clearAllTags () {
-      this.removeAllTagFilters()
+    if (tasksWithTag) {
+      store.dispatch('selectTask', { taskId: tasksWithTag.id });
+    } else {
+      store.dispatch('selectTask', { taskId: null });
     }
   }
-}
+};
+
+const clearAllTags = () => {
+  store.dispatch('removeAllTagFilters');
+};
+
 </script>
 
 <style scoped>

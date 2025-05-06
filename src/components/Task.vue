@@ -1,6 +1,7 @@
 <template>
   <!--  Task List Group Item Wrapper  -->
   <li
+    v-if="task"
     :class="['task', 'draggable-item', 'list-group-item', 'list-group-item-action', 'form-check', { active: active }]"
     @click="selectTask({ taskId: taskId })"
   >
@@ -29,61 +30,51 @@
   </li>
 </template>
 
-<script>
-import { mapState, mapActions } from 'vuex'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
+import type { TaskForState } from '@/types'
 
-export default {
-  
-  name: 'Task',
-  components: { TaskTagList, Checkbox, TimerDial },
-  props: {
-    taskId: {
-      type: String,
-      required: true
-    }
-  },
-  
-  computed: {
-    
-    ...mapState([
-      'tags',
-      'tagOrder',
-      'tempState',
-      'settings',
-      'tasks'
-    ]),
-
-    // Find the task object from the store using taskId
-    task () {
-      return this.tasks.find(t => t.id === this.taskId)
-    },
-    
-    active () {
-      // Use taskId directly if task might not be found immediately
-      return this.settings.selectedTaskID === this.taskId
-    },
-    
-    checked () {
-      // Ensure task exists before accessing properties
-      return this.task ? this.task.completed !== null : false
-    },
-    
-    displayCountdownIndicator () {
-      // Use taskId directly
-      return this.tempState.activeTaskID === this.taskId
-    }
-  },
-  
-  methods: {
-    ...mapActions([
-      'selectTask'
-    ])
+// Define props
+const props = defineProps({
+  taskId: {
+    type: String,
+    required: true
   }
-  
+})
+
+// Store access
+const store = useStore()
+
+// Computed properties (from mapState and computed)
+const tempState = computed(() => store.state.tempState)
+const settings = computed(() => store.state.settings)
+const tasks = computed<TaskForState[]>(() => store.state.tasks)
+
+const task = computed<TaskForState | undefined>(() => {
+  return tasks.value.find(t => t.id === props.taskId)
+})
+
+const active = computed(() => {
+  return settings.value.selectedTaskID === props.taskId
+})
+
+const checked = computed(() => {
+  return !!task.value?.completed
+})
+
+const displayCountdownIndicator = computed(() => {
+  return tempState.value.activeTaskID === props.taskId
+})
+
+// Methods (from mapActions)
+const selectTask = (payload: { taskId: string }) => {
+  store.dispatch('selectTask', payload)
 }
+
 </script>
 
 <style scoped lang="scss">

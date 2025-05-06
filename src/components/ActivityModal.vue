@@ -29,7 +29,7 @@
         :log="modalActivity"
       />
       <ActivityView
-        v-else
+        v-else-if="tag"
         id="tagActivity"
         :tag-id="tag.id"
         :label="tag.tagName"
@@ -40,58 +40,41 @@
   </BModal>
 </template>
 
-<script>
-import { mapState, mapActions, mapMutations } from 'vuex'
-import DailyActivitySummary from './DailyActivitySummary.vue'
-import ActivityView from './ActivityView.vue'
-import TagSettingsButton from './TagSettingsButton.vue'
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import DailyActivitySummary from './DailyActivitySummary.vue';
+import ActivityView from './ActivityView.vue';
+import TagSettingsButton from './TagSettingsButton.vue';
+import type { Tag } from '@/types';
 
-export default {
-  name: 'ActivityModal',
+const store = useStore();
 
-  components: {
-    TagSettingsButton,
-    DailyActivitySummary,
-    ActivityView
-  },
+// Reactive state from Vuex store
+const modalActivity = computed(() => store.state.modalActivity);
+const tempState = computed(() => store.state.tempState);
+const tags = computed(() => store.state.tags);
 
-  computed: {
-    ...mapState([
-      'tags',
-      'modalActivity',
-      'tempState',
-      'isActivityModalVisible'
-    ]),
-
-    tag: function () {
-      return this.tags[this.tempState.modalTagId]
-    },
-
-    modalVisible: {
-      get () {
-        return this.isActivityModalVisible
-      },
-      set (value) {
-        this.setActivityModalVisible(value)
-      }
-    }
-  },
-
-  methods: {
-    ...mapActions([
-      'loadAllActivity',
-      'loadTagActivity'
-    ]),
-    ...mapMutations([
-      'unloadModalActivity',
-      'setActivityModalVisible'
-    ]),
-
-    onModalHidden () {
-      this.unloadModalActivity()
-    }
+// Computed property for the specific tag, matching original logic
+const tag = computed<Tag | undefined>(() => {
+  if (tempState.value.modalTagId && tags.value) {
+    return tags.value[tempState.value.modalTagId];
   }
-}
+  return undefined;
+});
+
+// Computed property for modal visibility, matching original logic
+const modalVisible = computed({
+  get: () => store.state.isActivityModalVisible,
+  set: (value: boolean) => {
+    store.commit('setActivityModalVisible', value);
+  }
+});
+
+// Methods, matching original logic
+const onModalHidden = () => {
+  store.commit('unloadModalActivity');
+};
 </script>
 
 <style scoped>
