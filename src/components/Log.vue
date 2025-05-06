@@ -62,40 +62,30 @@
   </div>
 </template>
 
-<script>
-import time, { displayDuration } from '../lib/time'
+<script setup lang="ts">
+import { displayDuration, displayDateHuman } from '../lib/time'
 import IntervalDropdownForm from '@/components/IntervalDropdownForm.vue'
+import type { PropType } from 'vue'
+import { useTime } from '../lib/time'
+import type { ModalActivityItem } from '@/types';
 
-export default {
-  name: 'Log',
-
-  components: { IntervalDropdownForm },
-
-  mixins: [time],
-
-  props: {
-    day: {
-      type: String,
-      default: null
-    },
-    log: {
-      type: Array,
-      default: () => []
-    },
-    timeSpent: {
-      type: Number,
-      default: 0
-    }
+// Props definition
+defineProps({
+  day: {
+    type: String as PropType<string | null>,
+    default: null
   },
-
-  methods: {
-
-    displayEventDuration (event) {
-      const end = event.stopped || Date.now()
-      return displayDuration(end - event.started)
-    }
+  log: {
+    type: Array as PropType<ModalActivityItem[]>,
+    default: () => []
+  },
+  timeSpent: {
+    type: Number,
+    default: 0
   }
-}
+})
+
+const { displayTimeHuman } = useTime()
 </script>
 
 <style scoped lang="scss">

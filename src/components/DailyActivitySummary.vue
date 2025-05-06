@@ -49,101 +49,101 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapGetters } from 'vuex'
-import time, { dayjs } from '../lib/time'
+<script setup lang="ts">
+import { ref, computed, type PropType } from 'vue'
+import { useStore } from 'vuex'
+import { dayjs, displayDuration, displayFullDateHuman } from '../lib/time'
 import CompleteStatus from '@/components/CompleteStatus.vue'
+import type { ModalActivityItem } from '@/types';
 
-export default {
-  name: 'DailyActivitySummary',
-  components: { CompleteStatus },
-  mixins: [time],
+// Props
+const props = defineProps({
+  filteredActivity: {
+    type: Array as PropType<ModalActivityItem[] | null>,
+    default: null
+  }
+})
 
-  props: {
-    filteredActivity: {
-      type: Array,
-      required: false,
-      default: null
-    }
-  },
+// Store
+const store = useStore()
 
-  data () {
-    return {
-      daysBack: 0
-    }
-  },
+// Refs
+const daysBack = ref(0)
 
-  computed: {
-    ...mapState([
-      'allActivity',
-      'tagActivity'
-    ]),
+// Vuex State and Getters as Computed
+// Assuming completedTasks getter returns an array of objects with at least a 'name' property.
+// Adjust the type if more specific information is available.
+const completedTasks = computed<Array<{ name: string }>>(() => store.getters.completedTasks || [])
 
-    ...mapGetters([
-      'completedTasks'
-    ]),
-
-    // filteredActivity () {
-    //   return this.tagId
-    //     ? this.tagActivity
-    //     : this.allActivity
-    // },
-
-    selectedDay () {
-      let daysBack = -1
-      let day = null
-      for (let i = this.filteredActivity.length - 1; i >= 0; i--) {
-        if (day === null || dayjs(this.filteredActivity[i].started).isBefore(day, 'day')) {
-          day = dayjs(this.filteredActivity[i].started)
-          daysBack++
+// Computed Properties
+const selectedDay = computed<dayjs.Dayjs | null>(() => {
+  if (!props.filteredActivity || props.filteredActivity.length === 0) {
+    return null;
+  }
+  let currentDaysBackCounter = -1;
+  let day: dayjs.Dayjs | null = null;
+  for (let i = props.filteredActivity.length - 1; i >= 0; i--) {
+    const activityStarted = props.filteredActivity[i]?.started;
+    if (activityStarted) {
+        if (day === null || dayjs(activityStarted).isBefore(day, 'day')) {
+            day = dayjs(activityStarted);
+            currentDaysBackCounter++;
         }
-        if (daysBack === this.daysBack) {
-          return day
+        if (currentDaysBackCounter === daysBack.value) {
+            return day;
         }
-      }
-      return null
-    },
-
-    selectedDayRelative () {
-      if (this.selectedDay === null) {
-        return 'No Activity Yet'
-      }
-      if (this.selectedDay.isToday()) {
-        return 'Today'
-      } else if (this.selectedDay.isYesterday()) {
-        return 'Yesterday'
-      }
-      return null
-    },
-
-    selectedDayDisplay () {
-      return this.selectedDay === null ? 'No Activity Yet' : this.displayFullDateHuman(this.selectedDay)
-    },
-
-    selectedDayActivity () {
-      if (this.selectedDay === null) {
-        return []
-      }
-      const selectedDayTasks = this.filteredActivity.filter(log => {
-        return log.started && dayjs(log.started).dayOfYear() === this.selectedDay.dayOfYear() &&
-          dayjs(log.started).year() === this.selectedDay.year()
-      })
-      return Object.entries(selectedDayTasks.reduce((sum, task) => {
-        sum[task.task] = task.task in sum ? sum[task.task] + task.timeSpent : task.timeSpent
-        return sum
-      }, {})).sort((a, b) => b[1] - a[1])
-    },
-
-    totalTime () {
-      if (this.selectedDay === null) {
-        return 0
-      }
-      return this.selectedDayActivity.reduce((sum, task) => {
-        return sum + task[1]
-      }, 0)
     }
   }
-}
+  return null;
+});
+
+const selectedDayRelative = computed<string | null>(() => {
+  if (selectedDay.value === null) {
+    return 'No Activity Yet'
+  }
+  if (selectedDay.value.isToday()) {
+    return 'Today'
+  } else if (selectedDay.value.isYesterday()) {
+    return 'Yesterday'
+  }
+  return null // Or some other default string like selectedDay.value.format('MMM D')
+})
+
+const selectedDayDisplay = computed<string>(() => {
+  return selectedDay.value === null ? 'No Activity Yet' : displayFullDateHuman(selectedDay.value)
+})
+
+const selectedDayActivity = computed<[string, number][]>(() => {
+  if (selectedDay.value === null || !props.filteredActivity) {
+    return []
+  }
+  const currentSelectedDay = selectedDay.value;
+  const selectedDayLogs = props.filteredActivity.filter(log => {
+    return log.started &&
+           currentSelectedDay &&
+           dayjs(log.started).dayOfYear() === currentSelectedDay.dayOfYear() &&
+           dayjs(log.started).year() === currentSelectedDay.year()
+  })
+
+  const activitySum = selectedDayLogs.reduce<Record<string, number>>((sum, log) => {
+    if (log.task && typeof log.timeSpent === 'number') {
+      sum[log.task] = (sum[log.task] || 0) + log.timeSpent
+    }
+    return sum
+  }, {})
+
+  return Object.entries(activitySum).sort((a, b) => b[1] - a[1])
+})
+
+const totalTime = computed<number>(() => {
+  if (selectedDay.value === null) {
+    return 0
+  }
+  return selectedDayActivity.value.reduce((sum, task) => {
+    return sum + task[1]
+  }, 0)
+})
+
 </script>
 
 <style scoped lang="scss">

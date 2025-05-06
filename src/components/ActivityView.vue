@@ -1,6 +1,6 @@
 <template>
   <div
-    :id="id"
+    :id="props.id"
     class="activity-view"
   >
     <!-- Daily / Weekly / Monthly view switch -->
@@ -41,10 +41,10 @@
 
     <!-- ActivityChart -->
     <ActivityChart
-      ref="activityChart"
+      ref="activityChartRef"
       :chart-data="chartData"
       :styles="chartStyles"
-      :target="target * 60"
+      :target="target && typeof target === 'number' ? target * 60 : undefined"
     />
 
     <br>
@@ -62,7 +62,7 @@
       <div style="display: flex; justify-content: flex-end;">
         <IntervalDropdownForm
           v-if="isTaskActivity"
-          :task-id="taskId"
+          :task-id="props.taskId"
         />
       </div>
 
@@ -70,285 +70,272 @@
       <div id="task-log">
         <br>
         <Log
-          v-for="([day, dayActivity]) in dailyActivity"
+          v-for="([day, dayActivityItem]) in dailyActivityComputed"
           :key="day"
           :day="day"
-          :log="dayActivity.log"
-          :time-spent="dayActivity.timeSpent"
+          :log="dayActivityItem.log"
+          :time-spent="dayActivityItem.timeSpent"
         />
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import Log from './Log.vue'
 import ActivityChart from './ActivityChart.vue'
 import IntervalDropdownForm from './IntervalDropdownForm.vue'
-import { mapState, mapActions } from 'vuex'
-import time from '../lib/time'
+import {
+  msToMinutes,
+  displayDateHuman,
+  displayDateISO,
+  dateDiffInDays,
+  daysLater,
+  displayWeekISO,
+  displayWeekHuman,
+  displayMonthISO,
+  displayMonthHuman
+} from '../lib/time'
+import type { TaskLog, Task, Tag, Settings, ModalActivityItem } from '@/types'
 
-export default {
-  name: 'ActivityView',
-
-  components: {
-    ActivityChart,
-    IntervalDropdownForm,
-    Log
+const props = defineProps({
+  id: {
+    type: String,
+    default: 'taskActivity'
   },
+  taskId: {
+    type: String,
+    default: null
+  },
+  tagId: {
+    type: String,
+    default: null
+  },
+  label: {
+    type: String,
+    default: null
+  },
+  color: {
+    type: String,
+    default: '#2020FF'
+  },
+  log: {
+    type: Array as () => TaskLog[],
+    default: () => []
+  }
+})
 
-  mixins: [time],
+const store = useStore()
 
-  props: {
-    id: {
-      type: String,
-      default: 'taskActivity'
-    },
-    taskId: {
-      type: String,
-      default: null
-    },
-    tagId: {
-      type: String,
-      default: null
-    },
-    label: {
-      type: String,
-      default: null
-    },
-    color: {
-      type: String,
-      default: '#2020FF'
-    },
-    log: {
-      type: Array,
-      default: function () {
-        return []
-      }
+// Template refs
+const activityChartRef = ref<InstanceType<typeof ActivityChart> | null>(null)
+
+// Data properties
+const chartTypeOptions = ref(['Daily', 'Weekly', 'Monthly'])
+const chartType = ref('Daily')
+
+// Store state
+const tasks = computed<Task[]>(() => store.state.tasks)
+const tags = computed<Record<string, Tag>>(() => store.state.tags)
+const settings = computed<Settings>(() => store.state.settings)
+
+// Computed properties
+const isTaskActivity = computed(() => props.taskId !== null)
+
+const target = computed({
+  get: () => {
+    if (isTaskActivity.value) {
+      return null
     }
+    const typeKey = chartType.value + 'Target' as keyof (Tag | Settings)
+    const targetElement = props.label === 'All Activity' ? settings.value : tags.value[props.tagId!]
+    return targetElement?.[typeKey] as number | undefined;
   },
-
-  data: function () {
-    return {
-      chartTypeOptions: ['Daily', 'Weekly', 'Monthly'],
-      chartType: 'Daily',
-      logVisible: false
+  set: (value: string | number) => {
+    let numValue = parseFloat(value as string)
+    if (isNaN(numValue) || numValue < 0) {
+      numValue = 0
     }
-  },
+    const typeKey = chartType.value + 'Target'
+    if (props.label === 'All Activity') {
+      store.dispatch('updateSetting', {
+        key: typeKey,
+        value: numValue
+      })
+    } else {
+      store.dispatch('updateTag', {
+        tagId: props.tagId,
+        [typeKey]: numValue
+      })
+    }
+  }
+})
 
-  computed: {
+const calculateTimeSpent = (logItems: ModalActivityItem[]): number => {
+  return logItems
+    .filter(interval => interval.timeSpent)
+    .reduce((total, interval) => total + (interval.timeSpent || 0), 0)
+}
 
-    ...mapState([
-      'tasks',
-      'tags',
-      'settings'
-    ]),
+interface DailyActivityItem {
+  log: ModalActivityItem[];
+  timeSpent?: number; // Made optional as it's calculated later
+}
 
-    isTaskActivity: function () {
-      return this.taskId !== null
-    },
+const dailyActivityComputed = computed<[string, DailyActivityItem][]>(() => {
+  const dailyActivity: Record<string, DailyActivityItem> = {}
+  let day: string
 
-    target: {
-      get () {
-        if (this.isTaskActivity) {
-          return null
-        }
-        const type = this.chartType + 'Target'
-        const targetElement = this.label === 'All Activity' ? this.settings : this.tags[this.tagId]
-        return targetElement[type]
-      },
-      set (value) {
-        let numValue = parseFloat(value)
-        if (numValue < 0) {
-          numValue = 0
-        }
-        if (this.label === 'All Activity') {
-          this.updateSetting({
-            key: this.chartType + 'Target',
-            value: numValue
-          })
-        } else {
-          this.updateTag({
-            tagId: this.tagId,
-            [this.chartType + 'Target']: numValue
-          })
-        }
-      }
-    },
-
-    dailyActivity: function () {
-      const dailyActivity = {}
-      let day
-
-      if (this.isTaskActivity) {
-        const task = this.tasks.filter(task => task.id === this.taskId)[0]
-        if (task.completed) {
-          day = this.displayDateISO(task.completed)
-          dailyActivity[day] = { log: [{ completed: task.completed }] }
-        }
-      }
-
-      // Create dailyActivity Object from a copy of descending this.log
-      for (const event of [...this.log].reverse()) {
-        const timestamp = 'started' in event ? event.started : event.completed
-        day = this.displayDateISO(timestamp)
+  if (isTaskActivity.value) {
+    const task = tasks.value.find(t => t.id === props.taskId)
+    if (task?.completed) {
+      day = displayDateISO(task.completed)
+      dailyActivity[day] = { log: [{ completed: task.completed }] } // Simplified log structure for completed task
+    }
+  } else {
+    for (const event of props.log) {
+      if (event.started) { // Ensure event.started exists
+        day = displayDateISO(event.started)
         if (day in dailyActivity) {
           dailyActivity[day].log.push(event)
         } else {
           dailyActivity[day] = { log: [event] }
         }
       }
-
-      for (const day in dailyActivity) {
-        dailyActivity[day].log.sort((a, b) => {
-          const aTime = a.completed || a.started
-          const bTime = b.completed || b.started
-          return bTime - aTime
-        })
-      }
-
-      const dailyActivityArray = Object.entries(dailyActivity)
-      dailyActivityArray.sort(([day1], [day2]) => this.stringToMs(day2) - this.stringToMs(day1))
-      return dailyActivityArray
-    },
-
-    chartData () {
-      const chartData = Object.assign({}, this.chartType === 'Daily' ? dailyChartData(this) : (this.chartType === 'Weekly' ? weeklyChartData(this) : monthlyChartData(this)))
-      chartData.labels = chartData.labels.slice(-30)
-      chartData.datasets[0].data = chartData.datasets[0].data.slice(-30)
-      return chartData
-    },
-
-    chartStyles () {
-      const width = 50 + this.chartData.labels.length * 100
-
-      return width > 600 ? {
-        width: `${width}px`,
-        height: '400px',
-        position: 'relative'
-      } : {
-        height: '400px'
-      }
-    }
-
-  },
-
-  methods: {
-
-    ...mapActions([
-      'updateSetting',
-      'updateTag'
-    ]),
-
-    calculateTimeSpent (log) {
-      return log.filter(interval => interval.timeSpent)
-        .reduce((total, interval) => total + interval.timeSpent, 0)
-    },
-
-    onChartTypeChange () {
-      this.$refs.activityChart.scrollRight()
-    },
-
-    toggleLog () {
-      this.logVisible = !this.logVisible
     }
   }
-}
 
-function initializeChartData (that) {
+  return Object.entries(dailyActivity).sort((a, b) => {
+    return displayDateISO(b[0]) > displayDateISO(a[0]) ? 1 : -1
+  }).map(([dayKey, activityItem]) => {
+    activityItem.timeSpent = calculateTimeSpent(activityItem.log)
+    return [dayKey, activityItem]
+  })
+})
+
+// Chart helper functions (moved inside setup and refactored)
+const initializeChartData = () => {
   return {
-    labels: [],
+    labels: [] as string[],
     datasets: [{
-      label: that.label,
-      backgroundColor: that.color,
-      data: [],
+      label: props.label || '',
+      backgroundColor: props.color,
+      data: [] as (number | null)[],
       barThickness: 70
     }]
   }
 }
 
-function dailyChartData (that) {
-  const chartData = initializeChartData(that)
+const getDailyChartData = () => {
+  const data = initializeChartData()
+  let nextDay: string | null = null
 
-  // Add time spent per day and add to chartData
-  let nextDay = null
-  that.dailyActivity.forEach(([day, dayActivity]) => {
-    const daysDiff = that.dateDiffInDays(day, nextDay)
+  dailyActivityComputed.value.forEach(([day, dayActivityItem]) => {
+    const daysDiff = nextDay ? dateDiffInDays(day, nextDay) : 0;
     if (nextDay && daysDiff > 1) {
-      const a = that.displayDateHuman(that.daysLater(day, 1))
+      const a = displayDateHuman(daysLater(day, 1))
       if (daysDiff === 2) {
-        chartData.labels.unshift(a)
+        data.labels.unshift(a)
       } else {
-        const b = that.displayDateHuman(that.daysLater(nextDay, -1))
-        chartData.labels.unshift([a + ' -', b])
+        const b = displayDateHuman(daysLater(nextDay, -1))
+        data.labels.unshift(a + ' - ' + b)
       }
-      chartData.datasets[0].data.unshift(0)
+      data.datasets[0].data.unshift(0)
     }
-    dayActivity.timeSpent = that.calculateTimeSpent(dayActivity.log)
-    chartData.labels.unshift(that.displayDateHuman(day))
-    chartData.datasets[0].data.unshift(that.msToMinutes(dayActivity.timeSpent))
+    // timeSpent is already calculated in dailyActivityComputed
+    data.labels.unshift(displayDateHuman(day))
+    data.datasets[0].data.unshift(msToMinutes(dayActivityItem.timeSpent || 0))
     nextDay = day
   })
-
-  return chartData
+  return data
 }
 
-function weeklyChartData (that) {
-  const weeklyActivity = {}
-  let week
+const getWeeklyChartData = () => {
+  const weeklyActivity: Record<string, { log: TaskLog[] }> = {}
+  let week: string
 
-  // Create weeklyActivity Object from log
-  for (const event of that.log) {
-    week = that.displayWeekISO(event.started)
-    if (week in weeklyActivity) {
-      weeklyActivity[week].log.push(event)
-    } else {
-      weeklyActivity[week] = { log: [event] }
+  for (const event of props.log) {
+    if (event.started) { // Ensure event.started exists
+      week = displayWeekISO(event.started)
+      if (week in weeklyActivity) {
+        weeklyActivity[week].log.push(event)
+      } else {
+        weeklyActivity[week] = { log: [event] }
+      }
     }
   }
 
-  const chartData = initializeChartData(that)
+  const data = initializeChartData()
 
-  // Add time spent per week and add to chartData
   Object.keys(weeklyActivity).slice().sort((a, b) => {
-    const [ay, aw] = a.split('-').map(n => parseInt(n))
-    const [by, bw] = b.split('-').map(n => parseInt(n))
+    const [ay, aw] = a.split('-').map(n => parseInt(n, 10))
+    const [by, bw] = b.split('-').map(n => parseInt(n, 10))
     return (ay - by) * 100 + (aw - bw)
-  }).forEach(week => {
-    chartData.labels.push(that.displayWeekHuman(week))
-    chartData.datasets[0].data.push(that.msToMinutes(that.calculateTimeSpent(weeklyActivity[week].log)))
+  }).forEach(wk => {
+    data.labels.push(displayWeekHuman(wk).join(' '))
+    data.datasets[0].data.push(msToMinutes(calculateTimeSpent(weeklyActivity[wk].log)))
   })
-
-  return chartData
+  return data
 }
 
-function monthlyChartData (that) {
-  const monthlyActivity = {}
-  let month
+const getMonthlyChartData = () => {
+  const monthlyActivity: Record<string, { log: TaskLog[] }> = {}
+  let month: string
 
-  // Create monthlyActivity Object from log
-  for (const event of that.log) {
-    month = that.displayMonthISO(event.started)
-    if (month in monthlyActivity) {
-      monthlyActivity[month].log.push(event)
-    } else {
-      monthlyActivity[month] = { log: [event] }
+  for (const event of props.log) {
+    if (event.started) { // Ensure event.started exists
+      month = displayMonthISO(event.started)
+      if (month in monthlyActivity) {
+        monthlyActivity[month].log.push(event)
+      } else {
+        monthlyActivity[month] = { log: [event] }
+      }
     }
   }
 
-  const chartData = initializeChartData(that)
+  const data = initializeChartData()
 
-  // Add time spent per week and add to chartData
   Object.keys(monthlyActivity).slice().sort((a, b) => {
-    const [ay, am] = a.split('-').map(n => parseInt(n))
-    const [by, bm] = b.split('-').map(n => parseInt(n))
+    const [ay, am] = a.split('-').map(n => parseInt(n, 10))
+    const [by, bm] = b.split('-').map(n => parseInt(n, 10))
     return (ay - by) * 100 + (am - bm)
-  }).forEach(month => {
-    chartData.labels.push(that.displayMonthHuman(month))
-    chartData.datasets[0].data.push(that.msToMinutes(that.calculateTimeSpent(monthlyActivity[month].log)))
+  }).forEach(mnth => {
+    data.labels.push(displayMonthHuman(mnth))
+    data.datasets[0].data.push(msToMinutes(calculateTimeSpent(monthlyActivity[mnth].log)))
   })
+  return data
+}
 
-  return chartData
+const chartData = computed(() => {
+  switch (chartType.value) {
+    case 'Daily': return getDailyChartData()
+    case 'Weekly': return getWeeklyChartData()
+    case 'Monthly': return getMonthlyChartData()
+    default: return initializeChartData() // Should not happen
+  }
+})
+
+const chartStyles = computed(() => {
+  const numLabels = chartData.value.labels.length;
+  const width = 50 + numLabels * 100
+
+  return width > 600 ? {
+    width: `${width}px`,
+    height: '400px',
+    position: 'relative'
+  } : {
+    height: '400px',
+    position: 'relative' // Added position relative for consistency
+  }
+})
+
+// Methods
+const onChartTypeChange = () => {
+  if (activityChartRef.value && typeof activityChartRef.value.scrollRight === 'function') {
+    activityChartRef.value.scrollRight()
+  }
 }
 
 </script>
