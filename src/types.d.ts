@@ -39,7 +39,14 @@ export interface TaskLog {
 }
 
 export interface ModalActivityItem {
-  id: string;
+  id?: string;
+  taskId?: string;
+  started?: Date;
+  stopped?: Date;
+  timeSpent?: number;
+  task?: string;
+  tagIds?: string[];
+  completed?: number;
 }
 
 export interface Notification {
@@ -77,6 +84,11 @@ export interface Settings {
   DailyTarget: number | null;
   WeeklyTarget: number | null;
   MonthlyTarget: number | null;
+}
+
+export interface SettingKv {
+  key: keyof Settings;
+  value: Settings[keyof Settings];
 }
 
 export interface ElectronAPI {
