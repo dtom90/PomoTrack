@@ -6,68 +6,74 @@
 
     <div
       id="main-section"
-      class="d-flex border"
     >
-      <div
-        v-if="!isNarrowScreen"
-        id="incomplete-tasks-section"
-        class="section task-list"
-      >
-        <TaskList title="To Do" />
-      </div>
-<!--      <BOffcanvas-->
-<!--        v-if="isNarrowScreen"-->
-<!--        id="sidebar-todo"-->
-<!--        shadow-->
-<!--      >-->
-<!--        <TaskList title="To Do" />-->
-<!--      </BOffcanvas>-->
-
-      <div
-        id="selected-task-section"
-        class="section border-start border-end"
-      >
+      <div class="d-flex border h-100">
         <div
-          id="sidebar-buttons"
-          class="d-flex justify-content-between"
+          v-if="!isNarrowScreen"
+          id="incomplete-tasks-section"
+          class="section task-list"
         >
-<!--          <BButton-->
-<!--            v-b-toggle.sidebar-todo-->
-<!--            variant="primary"-->
-<!--          >-->
-<!--            To Do-->
-<!--          </BButton>-->
-<!--          <BButton-->
-<!--            v-b-toggle.sidebar-done-->
-<!--            variant="primary"-->
-<!--          >-->
-<!--            Done-->
-<!--          </BButton>-->
+          <TaskList title="To Do" />
         </div>
-        <div id="main-task-container">
-          <ActiveTaskButton
-            v-if="showActive"
-          />
-          <SelectedTask
-            :height-class="heightClass"
-          />
+
+        <div
+          id="selected-task-section"
+          class="section border-start border-end"
+        >
+          <div
+            id="sidebar-buttons"
+            class="d-flex justify-content-between"
+          >
+          </div>
+          <div id="main-task-container">
+            <ActiveTaskButton
+              v-if="showActive"
+            />
+            <SelectedTask
+              :height-class="heightClass"
+            />
+          </div>
+        </div>
+
+        <div
+          v-if="!isNarrowScreen"
+          id="completed-tasks-section"
+          class="section task-list"
+        >
+          <TaskList title="Done" />
         </div>
       </div>
 
-      <div
-        v-if="!isNarrowScreen"
-        id="completed-tasks-section"
-        class="section task-list"
-      >
-        <TaskList title="Done" />
+      <div id="footer" v-if="isNarrowScreen">
+        <div class="d-flex justify-content-evenly">
+          <BButton
+            v-b-toggle.sidebar-todo
+            variant="light"
+          >
+            To Do
+          </BButton>
+          <BButton
+            v-b-toggle.sidebar-done
+            variant="light"
+          >
+            Done
+          </BButton>
+        </div>
+
+        <BOffcanvas
+          id="sidebar-todo"
+          shadow
+        >
+          <TaskList title="To Do" />
+        </BOffcanvas>
+        <BOffcanvas
+          id="sidebar-done"
+          shadow
+          placement="end"
+        >
+          <TaskList title="Done" />
+        </BOffcanvas>
       </div>
-<!--      <BOffcanvas-->
-<!--        v-if="isNarrowScreen"-->
-<!--        id="sidebar-done"-->
-<!--        shadow-->
-<!--      >-->
-<!--        <TaskList title="Done" />-->
-<!--      </BOffcanvas>-->
     </div>
 
     <!-- Modals -->
@@ -191,5 +197,22 @@ h3, h4, h5, h6 {
 
 #sidebar-done {
   right: 0;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  border-top: 1px solid #dee2e6;
+  z-index: 1000;
+}
+
+@media (max-width: 767px) {
+  #main-section {
+    padding-bottom: 60px;
+  }
 }
 </style>

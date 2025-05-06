@@ -35,6 +35,7 @@ declare module 'vue' {
     BNavbarToggle: typeof import('bootstrap-vue-next/components/BNavbar')['BNavbarToggle']
     BNavItem: typeof import('bootstrap-vue-next/components/BNav')['BNavItem']
     BNavItemDropdown: typeof import('bootstrap-vue-next/components/BNav')['BNavItemDropdown']
+    BOffcanvas: typeof import('bootstrap-vue-next/components/BOffcanvas')['BOffcanvas']
     Checkbox: typeof import('./src/components/Checkbox.vue')['default']
     CompleteStatus: typeof import('./src/components/CompleteStatus.vue')['default']
     DailyActivitySummary: typeof import('./src/components/DailyActivitySummary.vue')['default']
@@ -58,6 +59,7 @@ declare module 'vue' {
     TimerDial: typeof import('./src/components/TimerDial.vue')['default']
   }
   export interface ComponentCustomProperties {
+    vBToggle: typeof import('bootstrap-vue-next/directives/BToggle')['vBToggle']
     vBTooltip: typeof import('bootstrap-vue-next/directives/BTooltip')['vBTooltip']
   }
 }
