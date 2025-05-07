@@ -35,6 +35,10 @@ h6 {
   font-weight: variables.$font-weight-normal;
 }
 
+.text-bold {
+  font-weight: variables.$font-weight-bold;
+}
+
 .oval-border {
   border-radius: 9999px !important;
 }
@@ -123,13 +127,6 @@ h6 {
 
 .flex-4 {
   flex: 4;
-}
-
-table {
-  color: variables.$dark-primary;
-  td {
-    padding: 8px !important;
-  }
 }
 
 // Modals
@@ -262,6 +259,14 @@ table {
   border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
   z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .submenu {
+    top: 38px !important;
+    right: 0 !important;
+    left: auto !important;
+  }
 }
 
 .submenu.active {

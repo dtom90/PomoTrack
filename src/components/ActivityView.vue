@@ -138,8 +138,8 @@ const chartTypeOptions = ref(['Daily', 'Weekly', 'Monthly'])
 const chartType = ref('Daily')
 
 // Store state
-const tasks = computed<Task[]>(() => store.state.tasks)
-const tags = computed<Record<string, Tag>>(() => store.state.tags)
+const tasks = computed<{ [taskId: string]: Task }>(() => store.state.tasks)
+const tags = computed<{ [tagId: string]: Tag }>(() => store.state.tags)
 const settings = computed<Settings>(() => store.state.settings)
 
 // Computed properties
@@ -190,7 +190,7 @@ const dailyActivityComputed = computed<[string, DailyActivityItem][]>(() => {
   let day
 
   if (isTaskActivity.value) {
-    const task = tasks.value.find(task => task.id === props.taskId)
+    const task = tasks.value[props.taskId]
     if (task?.completed) {
       day = displayDateISO(task.completed)
       dailyActivity[day] = { log: [{ completed: task.completed }] }

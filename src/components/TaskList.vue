@@ -64,8 +64,9 @@
     >
       <template #item="{element: task}">
         <div :key="task.id"> <!-- a bug in vue.draggable.next requires this to be wrapped in a non-component element -->
-          <Task
+          <TaskListElement
             :task-id="task.id"
+            @click="selectTask({ taskId: task.id })"
           />
         </div>
       </template>
@@ -77,10 +78,11 @@
       id="completed-task-list"
       class="list-group scroll-list"
     >
-      <Task
+      <TaskListElement
         v-for="task in completedTaskList"
         :key="task.id"
         :task-id="task.id"
+        @click="selectTask({ taskId: task.id })"
       />
     </ul>
 
@@ -103,10 +105,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import Task from './Task.vue'
+import TaskListElement from './TaskListElement.vue'
 import TaskFilterDropdown from './TaskFilterDropdown.vue'
 import draggable from 'vuedraggable'
-import type { TaskForState } from '@/types'
+import type { Task } from '@/types'
 
 // Define props
 const props = defineProps({
@@ -115,6 +117,8 @@ const props = defineProps({
     default: 'To Do'
   }
 })
+
+const emit = defineEmits(['hide-offcanvas'])
 
 // Store access
 const store = useStore()
@@ -135,25 +139,25 @@ const btnId = computed(() => {
   return isCompletedList.value ? 'completedSettingsButton' : 'todoSettingsButton'
 })
 
-const incompleteTaskList = computed<TaskForState[]>({
+const incompleteTaskList = computed<Task[]>({
   get() {
     if (!settings.value || !incompleteTasksGetter.value) return []
     let filteredTasks = settings.value.selectedTagIds.length > 0
-      ? incompleteTasksGetter.value.filter((task: TaskForState) =>
-          settings.value.selectedTagIds.every((tagId: string) => task.tags.includes(tagId))
+      ? incompleteTasksGetter.value.filter((task: Task) =>
+          settings.value.selectedTagIds.every((tagId: string) => store.state.taskTagsMap[task.id].includes(tagId))
         )
       : incompleteTasksGetter.value
-    filteredTasks = filteredTasks.filter((t: TaskForState) => !t.archived)
+    filteredTasks = filteredTasks.filter((t: Task) => !t.archived)
     return filteredTasks
   },
-  set(newIncompleteTaskOrder: TaskForState[]) {
+  set(newIncompleteTaskOrder: Task[]) {
     store.dispatch('reorderIncompleteTasks', { newIncompleteTaskOrder })
   }
 })
 
-const completedTaskList = computed<TaskForState[]>(() => {
+const completedTaskList = computed<Task[]>(() => {
   if (!completedTasksFilteredGetter.value) return []
-  const filteredCompletedTasks = completedTasksFilteredGetter.value.filter((t: TaskForState) => !t.archived)
+  const filteredCompletedTasks = completedTasksFilteredGetter.value.filter((t: Task) => !t.archived)
   return filteredCompletedTasks && sortOrder.value !== 'Oldest'
     ? filteredCompletedTasks.slice().reverse()
     : filteredCompletedTasks
@@ -167,6 +171,11 @@ const addNewTask = () => {
     })
     newTaskName.value = ''
   }
+}
+
+const selectTask = (payload: { taskId: string }) => {
+  store.dispatch('selectTask', payload)
+  emit('hide-offcanvas')
 }
 
 const archiveTasks = () => {

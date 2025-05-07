@@ -1,8 +1,9 @@
 import type { PomoTrackState } from "@/types"
 
 const initialState: PomoTrackState = {
-  tasks: [],
+  tasks: {},
   tags: {},
+  taskTagsMap: {},
   tagOrder: [],
   selectedTaskLogs: [],
   modalActivity: null,
@@ -30,7 +31,6 @@ const initialState: PomoTrackState = {
 
     // TaskList settings
     selectedTagIds: [],
-    filterOperator: 'and',
     addSelectedTags: true,
 
     // Navbar settings

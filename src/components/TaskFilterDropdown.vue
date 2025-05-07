@@ -43,7 +43,6 @@
       @click="itemClicked(tagId)"
     >
       <TagButton
-        :tag="tags[tagId]"
         :tag-id="tagId"
         :unselected="unselectedTags.includes(tagId)"
       />
@@ -56,7 +55,7 @@ import { computed, ref } from 'vue';
 import type { ComponentPublicInstance } from 'vue';
 import { useStore } from 'vuex';
 import TagButton from './TagButton.vue';
-import type { Tag, TaskForState, Settings } from '@/types'; // Assuming types are defined in @/types
+import type { Tag, Task, Settings } from '@/types'; // Assuming types are defined in @/types
 
 const store = useStore();
 
@@ -65,14 +64,14 @@ const dropdown = ref<ComponentPublicInstance | null>(null);
 // Vuex State
 const tags = computed<Record<string, Tag>>(() => store.state.tags);
 const tagOrder = computed<string[]>(() => store.state.tagOrder);
-const tasks = computed<TaskForState[]>(() => store.state.tasks);
-const selectedTask = computed<TaskForState | null>(() => store.state.selectedTask);
+const tasks = computed<Task[]>(() => store.state.tasks);
+const selectedTask = computed<Task | null>(() => store.state.selectedTask);
 const settings = computed<Settings>(() => store.state.settings);
 
 // Vuex Getters
 const unselectedTags = computed<string[]>(() => store.getters.unselectedTags);
-const incompleteTasks = computed<TaskForState[]>(() => store.getters.incompleteTasks);
-const completedTasksFiltered = computed<TaskForState[]>(() => store.getters.completedTasksFiltered);
+const incompleteTasks = computed<Task[]>(() => store.getters.incompleteTasks);
+const completedTasksFiltered = computed<Task[]>(() => store.getters.completedTasksFiltered);
 
 // Computed properties
 const filterBtnStyle = computed(() => {
@@ -115,27 +114,17 @@ const toggleSelectedTag = async ({ tagId }: { tagId: string }) => {
 
 const updateSelectedTask = () => {
   if (!selectedTask.value || (selectedTask.value && !(
-    (settings.value.filterOperator === 'or' && settings.value.selectedTagIds.some(tag => selectedTask.value!.tags.includes(tag))) ||
-    (settings.value.filterOperator === 'and' && settings.value.selectedTagIds.every(tag => selectedTask.value!.tags.includes(tag)))
+    settings.value.selectedTagIds.every(tagId => store.state.taskTagsMap[selectedTask.value!.id].includes(tagId))
   ))) {
-    let tasksWithTag: TaskForState | undefined;
-    if (settings.value.filterOperator === 'or') {
-      tasksWithTag = incompleteTasks.value.find(task => settings.value.selectedTagIds.some(tag => task.tags.includes(tag)));
-    } else {
-      tasksWithTag = incompleteTasks.value.find(task => settings.value.selectedTagIds.every(tag => task.tags.includes(tag)));
-    }
-
-    if (!tasksWithTag) {
+    // If the selected task is not in the filter, find a new one
+    let taskWithTag = incompleteTasks.value.find(task => settings.value.selectedTagIds.every(tagId => store.state.taskTagsMap[task.id].includes(tagId)));
+    if (!taskWithTag) {
       const CTasksFiltered = completedTasksFiltered.value.filter(t => !t.archived);
-      if (settings.value.filterOperator === 'or') {
-        tasksWithTag = CTasksFiltered.find(task => settings.value.selectedTagIds.some(tag => task.tags.includes(tag)));
-      } else {
-        tasksWithTag = CTasksFiltered.find(task => settings.value.selectedTagIds.every(tag => task.tags.includes(tag)));
-      }
+      taskWithTag = CTasksFiltered.find(task => settings.value.selectedTagIds.every(tagId => store.state.taskTagsMap[task.id].includes(tagId)));
     }
 
-    if (tasksWithTag) {
-      store.dispatch('selectTask', { taskId: tasksWithTag.id });
+    if (taskWithTag) {
+      store.dispatch('selectTask', { taskId: taskWithTag.id });
     } else {
       store.dispatch('selectTask', { taskId: null });
     }

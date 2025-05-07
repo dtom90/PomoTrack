@@ -3,7 +3,6 @@
   <li
     v-if="task"
     :class="['task', 'draggable-item', 'list-group-item', 'list-group-item-action', 'form-check', { active: active }]"
-    @click="selectTask({ taskId: taskId })"
   >
     <div class="d-flex align-items-start ">
       <Checkbox
@@ -36,7 +35,7 @@ import { useStore } from 'vuex'
 import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
-import type { TaskForState } from '@/types'
+import type { Task } from '@/types'
 
 // Define props
 const props = defineProps({
@@ -52,10 +51,10 @@ const store = useStore()
 // Computed properties (from mapState and computed)
 const tempState = computed(() => store.state.tempState)
 const settings = computed(() => store.state.settings)
-const tasks = computed<TaskForState[]>(() => store.state.tasks)
+const tasks = computed<{ [taskId: string]: Task }>(() => store.state.tasks)
 
-const task = computed<TaskForState | undefined>(() => {
-  return tasks.value.find(t => t.id === props.taskId)
+const task = computed<Task | undefined>(() => {
+  return tasks.value[props.taskId]
 })
 
 const active = computed(() => {
@@ -69,12 +68,6 @@ const checked = computed(() => {
 const displayCountdownIndicator = computed(() => {
   return tempState.value.activeTaskID === props.taskId
 })
-
-// Methods (from mapActions)
-const selectTask = (payload: { taskId: string }) => {
-  store.dispatch('selectTask', payload)
-}
-
 </script>
 
 <style scoped lang="scss">

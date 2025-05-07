@@ -1,5 +1,5 @@
 <template>
-  <div class="log">
+  <div class="day-log">
     <!-- Display Day -->
     <h5
       v-if="day"
@@ -11,54 +11,63 @@
     <h6>Time Spent: {{ displayDuration(props.timeSpent) }}</h6>
 
     <!-- Task Activity Log -->
-    <table
-      class="activityLog table"
-    >
-      <tr
+      <div
+        class="log"
         v-for="(event, index) in log"
         :key="index"
       >
-        <template v-if="!event.completed">
-          <td
+        <div class="log-wrapper align-items-center flex-wrap">
+
+          <!-- Task Name -->
+          <div
             v-if="event.task"
-            class="align-middle"
+            class="flex-1 text-center"
           >
-            <span>{{ event.task }}</span>
-          </td>
+            <span class="text-bold">{{ event.task }}</span>
+          </div>
 
-          <td v-if="event.started">
-            <span>Started {{ displayTimeHuman(event.started) }}</span>
-          </td>
-          <td>
-            <font-awesome-icon icon="arrow-right" />
-          </td>
-          <td>
-            <span>{{ event.stopped ? 'Stopped' : 'Running' }} {{ displayTimeHuman(event.stopped || Date.now()) }}</span>
-          </td>
-          <td v-if="event.timeSpent">
-            <span>Time Spent: {{ displayDuration(event.timeSpent) }}</span>
-          </td>
-          <td
-            v-if="!event.task && !event.completed"
-            class="btn-container"
-          >
-            <IntervalDropdownForm :log-id="event.id" />
-          </td>
-        </template>
+          <!-- Started/Stopped/Time Spent -->
+          <div v-if="!event.completed" class="flex-3 d-flex align-items-center">
+            <div class="flex-1 d-flex flex-wrap">
+              <div class="flex-2 d-flex align-items-center justify-content-evenly">
+                <!-- Started Time -->
+                <div v-if="event.started">
+                  <span>Started&nbsp;{{ displayTimeHuman(event.started).replace(/\s/g, '&nbsp;') }}</span>
+                </div>
 
-        <template v-if="event.completed">
-          <td v-if="event.task">
-            <span>{{ event.task }}</span>
-          </td>
-          <td />
-          <td>
-            <span>Completed {{ displayTimeHuman(event.completed) }}</span>
-          </td>
-          <td />
-          <td />
-        </template>
-      </tr>
-    </table>
+                <!-- Arrow -->
+                <div class="mx-2">
+                  <font-awesome-icon icon="arrow-right" />
+                </div>
+
+                <!-- Stopped Time -->
+                <div>
+                  <span>{{ event.stopped ? 'Stopped' : 'Running' }}&nbsp;{{ displayTimeHuman(event.stopped || Date.now()).replace(/\s/g, '&nbsp;') }}</span>
+                </div>
+              </div>
+
+              <!-- Time Spent -->
+              <div v-if="event.timeSpent" class="flex-1 text-center">
+                <span>Time&nbsp;Spent:&nbsp;{{ displayDuration(event.timeSpent).replace(/\s/g, '&nbsp;') }}</span>
+              </div>
+            </div>
+
+            <!-- Interval Dropdown -->
+            <div
+              v-if="!event.task && !event.completed"
+              class="btn-container"
+            >
+              <IntervalDropdownForm :log-id="event.id" />
+            </div>
+          </div>
+
+          <div v-if="event.completed" class="flex-3 text-center">
+            <div>
+              <span>Completed {{ displayTimeHuman(event.completed) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -91,7 +100,7 @@ const { displayTimeHuman } = useTime()
 <style scoped lang="scss">
 @use "../styles/variables";
 
-.log {
+.day-log {
   margin-top: 32px;
 }
 
@@ -102,15 +111,18 @@ const { displayTimeHuman } = useTime()
   text-align: center;
 }
 
+.log-wrapper {
+  display: flex;
+}
+
+@media (max-width: 991px) {
+  .log-wrapper {
+    display: block;
+  }
+}
+
 .btn-container {
   padding: 0;
   vertical-align: middle;
-}
-
-td {
-  font-size: variables.$font-size-small;
-  span {
-    padding: 0 !important;
-  }
 }
 </style>

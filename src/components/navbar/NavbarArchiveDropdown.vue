@@ -17,11 +17,11 @@
           :key="task.id"
         >
           <div class="d-flex">
-            <div class="flex-1 d-flex align-items-center">
-              <CompleteStatus :completed="!!task.completed" />
-              <span class="ms-4 text-wrap">{{ task.name }}</span>
+            <div class="flex-1 d-flex flex-wrap align-items-center">
+              <CompleteStatus :completed="!!task.completed" class="me-2" />
+              <span class="me-2 text-wrap">{{ task.name }}</span>
             </div>
-            <div class="text-right">
+            <div class="d-flex align-items-center">
               <div class="submenu-button-wrapper">
                 <BButton
                   variant="light"
@@ -46,7 +46,7 @@
         </BDropdownItem>
       </template>
 
-      <BDropdownItem
+      <div
         v-if="archivedTasks.length === 0"
         disabled
       >
@@ -57,10 +57,10 @@
               alt="Empty Archive"
               class="mb-2"
             >
-            <span class="text-muted">Archived tasks will appear here</span>
+            <span class="text-muted text-center">Archived tasks will appear here</span>
           </div>
         </div>
-      </BDropdownItem>
+      </div>
     </div>
   </b-nav-item-dropdown>
 </template>
@@ -121,7 +121,8 @@ const unarchiveTask = (taskId: string) => {
 <style>
 /*noinspection CssUnusedSymbol*/
 #archive-dropdown-menu {
-  width: 500px !important;
+  min-width: 250px !important;
+  max-width: 500px !important;
 }
 
 /*noinspection CssUnusedSymbol*/

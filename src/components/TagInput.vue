@@ -30,7 +30,6 @@
       @click="addTagById(tag.id)"
     >
       <TagButton
-        :tag="tag"
         :tag-id="tag.id"
       />
     </BDropdownItem>

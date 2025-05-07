@@ -62,16 +62,18 @@
 
         <BOffcanvas
           id="sidebar-todo"
+          v-model="showSidebarTodo"
           shadow
         >
-          <TaskList title="To Do" />
+          <TaskList title="To Do" @hide-offcanvas="showSidebarTodo = false" />
         </BOffcanvas>
         <BOffcanvas
           id="sidebar-done"
+          v-model="showSidebarDone"
           shadow
           placement="end"
         >
-          <TaskList title="Done" />
+          <TaskList title="Done" @hide-offcanvas="showSidebarDone = false" />
         </BOffcanvas>
       </div>
     </div>
@@ -98,6 +100,8 @@ const tempState = computed<TempState>(() => store.state.tempState)
 
 // Local reactive state
 const windowWidth = ref(window.innerWidth)
+const showSidebarTodo = ref(false)
+const showSidebarDone = ref(false)
 
 // Computed properties
 const showActive = computed(() => {

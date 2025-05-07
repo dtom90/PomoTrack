@@ -46,7 +46,7 @@ describe('delete tags', () => {
     cy.get('#selected-task-container #task-tag-list').contains(firstTagName).should('not.exist')
   })
 
-  it.only('deletes tag from all tasks', () => {
+  it('deletes tag from all tasks', () => {
     // Arrange
     cy.get('.navbar-nav').get('.nav-item').contains('Tags').click()
     cy.get('#navbarTagsDropdown-menu').within(() => {

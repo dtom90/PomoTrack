@@ -163,7 +163,7 @@ describe('create tags', () => {
       .type('My Second Task{enter}')
 
     // Act
-    cy.get('#task-tag-list div.tag.btn-group button > svg.fa-xmark').click()
+    cy.get('#task-tag-list .tag.btn-group button > svg.fa-xmark').click()
     cy.get('button > svg.fa-plus').click()
     cy.get('#tagInputDropdown-menu.dropdown-menu button').contains(firstTagName).click({ force: true })
     cy.reload()

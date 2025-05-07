@@ -1,6 +1,7 @@
 export interface PomoTrackState {
-  tasks: TaskForState[];
-  tags: { [key: string]: Tag };
+  tasks: { [taskId: string]: Task }
+  tags: { [tagId: string]: Tag };
+  taskTagsMap: { [taskId: string]: string[] };
   tagOrder: string[];
   selectedTaskLogs: TaskLog[];
   modalActivity: ModalActivityItem[] | null;
@@ -17,10 +18,6 @@ export interface Task {
   created_at: number;
   completed: number | undefined;
   archived: boolean | undefined;
-}
-
-export interface TaskForState extends Task {
-  tags: string[];
 }
 
 export interface Tag {
@@ -73,7 +70,6 @@ export interface Settings {
   secondReminderMinutes: number;
   secondReminderEnabled: boolean;
   selectedTagIds: string[];
-  filterOperator: 'and' | 'or';
   addSelectedTags: boolean;
   timeFormat24: boolean;
   DailyTarget: number | null;
