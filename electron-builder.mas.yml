@@ -1,5 +1,5 @@
 extends: null
-appId: app.pomotrack
+appId: com.davidthomason.pomotrack
 productName: PomoTrack
 copyright: Copyright © 2024 David Thomason
 directories:
@@ -11,12 +11,14 @@ files:
   - preload.ts
   - package.json
 mac:
-  target: mas
-  arch:
-    - x64
-    - arm64
+  target:
+    - target: mas
+      arch:
+        - x64
+        - arm64
   category: public.app-category.productivity
   hardenedRuntime: true
-  entitlements: build/entitlements.mas.plist
-  entitlementsInherit: build/entitlements.mas.plist
-  icon: build/icon.icns
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  icon: build/icon.png
+  provisioningProfile: build/PomoTrack_Mac_App_Store_Profile.provisionprofile

@@ -12,9 +12,11 @@ node_modules
 dist
 dist_web
 dist_electron
+dist_electron_mas
 dist-ssr
 coverage
 *.local
+*.provisionprofile
 
 /cypress/downloads/
 /cypress/videos/

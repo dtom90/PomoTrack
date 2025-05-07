@@ -14,7 +14,6 @@ declare module 'vue' {
     ActivityView: typeof import('./src/components/ActivityView.vue')['default']
     App: typeof import('./src/components/App.vue')['default']
     BButton: typeof import('bootstrap-vue-next/components/BButton')['BButton']
-    BCollapse: typeof import('bootstrap-vue-next/components/BCollapse')['BCollapse']
     BDropdown: typeof import('bootstrap-vue-next/components/BDropdown')['BDropdown']
     BDropdownDivider: typeof import('bootstrap-vue-next/components/BDropdown')['BDropdownDivider']
     BDropdownForm: typeof import('bootstrap-vue-next/components/BDropdown')['BDropdownForm']
