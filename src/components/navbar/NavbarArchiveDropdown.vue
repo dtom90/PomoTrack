@@ -46,7 +46,7 @@
         </BDropdownItem>
       </template>
 
-      <BDropdownItem
+      <div
         v-if="archivedTasks.length === 0"
         disabled
       >
@@ -57,10 +57,10 @@
               alt="Empty Archive"
               class="mb-2"
             >
-            <span class="text-muted">Archived tasks will appear here</span>
+            <span class="text-muted text-center">Archived tasks will appear here</span>
           </div>
         </div>
-      </BDropdownItem>
+      </div>
     </div>
   </b-nav-item-dropdown>
 </template>
@@ -121,6 +121,7 @@ const unarchiveTask = (taskId: string) => {
 <style>
 /*noinspection CssUnusedSymbol*/
 #archive-dropdown-menu {
+  min-width: 250px !important;
   max-width: 500px !important;
 }
 
