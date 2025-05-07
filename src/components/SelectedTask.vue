@@ -140,10 +140,7 @@
           id="tags-section"
           class="d-flex align-items-top"
         >
-          <label
-            v-if="taskTags"
-            id="tags-label"
-          >
+          <label id="tags-label">
             <span>Tags:</span>
           </label>
           <TaskTagList :task-id="selectedTask.id" />
@@ -227,8 +224,6 @@ const anyTasks = computed<boolean>(() => store.getters.anyTasks)
 
 // Computed properties
 const isEmptyState = computed(() => !anyTasks.value)
-
-const taskTags = computed(() => (selectedTask.value as Task & { tags?: unknown[] | unknown })?.tags);
 
 const displayNotes = computed(() => {
   if (selectedTask.value && selectedTask.value.notes) {

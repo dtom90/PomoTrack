@@ -35,7 +35,7 @@ import { useStore } from 'vuex'
 import Checkbox from './Checkbox.vue'
 import TaskTagList from './TaskTagList.vue'
 import TimerDial from './TimerDial.vue'
-import type { TaskForState } from '@/types'
+import type { Task } from '@/types'
 
 // Define props
 const props = defineProps({
@@ -51,9 +51,9 @@ const store = useStore()
 // Computed properties (from mapState and computed)
 const tempState = computed(() => store.state.tempState)
 const settings = computed(() => store.state.settings)
-const tasks = computed<TaskForState[]>(() => store.state.tasks)
+const tasks = computed<Task[]>(() => store.state.tasks)
 
-const task = computed<TaskForState | undefined>(() => {
+const task = computed<Task | undefined>(() => {
   return tasks.value.find(t => t.id === props.taskId)
 })
 

@@ -40,7 +40,6 @@
                 class="flex-1"
               >
                 <TagButton
-                  :tag="tags[tagId]"
                   :tag-id="tagId"
                   class="ms-3"
                 />

@@ -125,11 +125,4 @@ const { displayTimeHuman } = useTime()
   padding: 0;
   vertical-align: middle;
 }
-
-td {
-  font-size: variables.$font-size-small;
-  span {
-    padding: 0 !important;
-  }
-}
 </style>

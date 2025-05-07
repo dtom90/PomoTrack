@@ -53,6 +53,7 @@ declare module 'vue' {
     Task: typeof import('./src/components/Task.vue')['default']
     TaskFilterDropdown: typeof import('./src/components/TaskFilterDropdown.vue')['default']
     TaskList: typeof import('./src/components/TaskList.vue')['default']
+    TaskListElement: typeof import('./src/components/TaskListElement.vue')['default']
     TaskMenu: typeof import('./src/components/TaskMenu.vue')['default']
     TaskTagList: typeof import('./src/components/TaskTagList.vue')['default']
     Timer: typeof import('./src/components/Timer.vue')['default']

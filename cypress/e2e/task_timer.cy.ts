@@ -39,10 +39,10 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play').click()
 
     // Assert
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Started')
-      cy.get('td').contains('Running')
-      cy.get('td').contains('Time Spent')
+    cy.get('#task-log').within(() => {
+      cy.contains('Started')
+      cy.contains('Running')
+      cy.contains('Time Spent')
     })
   })
 
@@ -66,10 +66,10 @@ describe('task timer', () => {
     cy.get('button > svg.fa-pause').click()
 
     // Assert
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Started')
-      cy.get('td').contains('Stopped')
-      cy.get('td').contains('Time Spent')
+    cy.get('#task-log').within(() => {
+      cy.contains('Started')
+      cy.contains('Stopped')
+      cy.contains('Time Spent')
     })
   })
 
@@ -82,16 +82,16 @@ describe('task timer', () => {
     cy.get('button > svg.fa-play').click()
 
     // Assert
-    cy.get('#task-log table').within(() => {
-      cy.get('tr').first().within(() => {
-        cy.get('td').contains('Started')
-        cy.get('td').contains('Running')
-        cy.get('td').contains('Time Spent')
+    cy.get('#task-log').within(() => {
+      cy.get('.log').first().within(() => {
+        cy.contains('Started')
+        cy.contains('Running')
+        cy.contains('Time Spent')
       })
-      cy.get('tr').last().within(() => {
-        cy.get('td').contains('Started')
-        cy.get('td').contains('Stopped')
-        cy.get('td').contains('Time Spent')
+      cy.get('.log').last().within(() => {
+        cy.contains('Started')
+        cy.contains('Stopped')
+        cy.contains('Time Spent')
       })
     })
   })
@@ -109,10 +109,10 @@ describe('task timer', () => {
     cy.get('button[title="Continue Timer Here"] > svg.fa-play').click()
 
     // Assert
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Started')
-      cy.get('td').contains('Running')
-      cy.get('td').contains('Time Spent')
+    cy.get('#task-log').within(() => {
+      cy.contains('Started')
+      cy.contains('Running')
+      cy.contains('Time Spent')
     })
   })
 
@@ -130,10 +130,10 @@ describe('task timer', () => {
 
     // Assert
     cy.get('#incomplete-task-list').contains('My Second Task').click()
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Started')
-      cy.get('td').contains('Stopped')
-      cy.get('td').contains('Time Spent')
+    cy.get('#task-log').within(() => {
+      cy.contains('Started')
+      cy.contains('Stopped')
+      cy.contains('Time Spent')
     })
   })
 
@@ -230,8 +230,8 @@ describe('task timer', () => {
 
     // Assert
 
-    cy.get('tr').last().within(() => {
-      cy.get('td').contains('Stopped')
+    cy.get('.log').last().within(() => {
+      cy.contains('Stopped')
     })
   })
 
@@ -250,8 +250,8 @@ describe('task timer', () => {
     cy.get('#incomplete-task-list input[type="checkbox"][title="Mark task complete"]').click()
 
     // Assert
-    cy.get('tr').last().within(() => {
-      cy.get('td').contains('Stopped')
+    cy.get('.log').last().within(() => {
+      cy.contains('Stopped')
     })
   })
 
@@ -335,14 +335,14 @@ describe('task timer', () => {
     cy.get('#activityModal').within(() => {
       cy.get('#task-log').scrollIntoView()
       cy.get('#task-log').within(() => {
-        cy.get('tr').eq(0).contains('My Second Task')
-        cy.get('tr').eq(0).contains('Completed')
-        cy.get('tr').eq(1).contains('My Second Task')
-        cy.get('tr').eq(1).contains('Started')
-        cy.get('tr').eq(2).contains('My First Task')
-        cy.get('tr').eq(2).contains('Completed')
-        cy.get('tr').eq(3).contains('My First Task')
-        cy.get('tr').eq(3).contains('Started')
+        cy.get('.log').eq(0).contains('My Second Task')
+        cy.get('.log').eq(0).contains('Completed')
+        cy.get('.log').eq(1).contains('My Second Task')
+        cy.get('.log').eq(1).contains('Started')
+        cy.get('.log').eq(2).contains('My First Task')
+        cy.get('.log').eq(2).contains('Completed')
+        cy.get('.log').eq(3).contains('My First Task')
+        cy.get('.log').eq(3).contains('Started')
       })
     })
   })
@@ -385,8 +385,8 @@ describe('task timer', () => {
 
     // Assert
     cy.get('#timer-display').contains('5:00')
-    cy.get('#task-log table').within(() => {
-      cy.get('td').contains('Stopped')
+    cy.get('#task-log').within(() => {
+      cy.contains('Stopped')
     })
   })
 })

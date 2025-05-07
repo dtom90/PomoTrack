@@ -1,14 +1,25 @@
 import type { ActionContext } from 'vuex'
-import type { PomoTrackState, Task, TaskForState, Tag, TaskLog, TaskTagMap, SettingKv } from '@/types'
+import type { PomoTrackState, Task, Tag, TaskLog, TaskTagMap, SettingKv } from '@/types'
 import dexieDb from './dexieDb'
 import { nanoid } from 'nanoid'
 // @ts-expect-error color-manager is not typed yet (TODO)
 import ColorManager from 'color-manager'
 import { toRaw } from 'vue'
 
+interface TaskWithTags extends Task {
+  tags?: string[]
+}
+
 const actions = {
   async loadInitialData ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
     const tasks = await dexieDb.tasks.orderBy('order').toArray()
+    // clear out any old task.tags. TODO: remove this once we've migrated to the new task tag system
+    tasks.forEach((task) => {
+      const taskWithTags = task as Partial<TaskWithTags>
+      if (taskWithTags.tags) {
+        delete taskWithTags.tags
+      }
+    })
     const tags = await dexieDb.tags.orderBy('order').toArray()
     const taskTagMaps = await dexieDb.taskTagMap.toArray()
     const settings = await dexieDb.settings.toArray()
@@ -62,23 +73,16 @@ const actions = {
 
         await handleDexieError(dexieDb.tasks.add(newTask), 'tasks.add', newTask)
 
-        const taskForState: TaskForState = {
-          ...newTask,
-          tags: []
-        }
-
+        let taskTagMaps: TaskTagMap[] = []
         if (state.settings.addSelectedTags && state.settings.selectedTagIds.length) {
-          const taskTagMaps: TaskTagMap[] = state.settings.selectedTagIds.map((tagId: string) => ({
+          taskTagMaps = state.settings.selectedTagIds.map((tagId: string) => ({
             id: 'taskTag-' + nanoid(),
             taskId: newTask.id,
             tagId
           }))
           await handleDexieError(dexieDb.taskTagMap.bulkAdd(taskTagMaps), 'taskTagMap.bulkAdd', taskTagMaps)
-          taskForState.tags = taskTagMaps.map((taskTagMap: TaskTagMap) => taskTagMap.tagId)
-        } else {
-          taskForState.tags = []
         }
-        commit('addTask', { task: taskForState })
+        commit('addTask', { task: newTask, taskTagMaps })
         await dispatch('selectTask', { taskId: newTask.id })
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -105,18 +109,24 @@ const actions = {
     }
   },
 
-  async reorderIncompleteTasks ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newIncompleteTaskOrder }: { newIncompleteTaskOrder: TaskForState[] }) {
+  async reorderIncompleteTasks ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newIncompleteTaskOrder }: { newIncompleteTaskOrder: Task[] }) {
+
+    async function bulkPutTasks (tasks: Task[]) {
+      const tasksToPut = tasks.map(toRaw)
+      await handleDexieError(dexieDb.tasks.bulkPut(tasksToPut), 'tasks.bulkPut reorder', tasksToPut)
+      commit('setTasks', { tasks })
+    }
+
     try {
-      const incompleteTasks: TaskForState[] = state.tasks.filter(t => !t.completed)
-      const completedTasks: TaskForState[] = state.tasks.filter(t => t.completed)
+      const incompleteTasks: Task[] = state.tasks.filter(t => !t.completed)
+      const completedTasks: Task[] = state.tasks.filter(t => t.completed)
       const origLength = incompleteTasks.length
       if (newIncompleteTaskOrder.length === origLength) {
-        const fullTaskOrder: TaskForState[] = newIncompleteTaskOrder.concat(completedTasks)
+        const fullTaskOrder: Task[] = newIncompleteTaskOrder.concat(completedTasks)
         for (const [i, task] of fullTaskOrder.entries()) {
           task.order = i
         }
-        await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw) as Task[]), 'tasks.bulkPut reorder (same length)', fullTaskOrder.map(toRaw))
-        commit('setTasks', { tasks: fullTaskOrder })
+        await bulkPutTasks(fullTaskOrder)
       } else {
         const reorderTaskIds: { [key: string]: boolean } = {}
         newIncompleteTaskOrder.forEach(task => {
@@ -130,12 +140,11 @@ const actions = {
           }
         }
         if (incompleteTasks.length === origLength) { // ensure that the length has not changed
-          const fullTaskOrder: TaskForState[] = incompleteTasks.concat(completedTasks)
+          const fullTaskOrder: Task[] = incompleteTasks.concat(completedTasks)
           for (const [i, task] of fullTaskOrder.entries()) {
             task.order = i
           }
-          await handleDexieError(dexieDb.tasks.bulkPut(fullTaskOrder.map(toRaw) as Task[]), 'tasks.bulkPut reorder (different length)', fullTaskOrder.map(toRaw))
-          commit('setTasks', { tasks: fullTaskOrder })
+          await bulkPutTasks(fullTaskOrder)
         }
       }
     } catch (error) {
@@ -209,7 +218,7 @@ const actions = {
   },
 
   async archiveTasks ({ getters, commit }: ActionContext<PomoTrackState, PomoTrackState>) {
-    const completedTasks: TaskForState[] = getters.completedTasksFiltered.filter((t: TaskForState) => !t.archived)
+    const completedTasks: Task[] = getters.completedTasksFiltered.filter((t: Task) => !t.archived)
     if (completedTasks.length === 0) {
       alert('No completed tasks to archive')
       return
@@ -346,7 +355,7 @@ const actions = {
 
     const newTags = await dexieDb.taskTagMap.where('taskId').equals(taskId).toArray()
     const newTagIds = newTags.map(tag => tag.tagId)
-    commit('updateTask', { taskId, taskUpdates: { tags: newTagIds } })
+    commit('deleteTaskTag', { taskId, newTagIds })
   },
 
   async deleteTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {

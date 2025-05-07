@@ -30,8 +30,8 @@ describe('interval updates', () => {
       cy.get('.activity-view button').contains('Add Interval').click()
 
       // Assert
-      cy.get('tr').last().within(() => {
-        cy.get('td').contains('Time Spent: 25 minutes')
+      cy.get('.log').last().within(() => {
+        cy.contains('Time Spent: 25 minutes')
       })
     })
 
@@ -46,8 +46,8 @@ describe('interval updates', () => {
       })
 
       // Assert
-      cy.get('tr').last().within(() => {
-        cy.get('td').contains('Time Spent: 25 minutes')
+      cy.get('.log').last().within(() => {
+        cy.contains('Time Spent: 25 minutes')
       })
     })
 
@@ -73,11 +73,11 @@ describe('interval updates', () => {
       cy.get('.activity-view button').contains('Add Interval').click()
 
       // Assert
-      cy.get('.activity-view tr').first().within(() => {
-        cy.get('td').contains('Running')
+      cy.get('.activity-view .log').first().within(() => {
+        cy.contains('Running')
       })
-      cy.get('.activity-view tr').last().within(() => {
-        cy.get('td').contains('Stopped')
+      cy.get('.activity-view .log').last().within(() => {
+        cy.contains('Stopped')
       })
     })
 
@@ -110,7 +110,7 @@ describe('interval updates', () => {
       cy.get('.activity-view button').contains('Add Interval').click()
 
       // Act
-      cy.get('tr').last().within(() => {
+      cy.get('.log').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
         cy.get('#add-interval-dropdown-menu .b-form-group').contains('Duration:').within(() => {
           cy.get('input').clear().type('35{enter}')
@@ -118,8 +118,8 @@ describe('interval updates', () => {
       })
 
       // Assert
-      cy.get('tr').last().within(() => {
-        cy.get('td').contains('Time Spent: 35 minutes')
+      cy.get('.log').last().within(() => {
+        cy.contains('Time Spent: 35 minutes')
       })
     })
 
@@ -130,7 +130,7 @@ describe('interval updates', () => {
       cy.get('.activity-view button').contains('Add Interval').click()
 
       // Act
-      cy.get('tr').last().within(() => {
+      cy.get('.log').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
         cy.get('.b-form-group').contains('Duration:').within(() => {
           cy.get('input').clear().type('35')
@@ -139,8 +139,8 @@ describe('interval updates', () => {
       })
 
       // Assert
-      cy.get('tr').last().within(() => {
-        cy.get('td').contains('Time Spent: 35 minutes')
+      cy.get('.log').last().within(() => {
+        cy.contains('Time Spent: 35 minutes')
       })
     })
 
@@ -150,7 +150,7 @@ describe('interval updates', () => {
       cy.wait(500)
       cy.contains('Activity Log').scrollIntoView()
 
-      cy.get('tr').last().within(() => {
+      cy.get('.log').last().within(() => {
         // Act
         cy.get('button > svg.fa-ellipsis-vertical').click()
 
@@ -171,13 +171,13 @@ describe('interval updates', () => {
       cy.get('.activity-view button').contains('Add Interval').click()
 
       // Act
-      cy.get('tr').last().within(() => {
+      cy.get('.log').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
         cy.get('.btn-danger').contains('Delete Interval').click()
       })
 
       // Assert
-      cy.get('.activity-view tr').should('not.exist')
+      cy.get('.activity-view .log').should('not.exist')
     })
 
     it('should manually delete an interval after page reload', () => {
@@ -189,13 +189,13 @@ describe('interval updates', () => {
       cy.contains('Activity Log').scrollIntoView()
 
       // Act
-      cy.get('tr').last().within(() => {
+      cy.get('.log').last().within(() => {
         cy.get('button > svg.fa-ellipsis-vertical').click()
         cy.get('.btn-danger').contains('Delete Interval').click()
       })
 
       // Assert
-      cy.get('.activity-view tr').should('not.exist')
+      cy.get('.activity-view .log').should('not.exist')
     })
   })
 })

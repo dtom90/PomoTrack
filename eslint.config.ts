@@ -10,7 +10,7 @@ configureVueProject({ scriptLangs: ['ts', 'tsx', 'js'] })
 export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.{ts,mts,tsx,vue,cy.ts}'],
   },
 
   globalIgnores(['**/dist/**', '**/dist_web/**', '**/dist_electron/**', '**/coverage/**']),
@@ -19,15 +19,8 @@ export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
 
   {
-    files: ['src/**/*.{ts,mts,tsx,vue}'],
     rules: {
       'no-console': 'error',
-    },
-  },
-
-  {
-    files: ['**/*.vue'],
-    rules: {
       'vue/multi-word-component-names': 'off',
     },
   },
