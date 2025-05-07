@@ -66,6 +66,7 @@
         <div :key="task.id"> <!-- a bug in vue.draggable.next requires this to be wrapped in a non-component element -->
           <Task
             :task-id="task.id"
+            @click="selectTask({ taskId: task.id, list })"
           />
         </div>
       </template>
@@ -81,6 +82,7 @@
         v-for="task in completedTaskList"
         :key="task.id"
         :task-id="task.id"
+        @click="selectTask({ taskId: task.id })"
       />
     </ul>
 
@@ -115,6 +117,8 @@ const props = defineProps({
     default: 'To Do'
   }
 })
+
+const emit = defineEmits(['hide-offcanvas'])
 
 // Store access
 const store = useStore()
@@ -167,6 +171,11 @@ const addNewTask = () => {
     })
     newTaskName.value = ''
   }
+}
+
+const selectTask = (payload: { taskId: string }) => {
+  store.dispatch('selectTask', payload)
+  emit('hide-offcanvas')
 }
 
 const archiveTasks = () => {

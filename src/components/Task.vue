@@ -3,7 +3,6 @@
   <li
     v-if="task"
     :class="['task', 'draggable-item', 'list-group-item', 'list-group-item-action', 'form-check', { active: active }]"
-    @click="selectTask({ taskId: taskId })"
   >
     <div class="d-flex align-items-start ">
       <Checkbox
@@ -69,12 +68,6 @@ const checked = computed(() => {
 const displayCountdownIndicator = computed(() => {
   return tempState.value.activeTaskID === props.taskId
 })
-
-// Methods (from mapActions)
-const selectTask = (payload: { taskId: string }) => {
-  store.dispatch('selectTask', payload)
-}
-
 </script>
 
 <style scoped lang="scss">
