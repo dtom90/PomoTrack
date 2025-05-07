@@ -1,5 +1,5 @@
 <template>
-  <div class="log">
+  <div class="day-log">
     <!-- Display Day -->
     <h5
       v-if="day"
@@ -100,7 +100,7 @@ const { displayTimeHuman } = useTime()
 <style scoped lang="scss">
 @use "../styles/variables";
 
-.log {
+.day-log {
   margin-top: 32px;
 }
 
