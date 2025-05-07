@@ -1,0 +1,22 @@
+extends: null
+appId: app.pomotrack
+productName: PomoTrack
+copyright: Copyright © 2024 David Thomason
+directories:
+  output: dist_electron_mas
+  buildResources: build
+files:
+  - dist_web/**/*
+  - electron.js
+  - preload.ts
+  - package.json
+mac:
+  target: mas
+  arch:
+    - x64
+    - arm64
+  category: public.app-category.productivity
+  hardenedRuntime: true
+  entitlements: build/entitlements.mas.plist
+  entitlementsInherit: build/entitlements.mas.plist
+  icon: build/icon.icns
