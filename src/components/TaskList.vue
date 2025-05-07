@@ -66,7 +66,7 @@
         <div :key="task.id"> <!-- a bug in vue.draggable.next requires this to be wrapped in a non-component element -->
           <Task
             :task-id="task.id"
-            @click="selectTask({ taskId: task.id, list })"
+            @click="selectTask({ taskId: task.id })"
           />
         </div>
       </template>
