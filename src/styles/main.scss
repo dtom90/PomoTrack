@@ -264,6 +264,14 @@ table {
   z-index: 1000;
 }
 
+@media (max-width: 768px) {
+  .submenu {
+    top: 38px !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+}
+
 .submenu.active {
   display: block;
 }
