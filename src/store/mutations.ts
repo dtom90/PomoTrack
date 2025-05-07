@@ -10,7 +10,10 @@ interface NotificationPayload extends NotificationType {
 const mutations: MutationTree<PomoTrackState> = {
 
   loadInitialData (state: PomoTrackState, { tasks, tags, taskTagMaps, settings, selectedTaskLogs }: { tasks: Task[], tags: Tag[], taskTagMaps: TaskTagMap[], settings: SettingKv[], selectedTaskLogs: TaskLog[] }) {
-    state.tasks = tasks
+    state.tasks = {}
+    for (const task of tasks) {
+      state.tasks[task.id] = task
+    }
     state.tags = {}
     state.tagOrder = []
     for (const tag of tags) {
@@ -35,7 +38,7 @@ const mutations: MutationTree<PomoTrackState> = {
   /** Tasks **/
 
   addTask (state: PomoTrackState, { task, taskTagMaps }: { task: Task, taskTagMaps: TaskTagMap[] }) {
-    state.tasks.push(task)
+    state.tasks[task.id] = task
     state.taskTagsMap[task.id] = []
     taskTagMaps.forEach(taskTagMap => {
       state.taskTagsMap[taskTagMap.taskId].push(taskTagMap.tagId)
@@ -43,29 +46,26 @@ const mutations: MutationTree<PomoTrackState> = {
   },
 
   updateTask (state: PomoTrackState, { taskId, taskUpdates }: { taskId: string, taskUpdates: Partial<Task> }) {
-    const index = state.tasks.findIndex(t => t.id === taskId)
-    if (index !== -1) {
-      state.tasks[index] = { ...state.tasks[index], ...taskUpdates }
-    }
+    state.tasks[taskId] = { ...state.tasks[taskId], ...taskUpdates }
   },
 
   setTasks (state: PomoTrackState, { tasks }: { tasks: Task[] }) {
-    state.tasks = tasks
+    state.tasks = {}
+    for (const task of tasks) {
+      state.tasks[task.id] = task
+    }
   },
 
   updateTasks (state: PomoTrackState, { tasksToUpdate }: { tasksToUpdate: (Partial<Task> & { id: string })[] }) {
-    tasksToUpdate.forEach(taskUpdate => {
-      const index = state.tasks.findIndex(t => t.id === taskUpdate.id)
-      if (index !== -1) {
-        state.tasks[index] = { ...state.tasks[index], ...taskUpdate }
-      }
+    tasksToUpdate.forEach(task => {
+      state.tasks[task.id] = { ...state.tasks[task.id], ...task }
     })
   },
 
   /** Logs **/
 
   startTask (state: PomoTrackState, { log }: { log: TaskLog }) {
-    const task = state.tasks.find(t => t.id === log.taskId)
+    const task = state.tasks[log.taskId]
     if (task) {
       state.tempState.activeTaskID = task.id
       state.tempState.running = true
@@ -102,13 +102,13 @@ const mutations: MutationTree<PomoTrackState> = {
 
   setModalActivity (state: PomoTrackState, { logs }: { logs: TaskLog[] }) {
     const logsWithTaskDetails: ModalActivityItem[] = logs.map(l => {
-      const task = state.tasks.find(t => t.id === l.taskId)
+      const task = state.tasks[l.taskId]
       if (!task) return l as ModalActivityItem
       const tagIds = state.taskTagsMap[task.id]
       return Object.assign({ task: task.name, tagIds }, l)
     })
     // Add completed tasks as events
-    for (const task of state.tasks.filter(t => t.completed)) {
+    for (const task of Object.values(state.tasks).filter(t => t.completed)) {
       logsWithTaskDetails.unshift({ task: task.name, tagIds: state.taskTagsMap[task.id], completed: task.completed })
     }
     // @ts-expect-error element will either have started or completed
@@ -150,8 +150,8 @@ const mutations: MutationTree<PomoTrackState> = {
   },
 
   deleteTag (state: PomoTrackState, { tagId }: { tagId: string }) {
-    state.tasks.forEach(task => {
-      state.taskTagsMap[task.id] = state.taskTagsMap[task.id].filter(tId => tId !== tagId)
+    Object.keys(state.tasks).forEach(taskId => {
+      state.taskTagsMap[taskId] = state.taskTagsMap[taskId].filter(tId => tId !== tagId)
     })
     state.settings.selectedTagIds = state.settings.selectedTagIds.filter(tag => tag !== tagId)
     delete state.tags[tagId]

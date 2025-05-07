@@ -51,10 +51,10 @@ const store = useStore()
 // Computed properties (from mapState and computed)
 const tempState = computed(() => store.state.tempState)
 const settings = computed(() => store.state.settings)
-const tasks = computed<Task[]>(() => store.state.tasks)
+const tasks = computed<{ [taskId: string]: Task }>(() => store.state.tasks)
 
 const task = computed<Task | undefined>(() => {
-  return tasks.value.find(t => t.id === props.taskId)
+  return tasks.value[props.taskId]
 })
 
 const active = computed(() => {

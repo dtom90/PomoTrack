@@ -1,5 +1,5 @@
 export interface PomoTrackState {
-  tasks: Task[];
+  tasks: { [taskId: string]: Task }
   tags: { [tagId: string]: Tag };
   taskTagsMap: { [taskId: string]: string[] };
   tagOrder: string[];

@@ -60,7 +60,7 @@ const actions = {
     const taskName = name.trim()
     if (taskName) {
       try {
-        const order = state.tasks.reduce((max, t) => t.order > max ? t.order : max, 0) + 1
+        const order = Object.values(state.tasks).reduce((max, t) => t.order > max ? t.order : max, 0) + 1
         const newTask: Task = {
           id: 'task-' + nanoid(),
           name: taskName,
@@ -92,7 +92,7 @@ const actions = {
   },
 
   async updateTaskName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, name }: { taskId: string, name: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const taskUpdates: Partial<Task> = { name }
       await dexieDb.tasks.update(taskId, taskUpdates)
@@ -101,7 +101,7 @@ const actions = {
   },
 
   async updateTaskNotes ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, notes }: { taskId: string, notes: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const taskUpdates: Partial<Task> = { notes }
       await dexieDb.tasks.update(taskId, taskUpdates)
@@ -118,8 +118,8 @@ const actions = {
     }
 
     try {
-      const incompleteTasks: Task[] = state.tasks.filter(t => !t.completed)
-      const completedTasks: Task[] = state.tasks.filter(t => t.completed)
+      const incompleteTasks: Task[] = Object.values(state.tasks).filter(t => !t.completed)
+      const completedTasks: Task[] = Object.values(state.tasks).filter(t => t.completed)
       const origLength = incompleteTasks.length
       if (newIncompleteTaskOrder.length === origLength) {
         const fullTaskOrder: Task[] = newIncompleteTaskOrder.concat(completedTasks)
@@ -156,7 +156,7 @@ const actions = {
   async startTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
     await dispatch('stopTask')
 
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const log: TaskLog = {
         id: 'log-' + nanoid(),
@@ -171,7 +171,7 @@ const actions = {
   },
 
   async updateTaskTimer ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const runningLog = await dexieDb.logs.where('taskId').equals(taskId).and(log => log.stopped == null).first()
       if (runningLog) {
@@ -193,7 +193,7 @@ const actions = {
   },
 
   async completeTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       let completedValue = undefined
       if (!task.completed) {
@@ -209,7 +209,7 @@ const actions = {
   },
 
   async archiveTask ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const taskUpdates = { archived: !task.archived }
       await dexieDb.tasks.update(taskId, taskUpdates)
@@ -233,7 +233,7 @@ const actions = {
   },
 
   async addInterval ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, started, timeSpent, stopped }: { taskId: string, started: number, timeSpent: number, stopped: number }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     if (task) {
       const log = {
         id: 'log-' + nanoid(),
@@ -271,7 +271,7 @@ const actions = {
   async addTaskTagByName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagName }: { taskId: string, tagName: string }) {
     tagName = tagName.trim()
     if (tagName) {
-      const task = state.tasks.find(t => t.id === taskId)
+      const task = state.tasks[taskId]
       if (task) {
         let tag = await dexieDb.tags.where('tagName').equals(tagName).first()
         const isNewTag = !tag
@@ -299,7 +299,7 @@ const actions = {
   },
 
   async addTaskTagById ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagId }: { taskId: string, tagId: string }) {
-    const task = state.tasks.find(t => t.id === taskId)
+    const task = state.tasks[taskId]
     const tag = state.tags[tagId]
     if (task && tag) {
       await dexieDb.taskTagMap.add({
