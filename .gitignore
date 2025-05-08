@@ -17,6 +17,7 @@ dist-ssr
 coverage
 *.local
 *.provisionprofile
+*.mobileprovision
 
 /cypress/downloads/
 /cypress/videos/

@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.davidthomason.pomodash',
+  appId: 'app.pomodash',
   appName: 'Pomodash',
   webDir: 'dist_web',
   plugins: {

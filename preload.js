@@ -1,9 +1,8 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import type { IpcRendererEvent } from 'electron'
+const { contextBridge, ipcRenderer } = require('electron')
 
 const api = {
-  onMessage: (callback: (message: unknown) => void) => {
-    const subscription = (_event: IpcRendererEvent, message: unknown) => callback(message);
+  onMessage: (callback) => {
+    const subscription = (_event, message) => callback(message);
     ipcRenderer.on('message', subscription);
     // return () => ipcRenderer.removeListener('message', subscription);
   },

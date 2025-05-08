@@ -1,5 +1,5 @@
 extends: null
-appId: com.davidthomason.pomodash
+appId: app.pomodash
 productName: Pomodash
 copyright: Copyright © 2024 David Thomason
 directories:
@@ -8,7 +8,7 @@ directories:
 files:
   - dist_web/**/*
   - electron.js
-  - preload.ts
+  - preload.js
   - package.json
 mac:
   target:
@@ -18,7 +18,7 @@ mac:
         - arm64
   category: public.app-category.productivity
   hardenedRuntime: true
+  icon: build/icon.icns
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  icon: build/icon.png
-  provisioningProfile: build/PomoTrack_Mac_App_Store_Profile.provisionprofile
+  provisioningProfile: build/Pomodash_Mac_App_Store_Profile.provisionprofile

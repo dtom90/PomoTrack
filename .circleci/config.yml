@@ -99,7 +99,7 @@ jobs:
     parameters:
       target_repo:
         type: string
-        default: "git@github.com:dtom90/Pomodash.git"
+        default: "git@github.com:dtom90/PomoTrack.git"
       target_branch:
         type: string
         default: "gh-pages"
