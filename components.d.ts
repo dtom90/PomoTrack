@@ -50,7 +50,6 @@ declare module 'vue' {
     TagEditMenu: typeof import('./src/components/TagEditMenu.vue')['default']
     TagInput: typeof import('./src/components/TagInput.vue')['default']
     TagSettingsButton: typeof import('./src/components/TagSettingsButton.vue')['default']
-    Task: typeof import('./src/components/Task.vue')['default']
     TaskFilterDropdown: typeof import('./src/components/TaskFilterDropdown.vue')['default']
     TaskList: typeof import('./src/components/TaskList.vue')['default']
     TaskListElement: typeof import('./src/components/TaskListElement.vue')['default']
