@@ -1,6 +1,6 @@
 {
-  "name": "pomotrack",
-  "displayName": "PomoTrack",
+  "name": "pomodash",
+  "displayName": "Pomodash",
   "description": "A pomodoro timer app with task tracking",
   "author": {
     "name": "David Thomason",
@@ -20,7 +20,7 @@
     "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder",
     "electron:release:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
-    "electron:build:beta": "npm run build && electron-builder --mac dir -c.productName=\"PomoTrackBeta\" -c.appId=\"app.pomotrack.beta\"",
+    "electron:build:beta": "npm run build && electron-builder --mac dir -c.productName=\"PomoTrackBeta\" -c.appId=\"app.pomodash.beta\"",
     "electron:run:beta": "./dist_electron/mac/PomoTrackBeta.app/Contents/MacOS/PomoTrackBeta --inspect",
     "capacitor:sync": "npm run build && npx cap sync ios",
     "test:basic": "npm audit && npm run type-check && npm run lint",
@@ -84,8 +84,8 @@
     "vue-tsc": "^2.2.8"
   },
   "build": {
-    "appId": "app.pomotrack",
-    "productName": "PomoTrack",
+    "appId": "app.pomodash",
+    "productName": "Pomodash",
     "publish": "github",
     "directories": {
       "output": "dist_electron"

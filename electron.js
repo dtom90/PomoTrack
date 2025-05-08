@@ -11,7 +11,7 @@ autoUpdater.autoDownload = false; // We will prompt the user
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 if (isDevelopment) {
-  app.setName('PomoTrack Dev')
+  app.setName('Pomodash Dev')
 }
 const productName = app.getName();
 log.info(`App name: ${productName}`);
@@ -68,7 +68,7 @@ async function checkForUpdates () {
   try {
     const result = await autoUpdater.checkForUpdates()
     if (result && result.updateInfo.version === app.getVersion()) {
-      sendStatusToWindow('You are using the latest version of PomoTrack! (' + app.getVersion() + ')')
+      sendStatusToWindow('You are using the latest version of Pomodash! (' + app.getVersion() + ')')
     }
   } catch (error) {
     sendStatusToWindow('An error occurred while checking for updates.')
@@ -93,7 +93,7 @@ autoUpdater.on('update-available', (info) => {
     defaultId: 0,
     cancelId: 1,
     title: 'Update Available',
-    message: 'Update for PomoTrack is available. Would you like to download it now?',
+    message: 'Update for Pomodash is available. Would you like to download it now?',
     detail: 'Version ' + info.version
   })
   if (result === 0) {

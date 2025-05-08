@@ -1,6 +1,6 @@
 extends: null
-appId: com.davidthomason.pomotrack
-productName: PomoTrack
+appId: com.davidthomason.pomodash
+productName: Pomodash
 copyright: Copyright © 2024 David Thomason
 directories:
   output: dist_electron_mas

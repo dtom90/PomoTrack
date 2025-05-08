@@ -6,7 +6,7 @@ cd "${THIS_DIR}/.." || exit
 
 # Installs node modules to host directory
 
-IMAGE_NAME=pomotrack-base
+IMAGE_NAME=pomodash-base
 
 CMD="$@"
 if [[ -z "$CMD" ]]; then CMD="npm install"; fi

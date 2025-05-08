@@ -9,8 +9,8 @@ cd "${THIS_DIR}/.." || exit
 # - Source code is copied to Docker image
 # - Run with additional command to replace default command
 
-IMAGE_NAME=pomotrack-temp
-CONTAINER_NAME=pomotrack-temp
+IMAGE_NAME=pomodash-temp
+CONTAINER_NAME=pomodash-temp
 
 docker build \
        -f docker/temp.dockerfile \

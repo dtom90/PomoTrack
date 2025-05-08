@@ -37,7 +37,7 @@ export function useNotifications () {
     if (!('Notification' in window && Notification)) {
       alert(message)
     } else if (Notification.permission === 'granted') {
-      const notification = new Notification('PomoTrack', { body: message })
+      const notification = new Notification('Pomodash', { body: message })
       store.commit('saveNotification', { notification })
     } else {
       alert(message)

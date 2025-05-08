@@ -9,8 +9,8 @@ cd "${THIS_DIR}/.." || exit
 # - Source code is mapped from host
 # - Run with additional command to replace default command
 
-IMAGE_NAME=pomotrack-base
-CONTAINER_NAME=pomotrack-dev
+IMAGE_NAME=pomodash-base
+CONTAINER_NAME=pomodash-dev
 
 # shellcheck disable=SC2124
 CMD="$@"

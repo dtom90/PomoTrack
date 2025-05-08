@@ -46,7 +46,7 @@ jobs:
           command: ./docker/test_cypress.sh
       - run:
           name: Stop production Docker contianer
-          command: docker stop pomotrack-prod
+          command: docker stop pomodash-prod
 
   create-release:
     docker:
@@ -99,7 +99,7 @@ jobs:
     parameters:
       target_repo:
         type: string
-        default: "git@github.com:dtom90/PomoTrack.git"
+        default: "git@github.com:dtom90/Pomodash.git"
       target_branch:
         type: string
         default: "gh-pages"
@@ -108,7 +108,7 @@ jobs:
         default: "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
       cname:
         type: string
-        default: "pomotrack.app"
+        default: "pomodash.app"
     docker:
       - image: cimg/node:22.15.0
     steps:
