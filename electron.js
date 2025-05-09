@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron')
 const path = require('path')
-const { autoUpdater } = require('electron-updater')
+const { autoUpdater } = process.mas ? { autoUpdater: null } : require('electron-updater')
 const log = require('electron-log')
 
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
-autoUpdater.autoDownload = false; // We will prompt the user
+if (autoUpdater) {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'info';
+  autoUpdater.autoDownload = false; // We will prompt the user
+}
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -44,8 +46,10 @@ function createWindow() {
   } else {
     const indexPath = path.join(__dirname, 'dist_web/index.html')
     mainWindow.loadFile(indexPath).then(() => {
-      log.info('Checking for updates after loading production build...');
-      autoUpdater.checkForUpdates();
+      if (autoUpdater) {
+        log.info('Checking for updates after loading production build...');
+        autoUpdater.checkForUpdates();
+      }
     }).catch(err => {
       log.error('Failed to load production index.html:', err)
       dialog.showErrorBox('Load Error', `Failed to load application file: ${indexPath}\n${err.message}`)
@@ -65,6 +69,8 @@ function createWindow() {
 // --- Auto Update ---
 
 async function checkForUpdates () {
+  if (!autoUpdater) return;
+
   try {
     const result = await autoUpdater.checkForUpdates()
     if (result && result.updateInfo.version === app.getVersion()) {
@@ -76,59 +82,61 @@ async function checkForUpdates () {
   }
 }
 
-autoUpdater.on('checking-for-update', () => {
-  log.info('Checking for update...')
-})
-
-autoUpdater.on('update-not-available', (info) => {
-  log.info('Update not available.')
-  log.info(info)
-})
-
-autoUpdater.on('update-available', (info) => {
-  log.info(info)
-  const result = dialog.showMessageBoxSync({
-    type: 'question',
-    buttons: ['Download', 'Later'],
-    defaultId: 0,
-    cancelId: 1,
-    title: 'Update Available',
-    message: 'Update for Pomodash is available. Would you like to download it now?',
-    detail: 'Version ' + info.version
-  })
-  if (result === 0) {
-    log.info('autoUpdater.downloadUpdate...')
-    autoUpdater.downloadUpdate()
-  }
-})
-
-autoUpdater.on('error', (err) => {
-  sendStatusToWindow('Error in auto-updater. ' + err)
-})
-
-autoUpdater.on('download-progress', (progressObj) => {
-  let logMessage = 'Download speed: ' + progressObj.bytesPerSecond
-  logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%'
-  logMessage = logMessage + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
-  log.info(logMessage)
-})
-
-autoUpdater.on('update-downloaded', (info) => {
-  log.info(info)
-  const result = dialog.showMessageBoxSync({
-    type: 'question',
-    buttons: ['Install & Restart', 'Later'],
-    defaultId: 0,
-    cancelId: 1,
-    title: 'Update Ready',
-    message: 'The update has been downloaded. Do you want to install it now?'
+if (autoUpdater) {
+  autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...')
   })
 
-  if (result === 0) {
-    log.info('autoUpdater.quitAndInstall...')
-    autoUpdater.quitAndInstall()
-  }
-})
+  autoUpdater.on('update-not-available', (info) => {
+    log.info('Update not available.')
+    log.info(info)
+  })
+
+  autoUpdater.on('update-available', (info) => {
+    log.info(info)
+    const result = dialog.showMessageBoxSync({
+      type: 'question',
+      buttons: ['Download', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+      title: 'Update Available',
+      message: 'Update for Pomodash is available. Would you like to download it now?',
+      detail: 'Version ' + info.version
+    })
+    if (result === 0) {
+      log.info('autoUpdater.downloadUpdate...')
+      autoUpdater.downloadUpdate()
+    }
+  })
+
+  autoUpdater.on('error', (err) => {
+    sendStatusToWindow('Error in auto-updater. ' + err)
+  })
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    let logMessage = 'Download speed: ' + progressObj.bytesPerSecond
+    logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%'
+    logMessage = logMessage + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    log.info(logMessage)
+  })
+
+  autoUpdater.on('update-downloaded', (info) => {
+    log.info(info)
+    const result = dialog.showMessageBoxSync({
+      type: 'question',
+      buttons: ['Install & Restart', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+      title: 'Update Ready',
+      message: 'The update has been downloaded. Do you want to install it now?'
+    })
+
+    if (result === 0) {
+      log.info('autoUpdater.quitAndInstall...')
+      autoUpdater.quitAndInstall()
+    }
+  })
+}
 
 // --- App Lifecycle Events ---
 

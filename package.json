@@ -18,10 +18,10 @@
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
-    "electron:beta:build": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\"",
-    "electron:beta:run": "./dist_electron/mac/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
+    "electron:beta": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\" -c.mac.identity=null && ./dist_electron/mac/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
+    "electron:mas-dev": "npm run build && electron-builder --config electron-builder.mas-dev.yml && ./dist_electron_mas_dev/mas/Pomodash.app/Contents/MacOS/Pomodash --inspect",
     "electron:build": "npm run build && electron-builder",
-    "electron:build:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
+    "electron:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
     "capacitor:sync": "npm run build && npx cap sync ios",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
@@ -106,8 +106,7 @@
       },
       "category": "public.app-category.productivity",
       "hardenedRuntime": true,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlements": "build/entitlements.mac.plist"
     },
     "win": {
       "target": "nsis",

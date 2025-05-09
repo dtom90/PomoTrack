@@ -1,4 +1,4 @@
-# Logs
+# Log files
 logs
 *.log
 npm-debug.log*
@@ -7,18 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency and build files
 node_modules
+*.tsbuildinfo
 .DS_Store
-dist
-dist_web
-dist_electron
-dist_electron_mas
-dist-ssr
+/dist/
+/dist_*/
 coverage
 *.local
 *.provisionprofile
 *.mobileprovision
 
+# Test files
 /cypress/downloads/
 /cypress/videos/
 /cypress/screenshots/
@@ -32,5 +32,3 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
-*.tsbuildinfo
