@@ -241,6 +241,7 @@ const onSubmit = async () => {
   const intervalData = {
     started: stringToMs(startTime.value!),
     timeSpent: minutesToMs(durationMinutes.value),
+    stopped: stopTime.value ? stringToMs(stopTime.value) : null,
     taskId: props.taskId,
     logId: props.logId
   }
