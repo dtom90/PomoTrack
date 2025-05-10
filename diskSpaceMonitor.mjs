@@ -2,7 +2,7 @@ import checkDiskSpace from 'check-disk-space';
 /* eslint-disable no-console */
 
 const CHECK_INTERVAL = 1000; // 1 second
-const LOW_SPACE_THRESHOLD = 12; // 2 GB
+const LOW_SPACE_THRESHOLD = 2; // 2 GB
 
 export function diskSpaceMonitor(mainWindow) {
 
