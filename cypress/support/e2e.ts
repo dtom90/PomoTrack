@@ -29,7 +29,7 @@ Cypress.on('window:before:load', (win) => {
 
 beforeEach(() => {
   cy.visit('/')
-  cy.contains('PomoTrack')
+  cy.contains('Pomodash')
   indexedDB.databases().then((databases) => {
     databases.forEach((db) => {
       indexedDB.deleteDatabase(db.name)

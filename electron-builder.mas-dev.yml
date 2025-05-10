@@ -3,7 +3,7 @@ appId: app.pomodash
 productName: Pomodash
 copyright: Copyright © 2024 David Thomason
 directories:
-  output: dist_electron_mas
+  output: dist_electron_mas_dev
   buildResources: build
 files:
   - dist_web/**/*
@@ -19,6 +19,7 @@ mac:
   category: public.app-category.productivity
   hardenedRuntime: true
   icon: build/icon.icns
-  entitlements: build/entitlements.mas.plist
+  identity: null
+  entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mas.plist
-  provisioningProfile: build/Pomodash_Mac_App_Store_Profile.provisionprofile
+  provisioningProfile: build/Pomodash_DarkPhoenix_Development_Profile.provisionprofile

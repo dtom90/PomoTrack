@@ -1,7 +1,7 @@
 <template>
   <BNavbar toggleable="md" variant="light">
     <BNavbarBrand href="#">
-      PomoTrack
+      Pomodash
     </BNavbarBrand>
 
     <div id="time-container">

@@ -5,6 +5,7 @@ orbs:
   macos: circleci/macos@2.5.2
   windows: circleci/windows@5
   node: circleci/node@5.2.0
+  cypress: cypress-io/cypress@4
 
 jobs:
 
@@ -31,7 +32,7 @@ jobs:
           name: Run packages audit and lint
           command: ./docker/test_basic.sh
 
-  test-cypress:
+  build-prod:
     docker:
       - image: cimg/base:stable
     steps:
@@ -42,11 +43,8 @@ jobs:
           name: Build & run production Docker image
           command: ./docker/prod.sh -d
       - run:
-          name: Run cypress browser tests against production container
-          command: ./docker/test_cypress.sh
-      - run:
           name: Stop production Docker contianer
-          command: docker stop pomotrack-prod
+          command: docker stop pomodash-prod
 
   create-release:
     docker:
@@ -108,7 +106,7 @@ jobs:
         default: "SHA256:NDKPWa+kMya3u32KAI0pfVcWCqpaTWqK4Nzr+8Pegh8"
       cname:
         type: string
-        default: "pomotrack.app"
+        default: "pomodash.app"
     docker:
       - image: cimg/node:22.15.0
     steps:
@@ -232,7 +230,16 @@ workflows:
               ignore:
                 - master
                 - gh-pages
-      - test-cypress:
+      - build-prod:
+          filters:
+            branches:
+              ignore:
+                - master
+                - gh-pages
+      - cypress/run:
+          install-browsers: true
+          start-command: 'npm run dev'
+          cypress-command: 'npx cypress run --browser chrome'
           filters:
             branches:
               ignore:

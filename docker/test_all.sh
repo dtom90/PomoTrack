@@ -9,8 +9,8 @@ echo "Running Packages Audit and Lint..."
 echo
 ./docker/test_basic.sh
 
-IMAGE_NAME=pomotrack-prod
-CONTAINER_NAME=pomotrack-prod
+IMAGE_NAME=pomodash-prod
+CONTAINER_NAME=pomodash-prod
 echo
 echo "Deploying production container..."
 echo

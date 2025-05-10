@@ -21,7 +21,7 @@
           <!-- Task Name -->
           <div
             v-if="event.task"
-            class="flex-1 text-center"
+            class="flex-1 text-center me-2"
           >
             <span class="text-bold">{{ event.task }}</span>
           </div>
@@ -31,23 +31,23 @@
             <div class="flex-1 d-flex flex-wrap">
               <div class="flex-2 d-flex align-items-center justify-content-evenly">
                 <!-- Started Time -->
-                <div v-if="event.started">
+                <div v-if="event.started" class="me-2">
                   <span>Started&nbsp;{{ displayTimeHuman(event.started).replace(/\s/g, '&nbsp;') }}</span>
                 </div>
 
                 <!-- Arrow -->
-                <div class="mx-2">
+                <div class="me-2">
                   <font-awesome-icon icon="arrow-right" />
                 </div>
 
                 <!-- Stopped Time -->
-                <div>
+                <div class="me-2">
                   <span>{{ event.stopped ? 'Stopped' : 'Running' }}&nbsp;{{ displayTimeHuman(event.stopped || Date.now()).replace(/\s/g, '&nbsp;') }}</span>
                 </div>
               </div>
 
               <!-- Time Spent -->
-              <div v-if="event.timeSpent" class="flex-1 text-center">
+              <div v-if="event.timeSpent" class="flex-1 text-center me-2">
                 <span>Time&nbsp;Spent:&nbsp;{{ displayDuration(event.timeSpent).replace(/\s/g, '&nbsp;') }}</span>
               </div>
             </div>
@@ -104,11 +104,9 @@ const { displayTimeHuman } = useTime()
   margin-top: 32px;
 }
 
-.activityLog {
+.log {
   margin-top: 20px;
   margin-bottom: 0;
-  font-size: 16px;
-  text-align: center;
 }
 
 .log-wrapper {

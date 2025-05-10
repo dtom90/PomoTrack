@@ -1,6 +1,6 @@
 {
-  "name": "pomotrack",
-  "displayName": "PomoTrack",
+  "name": "pomodash",
+  "displayName": "Pomodash",
   "description": "A pomodoro timer app with task tracking",
   "author": {
     "name": "David Thomason",
@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.18.8",
+  "version": "0.18.9",
   "private": true,
   "main": "electron.js",
   "scripts": {
@@ -18,10 +18,11 @@
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
+    "electron:beta": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\" -c.mac.identity=null && ./dist_electron/mac/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
+    "electron:mas-dev": "npm run build && electron-builder --config electron-builder.mas-dev.yml && ./dist_electron_mas_dev/mas/Pomodash.app/Contents/MacOS/Pomodash --inspect",
     "electron:build": "npm run build && electron-builder",
-    "electron:release:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
-    "electron:build:beta": "npm run build && electron-builder --mac dir -c.productName=\"PomoTrackBeta\" -c.appId=\"app.pomotrack.beta\"",
-    "electron:run:beta": "./dist_electron/mac/PomoTrackBeta.app/Contents/MacOS/PomoTrackBeta --inspect",
+    "electron:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
+    "capacitor:sync": "npm run build && npx cap sync ios",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -29,6 +30,10 @@
     "cy:run": "cypress run -b chrome"
   },
   "dependencies": {
+    "@capacitor/cli": "^7.2.0",
+    "@capacitor/core": "^7.2.0",
+    "@capacitor/ios": "^7.2.0",
+    "@capacitor/status-bar": "^7.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
@@ -64,8 +69,9 @@
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
+    "check-disk-space": "^3.4.0",
     "cypress": "^14.3.2",
-    "electron": "^36.1.0",
+    "electron": "^36.2.0",
     "electron-builder": "^26.0.12",
     "eslint": "^9.22.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
@@ -79,8 +85,8 @@
     "vue-tsc": "^2.2.8"
   },
   "build": {
-    "appId": "app.pomotrack",
-    "productName": "PomoTrack",
+    "appId": "app.pomodash",
+    "productName": "Pomodash",
     "publish": "github",
     "directories": {
       "output": "dist_electron"
@@ -88,7 +94,8 @@
     "files": [
       "dist_web/**/*",
       "electron.js",
-      "preload.ts",
+      "diskSpaceMonitor.mjs",
+      "preload.js",
       "package.json"
     ],
     "mac": {
@@ -101,8 +108,7 @@
       },
       "category": "public.app-category.productivity",
       "hardenedRuntime": true,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlements": "build/entitlements.mac.plist"
     },
     "win": {
       "target": "nsis",

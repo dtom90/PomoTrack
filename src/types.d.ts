@@ -83,6 +83,15 @@ export interface SettingKv {
 }
 
 export interface ElectronAPI {
-  onMessage: (callback: (message: unknown) => void) => void;
   checkForUpdates: () => Promise<unknown>;
+  onMessage: (callback: (message: unknown) => void) => void;
+  onDiskSpaceStatus: (callback: (diskSpaceStatus: DiskSpaceStatus) => void) => void;
+}
+
+interface DiskSpaceStatus {
+  isLow: boolean,
+  free: number,
+  total: number,
+  percentage: number,
+  path: string,
 }

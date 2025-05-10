@@ -209,7 +209,7 @@ h3, h4, h5, h6 {
   left: 0;
   width: 100%;
   background-color: #f8f9fa;
-  padding: 10px 0;
+  padding: 10px 0 20px 0;
   border-top: 1px solid #dee2e6;
   z-index: 1000;
 }

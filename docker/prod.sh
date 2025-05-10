@@ -6,8 +6,8 @@ cd "${THIS_DIR}/.." || exit
 
 # Runs production container
 
-IMAGE_NAME=pomotrack-prod
-CONTAINER_NAME=pomotrack-prod
+IMAGE_NAME=pomodash-prod
+CONTAINER_NAME=pomodash-prod
 
 if [ "$1" == "-d" ]; then
   RUN_OPTION="-d"

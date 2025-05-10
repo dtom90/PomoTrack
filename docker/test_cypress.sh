@@ -6,8 +6,8 @@ cd "${THIS_DIR}/.." || exit
 
 # Runs cypress tests
 
-IMAGE_NAME=pomotrack-cypress
-CONTAINER_NAME=pomotrack-cypress
+IMAGE_NAME=pomodash-cypress
+CONTAINER_NAME=pomodash-cypress
 
 docker build \
        -f docker/cypress.dockerfile \

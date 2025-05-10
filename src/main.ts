@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 import './styles/main.scss';
 
 import { createApp } from 'vue'
 
-import store from './store/index.ts'
+import store from './store'
+import { initializeStorage, loadInitialData } from './store/storageManager.ts'
 
 import { createBootstrap } from 'bootstrap-vue-next'
 import { FontAwesomeIcon } from './lib/font-awesome-icons.ts'
@@ -23,14 +23,18 @@ app.use(createBootstrap({ components: {
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 async function initializeApp() {
-  try {
-    await store.dispatch('loadInitialData');
-    console.log('Initial data loaded successfully.');
-  } catch (error) {
-    console.error('Failed to load initial data:', error);
-  }
 
   app.mount('#app');
+
+  try {
+    await initializeStorage()
+    await loadInitialData(store)
+  } catch (e) {
+    const errMessage = `Error during storage initialization: ${e}`
+    alert(errMessage)
+    // eslint-disable-next-line no-console
+    console.error(errMessage)
+  }
 }
 
 initializeApp();
