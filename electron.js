@@ -3,6 +3,7 @@ const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron')
 const path = require('path')
 const { autoUpdater } = process.mas ? { autoUpdater: null } : require('electron-updater')
 const log = require('electron-log')
+const { diskSpaceMonitor } = require('./diskSpaceMonitor.mjs')
 
 if (autoUpdater) {
   autoUpdater.logger = log;
@@ -55,6 +56,8 @@ function createWindow() {
       dialog.showErrorBox('Load Error', `Failed to load application file: ${indexPath}\n${err.message}`)
     })
   }
+
+  diskSpaceMonitor(mainWindow)
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);

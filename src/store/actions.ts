@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 import type { ActionContext } from 'vuex'
 import type { PomoTrackState, Task, Tag, TaskLog, TaskTagMap, SettingKv } from '@/types'
-import dexieDb from './dexieDb'
 import { nanoid } from 'nanoid'
 // @ts-expect-error color-manager is not typed yet (TODO)
 import ColorManager from 'color-manager'
 import { toRaw } from 'vue'
+import { storageEnabled, dexieDb } from './storageManager.ts'
 
 interface TaskWithTags extends Task {
   tags?: string[]
@@ -13,9 +14,12 @@ interface TaskWithTags extends Task {
 // Helper function for Dexie calls
 async function handleDexieError<T> (dexiePromise: Promise<T>, context = 'database operation', entity?: unknown): Promise<T> {
   try {
+    if (!storageEnabled) {
+      console.error(`Prevented operation due to low disk space. Operation: ${context}`)
+      return Promise.reject()
+    }
     return await dexiePromise
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(`Dexie error during ${context}:`, error, 'entity(ies):', entity)
     throw error
   }
@@ -23,6 +27,7 @@ async function handleDexieError<T> (dexiePromise: Promise<T>, context = 'databas
 
 const actions = {
   async loadInitialData ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     const tasks = await dexieDb.tasks.orderBy('order').toArray()
     // clear out any old task.tags. TODO: remove this once we've migrated to the new task tag system
     tasks.forEach((task) => {
@@ -53,11 +58,13 @@ const actions = {
   },
 
   async loadAllActivity ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     const logs = await dexieDb.logs.orderBy('started').reverse().toArray()
     commit('setModalActivity', { logs })
   },
 
   async loadTagActivity ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     if (!state.tempState.modalTagId) {
       return
     }
@@ -68,6 +75,7 @@ const actions = {
   },
 
   async addTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { name }: { name: string }) {
+    if (!dexieDb) return
     const taskName = name.trim()
     if (taskName) {
       try {
@@ -96,13 +104,13 @@ const actions = {
         commit('addTask', { task: newTask, taskTagMaps })
         await dispatch('selectTask', { taskId: newTask.id })
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Failed to complete addTask operation:', error)
       }
     }
   },
 
   async updateTaskName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, name }: { taskId: string, name: string }) {
+    if (!dexieDb) return
     try {
       const task = state.tasks[taskId]
       if (task) {
@@ -111,12 +119,12 @@ const actions = {
         commit('updateTask', { taskId, taskUpdates })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to update task name:', error)
     }
   },
 
   async updateTaskNotes ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, notes }: { taskId: string, notes: string }) {
+    if (!dexieDb) return
     try {
       const task = state.tasks[taskId]
       if (task) {
@@ -125,14 +133,15 @@ const actions = {
         commit('updateTask', { taskId, taskUpdates })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to update task notes:', error)
     }
   },
 
   async reorderIncompleteTasks ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newIncompleteTaskOrder }: { newIncompleteTaskOrder: Task[] }) {
+    if (!dexieDb) return
 
     async function bulkPutTasks (tasks: Task[]) {
+      if (!dexieDb) return
       const tasksToPut = tasks.map(toRaw)
       await handleDexieError(dexieDb.tasks.bulkPut(tasksToPut), 'tasks.bulkPut reorder', tasksToPut)
       commit('setTasks', { tasks })
@@ -169,12 +178,12 @@ const actions = {
         }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to complete reorderIncompleteTasks operation:', error)
     }
   },
 
   async startTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
+    if (!dexieDb) return
     try {
       await dispatch('stopTask')
 
@@ -191,12 +200,12 @@ const actions = {
         commit('startTask', { log })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to start task:', error)
     }
   },
 
   async updateTaskTimer ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
+    if (!dexieDb) return
     try {
       const task = state.tasks[taskId]
       if (task) {
@@ -208,12 +217,12 @@ const actions = {
         }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to update task timer:', error)
     }
   },
 
   async stopTask ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     try {
       const runningLog = await dexieDb.logs.filter(log => log.stopped === null).first()
       if (runningLog) {
@@ -223,12 +232,12 @@ const actions = {
         commit('updateLog', { taskId: runningLog.taskId, log: runningLog })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to stop task:', error)
     }
   },
 
   async completeTask ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
+    if (!dexieDb) return
     const task = state.tasks[taskId]
     if (task) {
       let completedValue = undefined
@@ -245,6 +254,7 @@ const actions = {
   },
 
   async archiveTask ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string }) {
+    if (!dexieDb) return
     const task = state.tasks[taskId]
     if (task) {
       const taskUpdates = { archived: !task.archived }
@@ -254,6 +264,7 @@ const actions = {
   },
 
   async archiveTasks ({ getters, commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     const completedTasks: Task[] = getters.completedTasksFiltered.filter((t: Task) => !t.archived)
     if (completedTasks.length === 0) {
       alert('No completed tasks to archive')
@@ -269,6 +280,7 @@ const actions = {
   },
 
   async addInterval ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, started, timeSpent, stopped }: { taskId: string, started: number, timeSpent: number, stopped: number }) {
+    if (!dexieDb) return
     const task = state.tasks[taskId]
     if (task) {
       const log = {
@@ -284,10 +296,12 @@ const actions = {
   },
 
   async getLogById ({ }, { logId }: { logId: string }): Promise<TaskLog | undefined> {
+    if (!dexieDb) return
     return await dexieDb.logs.where('id').equals(logId).first()
   },
 
   async updateInterval ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { logId, started, timeSpent, stopped }: { logId: string, started: number, timeSpent: number, stopped: number }) {
+    if (!dexieDb) return
     try {
       const log = await dexieDb.logs.get(logId)
       if (log) {
@@ -298,12 +312,12 @@ const actions = {
         commit('updateLog', { taskId: log.taskId, log })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to update interval:', error)
     }
   },
 
   async deleteInterval ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { logId }: { logId: string }) {
+    if (!dexieDb) return
     try {
       const log = await dexieDb.logs.get(logId)
       if (log) {
@@ -311,12 +325,12 @@ const actions = {
         commit('deleteInterval', { taskId: log.taskId, logId })
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to delete interval:', error)
     }
   },
 
   async addTaskTagByName ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagName }: { taskId: string, tagName: string }) {
+    if (!dexieDb) return
     try {
       const trimmedTagName = tagName.trim()
       if (trimmedTagName) {
@@ -346,12 +360,12 @@ const actions = {
         }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Failed to add task tag by name:', error)
     }
   },
 
   async addTaskTagById ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagId }: { taskId: string, tagId: string }) {
+    if (!dexieDb) return
     const task = state.tasks[taskId]
     const tag = state.tags[tagId]
     if (task && tag) {
@@ -365,6 +379,7 @@ const actions = {
   },
 
   async updateTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { tagId, ...tagUpdates }: { tagId: string } & Partial<Tag>) {
+    if (!dexieDb) return
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
     if (!tag) {
       alert('Error: the tag you are trying to update does not exist. Please refresh the page and try again.')
@@ -388,6 +403,7 @@ const actions = {
   },
 
   async reorderTags ({ state, commit }: ActionContext<PomoTrackState, PomoTrackState>, { newOrder }: { newOrder: string[] }) {
+    if (!dexieDb) return
     const reorderedTags: Tag[] = []
     for (const [i, tagId] of newOrder.entries()) {
       const tag = state.tags[tagId]
@@ -401,6 +417,7 @@ const actions = {
   },
 
   async removeTaskTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId, tagId }: { taskId: string, tagId: string }) {
+    if (!dexieDb) return
     await dexieDb.taskTagMap
       .where('taskId').equals(taskId)
       .and((taskTagMap: TaskTagMap) => taskTagMap.tagId === tagId)
@@ -412,6 +429,7 @@ const actions = {
   },
 
   async deleteTag ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
+    if (!dexieDb) return
     const tag = await dexieDb.tags.where('id').equals(tagId).first()
     if (!tag) return
     if (confirm(`Are you sure you want to delete the tag "${tag.tagName}"?\nAll tasks with this tag will lose the tag.`)) {
@@ -422,6 +440,7 @@ const actions = {
   },
 
   async selectTask ({ dispatch, commit }: ActionContext<PomoTrackState, PomoTrackState>, { taskId }: { taskId: string | null }) {
+    if (!dexieDb) return
     await dispatch('updateSetting', { key: 'selectedTaskID', value: taskId })
     if (taskId) {
       const selectedTaskLogs = await dexieDb.logs.where('taskId').equals(taskId).toArray()
@@ -432,27 +451,32 @@ const actions = {
   },
 
   async addTagFilter ({ state, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
+    if (!dexieDb) return
     const selectedTagIds = state.settings.selectedTagIds
     selectedTagIds.push(tagId)
     await dispatch('updateSetting', { key: 'selectedTagIds', value: selectedTagIds })
   },
 
   async removeTagFilter ({ state, dispatch }: ActionContext<PomoTrackState, PomoTrackState>, { tagId }: { tagId: string }) {
+    if (!dexieDb) return
     const selectedTagIds = state.settings.selectedTagIds.filter(selectedTagId => selectedTagId !== tagId)
     await dispatch('updateSetting', { key: 'selectedTagIds', value: selectedTagIds })
   },
 
   async updateSetting ({ commit }: ActionContext<PomoTrackState, PomoTrackState>, { key, value }: SettingKv) {
+    if (!dexieDb) return
     await handleDexieError(dexieDb.settings.put({ key, value: toRaw(value) }), 'settings.put', { key, value: toRaw(value) })
     commit('updateSetting', { key, value })
   },
 
   async removeAllTagFilters ({ dispatch }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     await handleDexieError(dexieDb.settings.put({ key: 'selectedTagIds', value: [] }), 'settings.put removeAllTagFilters')
     await dispatch('updateSetting', { key: 'selectedTagIds', value: [] })
   },
 
   openActivityModal ({ state, commit, dispatch }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     if (!state.tempState.modalTagId) {
       dispatch('loadAllActivity')
     } else {
@@ -462,6 +486,7 @@ const actions = {
   },
 
   closeActivityModal ({ commit }: ActionContext<PomoTrackState, PomoTrackState>) {
+    if (!dexieDb) return
     commit('setActivityModalVisible', false)
   }
 }
