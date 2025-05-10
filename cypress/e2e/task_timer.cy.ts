@@ -389,4 +389,27 @@ describe('task timer', () => {
       cy.contains('Stopped')
     })
   })
+
+  it('starts timer then adds a manual interval', () => {
+    // Arrange
+    cy.get('button > svg.fa-play').click()
+    cy.get('#countdown-container').contains('24:59')
+    cy.get('#countdown-container').contains('24:58')
+
+    // Act
+    cy.contains('Activity Log').scrollIntoView()
+    cy.get('.activity-view img[alt="Add interval"]').click()
+    cy.get('.activity-view button').contains('Add Interval').click()
+
+    // Assert
+    cy.get('.log').first().within(() => {
+      cy.contains('Started').should('be.visible')
+      cy.contains('Running').should('be.visible')
+    })
+    cy.get('.log').last().within(() => {
+      cy.contains('Started').should('be.visible')
+      cy.contains('Stopped').should('be.visible')
+      cy.contains('Time Spent: 25 minutes').should('be.visible')
+    })
+  })
 })
