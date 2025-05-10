@@ -3,7 +3,7 @@ const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron')
 const path = require('path')
 const { autoUpdater } = process.mas ? { autoUpdater: null } : require('electron-updater')
 const log = require('electron-log')
-const { diskSpaceMonitor } = require('./diskSpaceMonitor.mjs')
+const checkDiskSpace = require('check-disk-space').default;
 
 if (autoUpdater) {
   autoUpdater.logger = log;
@@ -139,6 +139,76 @@ if (autoUpdater) {
       autoUpdater.quitAndInstall()
     }
   })
+}
+
+// --- Disk Space Monitor ---
+
+const LOW_SPACE_THRESHOLD = 2; // 2 GB
+
+function diskSpaceMonitor(mainWindow) {
+
+  const checkDiskSpaceAndSignal = async () => {
+    try {
+      // For Windows, check a specific drive like 'C:'
+      // For macOS/Linux, check a path like '/' or app.getPath('userData')
+      const diskPath = process.platform === 'win32' ? 'C:' : '/';
+      const diskSpace = await checkDiskSpace(diskPath);
+
+      // Define what you consider "low disk space"
+      // For example, less than 10GB free or less than 5% free
+      const freeSpaceGB = diskSpace.free / (1024 * 1024 * 1024);
+      const totalSpaceGB = diskSpace.size / (1024 * 1024 * 1024);
+      const freePercentage = (diskSpace.free / diskSpace.size) * 100;
+
+      if (freeSpaceGB < LOW_SPACE_THRESHOLD) {
+        const data = {
+          isLow: true,
+          free: freeSpaceGB.toFixed(2),
+          total: totalSpaceGB.toFixed(2),
+          percentage: freePercentage.toFixed(2),
+          path: diskSpace.diskPath,
+        }
+        log.error('Low disk space detected!', data);
+        // Send information to the renderer process to display a warning
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.webContents.send('disk-space-status', data);
+        }
+      } else {
+        log.info('Disk space is OK.')
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.webContents.send('disk-space-status', {
+            isLow: false,
+            free: freeSpaceGB.toFixed(2),
+            total: totalSpaceGB.toFixed(2),
+            percentage: freePercentage.toFixed(2),
+            path: diskSpace.diskPath,
+          });
+        }
+      }
+    } catch (error) {
+      log.error('Failed to check disk space:', error);
+      if (mainWindow && mainWindow.webContents) {
+        mainWindow.webContents.send('disk-space-status', {
+          error: 'Failed to retrieve disk space information.',
+        });
+      }
+    }
+  }
+
+  async function checkDiskSpaceAndSignalRunner() {
+    for (let i = 0; i < 10; i++) {
+      await checkDiskSpaceAndSignal();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    // Keep checking indefinitely at 10 second intervals
+    setInterval(checkDiskSpaceAndSignal, 10000);
+  }
+
+  checkDiskSpaceAndSignalRunner().then(() => {
+    log.info('Disk space monitor started.');
+  }).catch(error => {
+    log.error('Failed to start disk space monitor:', error);
+  });
 }
 
 // --- App Lifecycle Events ---
