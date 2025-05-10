@@ -19,9 +19,9 @@
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
     "electron:beta": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\" -c.mac.identity=null && ./dist_electron/mac-arm64/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
-    "electron:mas-dev": "npm run build && electron-builder --config electron-builder.mas-dev.yml && ./dist_electron_mas_dev/mas/Pomodash.app/Contents/MacOS/Pomodash --inspect",
-    "electron:build": "npm run build && electron-builder",
+    "electron:mas-dev": "npm run build && electron-builder --config electron-builder.mas.yml -c.mac.target=\"mas-dev\" -c.mac.identity=\"Apple Development\" -c.mac.provisioningProfile=\"build/MasDev.provisionprofile\"",
     "electron:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
+    "electron:build": "npm run build && electron-builder",
     "capacitor:sync": "npm run build && npx cap sync ios",
     "test:basic": "npm audit && npm run type-check && npm run lint",
     "lint": "eslint .",
@@ -85,36 +85,5 @@
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vue-tsc": "^2.2.8"
-  },
-  "build": {
-    "appId": "app.pomodash",
-    "productName": "Pomodash",
-    "publish": "github",
-    "directories": {
-      "output": "dist_electron"
-    },
-    "files": [
-      "dist_web/**/*",
-      "electron.js",
-      "preload.js",
-      "package.json"
-    ],
-    "mac": {
-      "target": {
-        "target": "default",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
-      },
-      "category": "public.app-category.productivity",
-      "hardenedRuntime": true,
-      "entitlements": "build/entitlements.mac.plist"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    },
-    "afterSign": "./notarize.js"
   }
 }
