@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/dtom90/PomoTrack",
   "repository": "https://github.com/dtom90/PomoTrack",
-  "version": "0.18.10",
+  "version": "0.18.11",
   "private": true,
   "main": "electron.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
     "electron:dev": "NODE_ENV=development electron .",
-    "electron:beta": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\" -c.mac.identity=null && ./dist_electron/mac-arm64/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
+    "electron:beta": "npm run build && electron-builder --mac --dir -c.productName=\"PomodashBeta\" -c.appId=\"app.pomodashbeta\" -c.mac.identity=null && ./dist_electron/mac/PomodashBeta.app/Contents/MacOS/PomodashBeta --inspect",
     "electron:mas-dev": "npm run build && electron-builder --config electron-builder.mas.yml -c.mac.target=\"mas-dev\" -c.mac.identity=\"Apple Development\" -c.mac.provisioningProfile=\"build/MasDev.provisionprofile\"",
     "electron:mas": "npm run build && electron-builder --config electron-builder.mas.yml",
     "electron:build": "npm run build && electron-builder",
