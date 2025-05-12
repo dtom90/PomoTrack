@@ -251,6 +251,103 @@ app.whenReady().then(() => {
 
   ipcMain.handle('checkForUpdates', checkForUpdates);
 
+  // Create the application menu
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'delete' },
+        { role: 'selectAll' }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    },
+    {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Main Window',
+          click: () => {
+            if (mainWindow) {
+              if (mainWindow.isMinimized()) mainWindow.restore();
+              if (!mainWindow.isVisible()) mainWindow.show();
+              mainWindow.focus();
+            } else {
+              createWindow();
+            }
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Minimize',
+          click: () => {
+            if (mainWindow) {
+              mainWindow.minimize();
+            }
+          },
+          accelerator: 'CmdOrCtrl+M'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'front',
+          label: 'Bring All to Front'
+        }
+      ]
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Learn More',
+          click: async () => {
+            await shell.openExternal('https://home.pomotrack.app/')
+          }
+        }
+      ]
+    }
+  ];
+
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.name,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    });
+  }
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+
   createWindow();
 
   // --- Setup Dock Menu for macOS ---
