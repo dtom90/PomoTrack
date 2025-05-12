@@ -1,0 +1,23 @@
+appId: app.pomodash
+productName: Pomodash
+publish: github
+directories:
+  output: dist_electron
+files:
+  - dist_web/**/*
+  - electron.js
+  - preload.js
+  - package.json
+mac:
+  target:
+    target: default
+    arch:
+      - x64
+      - arm64
+  category: public.app-category.productivity
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+win:
+  target: nsis
+  icon: build/icon.ico
+afterSign: ./notarize.js

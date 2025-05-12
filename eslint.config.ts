@@ -10,7 +10,7 @@ configureVueProject({ scriptLangs: ['ts', 'tsx', 'js'] })
 export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue,cy.ts}'],
+    files: ['**/*.{js,mjs,ts,mts,tsx,vue,cy.ts}'],
   },
 
   globalIgnores([
@@ -34,7 +34,7 @@ export default defineConfigWithVueTs(
 
   /* eslint-disable @typescript-eslint/no-require-imports */
   {
-    files: ['cypress/**/*.{ts,mts,tsx,vue,cy.ts}'],
+    files: ['cypress/**/*.{js,mjs,ts,mts,tsx,vue,cy.ts}'],
     plugins: {
       cypress: require('eslint-plugin-cypress'),
       'chai-friendly': require('eslint-plugin-chai-friendly'),

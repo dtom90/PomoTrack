@@ -8,8 +8,8 @@
     <key>com.apple.security.inherit</key>
     <true/>
 
-    <!-- GPU Access -->
-    <key>com.apple.security.device.graphics</key>
-    <true/>
+    <!-- Allow JIT compilation for V8 (required for Node.js/Electron) -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
 </dict>
 </plist>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, shell, ipcMain, dialog, Menu } = require('electron') // Added Menu
 const path = require('path')
 const { autoUpdater } = process.mas ? { autoUpdater: null } : require('electron-updater')
 const log = require('electron-log')
@@ -16,11 +16,12 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 if (isDevelopment) {
   app.setName('Pomodash Dev')
 }
-const productName = app.getName();
-log.info(`App name: ${productName}`);
+const appName = app.getName();
+log.info(`App name: ${appName}`);
 log.info('App starting...');
 
 let mainWindow;
+app.isQuitting = false; // Flag to differentiate between window close and app quit
 
 function sendStatusToWindow(text) {
   log.info(text);
@@ -64,13 +65,24 @@ function createWindow() {
     return { action: 'deny' };
   });
 
+  // --- Modified for macOS close behavior ---
+  mainWindow.on('close', (event) => {
+    if (process.platform === 'darwin' && !app.isQuitting) {
+      log.info('Window close intercepted on macOS; hiding window instead of quitting.');
+      event.preventDefault();
+      mainWindow.hide();
+    }
+    // On other platforms or if app.isQuitting is true, the default close will occur,
+    // which will eventually lead to the 'closed' event.
+  });
+
   mainWindow.on('closed', () => {
+    log.info('Main window instance closed.');
     mainWindow = null;
   });
 }
 
-// --- Auto Update ---
-
+// --- Auto Update --- (Your existing auto-update code remains unchanged)
 async function checkForUpdates () {
   if (!autoUpdater) return;
 
@@ -140,22 +152,19 @@ if (autoUpdater) {
     }
   })
 }
+// --- End of Auto Update ---
 
-// --- Disk Space Monitor ---
 
+// --- Disk Space Monitor --- (Your existing disk space monitor code remains unchanged)
 const LOW_SPACE_THRESHOLD = 2; // 2 GB
 
-function diskSpaceMonitor(mainWindow) {
+function diskSpaceMonitor(mainWindowInstance) { // Renamed parameter to avoid conflict with global mainWindow
 
   const checkDiskSpaceAndSignal = async () => {
     try {
-      // For Windows, check a specific drive like 'C:'
-      // For macOS/Linux, check a path like '/' or app.getPath('userData')
       const diskPath = process.platform === 'win32' ? 'C:' : '/';
       const diskSpace = await checkDiskSpace(diskPath);
 
-      // Define what you consider "low disk space"
-      // For example, less than 10GB free or less than 5% free
       const freeSpaceGB = diskSpace.free / (1024 * 1024 * 1024);
       const totalSpaceGB = diskSpace.size / (1024 * 1024 * 1024);
       const freePercentage = (diskSpace.free / diskSpace.size) * 100;
@@ -169,14 +178,13 @@ function diskSpaceMonitor(mainWindow) {
           path: diskSpace.diskPath,
         }
         log.error('Low disk space detected!', data);
-        // Send information to the renderer process to display a warning
-        if (mainWindow && mainWindow.webContents) {
-          mainWindow.webContents.send('disk-space-status', data);
+        if (mainWindowInstance && mainWindowInstance.webContents) {
+          mainWindowInstance.webContents.send('disk-space-status', data);
         }
       } else {
         log.info('Disk space is OK.')
-        if (mainWindow && mainWindow.webContents) {
-          mainWindow.webContents.send('disk-space-status', {
+        if (mainWindowInstance && mainWindowInstance.webContents) {
+          mainWindowInstance.webContents.send('disk-space-status', {
             isLow: false,
             free: freeSpaceGB.toFixed(2),
             total: totalSpaceGB.toFixed(2),
@@ -187,8 +195,8 @@ function diskSpaceMonitor(mainWindow) {
       }
     } catch (error) {
       log.error('Failed to check disk space:', error);
-      if (mainWindow && mainWindow.webContents) {
-        mainWindow.webContents.send('disk-space-status', {
+      if (mainWindowInstance && mainWindowInstance.webContents) {
+        mainWindowInstance.webContents.send('disk-space-status', {
           error: 'Failed to retrieve disk space information.',
         });
       }
@@ -200,7 +208,6 @@ function diskSpaceMonitor(mainWindow) {
       await checkDiskSpaceAndSignal();
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    // Keep checking indefinitely at 10 second intervals
     setInterval(checkDiskSpaceAndSignal, 10000);
   }
 
@@ -210,6 +217,8 @@ function diskSpaceMonitor(mainWindow) {
     log.error('Failed to start disk space monitor:', error);
   });
 }
+// --- End of Disk Space Monitor ---
+
 
 // --- App Lifecycle Events ---
 
@@ -220,13 +229,20 @@ if (!gotTheLock) {
   app.quit()
 } else {
   app.on('second-instance', () => {
-    // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
+      if (!mainWindow.isVisible()) mainWindow.show(); // Show if hidden
       mainWindow.focus()
     }
   })
 }
+
+// --- Added for macOS quit behavior ---
+app.on('before-quit', () => {
+  log.info('Before quit event triggered, setting app.isQuitting to true.');
+  app.isQuitting = true;
+});
+
 
 app.whenReady().then(() => {
   const appDataPath = app.getPath('appData');
@@ -237,13 +253,43 @@ app.whenReady().then(() => {
 
   createWindow();
 
+  // --- Setup Dock Menu for macOS ---
+  if (process.platform === 'darwin') {
+    log.info('Setting up Dock menu for macOS.');
+    const dockMenu = Menu.buildFromTemplate([
+      {
+        label: 'Main Window',
+        click: () => {
+          if (mainWindow) {
+            if (!mainWindow.isVisible()) {
+              mainWindow.show();
+            }
+            mainWindow.focus();
+          } else {
+            createWindow(); // Create a new window if none exists
+          }
+        }
+      },
+      // You can add other common Dock menu items here
+      // e.g., { label: 'New Window', click: () => { /* create another window */ } },
+      // { type: 'separator' },
+      // { label: 'Settings...', click: () => { /* open settings */ } }
+    ]);
+    app.dock.setMenu(dockMenu);
+  }
+
+  // --- Modified for macOS activate behavior ---
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) {
       log.info('Activate event: No windows open, creating one.');
       createWindow();
-    } else {
-      log.info('Activate event: Window already open, focusing.');
-      if(mainWindow) mainWindow.focus();
+    } else if (mainWindow) {
+        log.info('Activate event: Main window exists.');
+        if (!mainWindow.isVisible()) {
+            log.info('Main window is hidden, showing and focusing.');
+            mainWindow.show();
+        }
+        mainWindow.focus();
     }
   });
 });
@@ -254,10 +300,13 @@ app.on('window-all-closed', function () {
     log.info('Quitting app (not macOS).');
     app.quit();
   } else {
-    log.info('Not quitting app (macOS behavior).');
+    log.info('Not quitting app (macOS behavior - app will stay active).');
+    // On macOS, the app should remain active until explicitly quit.
+    // The Dock menu will still be available.
   }
 });
 
+// Your existing signal handling code
 if (isDevelopment && process.platform === 'win32') {
   process.on('message', (data) => {
     if (data === 'graceful-exit') {
@@ -268,7 +317,7 @@ if (isDevelopment && process.platform === 'win32') {
 } else {
   const handleSignal = (signal) => {
     log.info(`Received ${signal}, quitting.`);
-    app.quit();
+    app.quit(); // This will trigger 'before-quit'
   };
 
   process.on('SIGTERM', () => handleSignal('SIGTERM'));
