@@ -32,23 +32,28 @@ jobs:
           name: Run packages audit and lint
           command: ./docker/test_basic.sh
 
-  build-prod:
+  test-cypress:
     docker:
-      - image: cimg/base:stable
+      - image: cypress/included:14.3.3
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
       - checkout
       - run:
-          name: Build & run production Docker image
-          command: ./docker/prod.sh -d
+          name: Install dependencies
+          command: npm install
       - run:
-          name: Stop production Docker contianer
-          command: docker stop pomodash-prod
+          name: Build web assets
+          command: npm run build
+      - run:
+          name: Start test server
+          command: npm run preview
+          background: true
+      - run:
+          name: Run Cypress tests
+          command: CYPRESS_BASE_URL=http://localhost:4173 npm run cy:run
 
   create-release:
     docker:
-      - image: cimg/node:20.11
+      - image: cimg/node:22.15.0
     steps:
       - checkout
       - github-cli/setup:
@@ -79,7 +84,7 @@ jobs:
 
   publish-release:
     docker:
-      - image: cimg/node:20.11
+      - image: cimg/node:22.15.0
     steps:
       - checkout
       - github-cli/setup:
@@ -230,16 +235,7 @@ workflows:
               ignore:
                 - master
                 - gh-pages
-      - build-prod:
-          filters:
-            branches:
-              ignore:
-                - master
-                - gh-pages
-      - cypress/run:
-          install-browsers: true
-          start-command: 'npm run dev'
-          cypress-command: 'npx cypress run --browser chrome'
+      - test-cypress:
           filters:
             branches:
               ignore:

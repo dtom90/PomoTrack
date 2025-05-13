@@ -13,7 +13,7 @@
   "main": "electron.js",
   "scripts": {
     "dev": "vite",
-    "preview": "vite preview",
+    "preview": "vite preview --outDir dist_web",
     "build": "npm run build-only && npm run type-check",
     "build-only": "vite build --outDir dist_web",
     "type-check": "vue-tsc --build",
