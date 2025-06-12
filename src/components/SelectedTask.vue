@@ -6,7 +6,7 @@
       <!--  Title Section  -->
       <div
         id="title-section"
-        class="d-flex justify-content-between align-items-lg-center"
+        class="d-flex justify-content-between align-items-center"
       >
         <!--  Checkbox  -->
         <div>
