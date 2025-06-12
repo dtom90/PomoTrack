@@ -87,7 +87,7 @@
       <BButton
         v-if="logId"
         variant="danger"
-        class="w-100 mt-3"
+        class="w-100"
         @click="deleteIntervalHandler"
       >
         Delete Interval
@@ -295,5 +295,18 @@ watch(() => props.logId, (newLogId, oldLogId) => {
 /*noinspection CssUnusedSymbol*/
 #add-interval-dropdown-menu {
   width: 270px !important;
+
+  .b-form-group {
+    margin-bottom: 0.5rem;
+  }
+}
+
+</style>
+
+<style scoped lang="scss">
+#add-interval-dropdown-menu {
+  .btn {
+    margin-top: 0.5rem;
+  }
 }
 </style>
