@@ -150,5 +150,11 @@ const clearAllTags = () => {
 </style>
 
 <style>
+.selected > button.dropdown-item {
+  background-color: #dff6ff;
+}
 
+.selected:hover > button.dropdown-item {
+  background-color: #d7f0f9;
+}
 </style>

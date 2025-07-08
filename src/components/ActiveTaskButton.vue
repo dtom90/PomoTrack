@@ -55,7 +55,7 @@ const selectTaskHandler = () => {
 
 #active-task-button {
   padding: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
   width: 400px;
 }
 
