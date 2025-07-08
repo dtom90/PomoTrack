@@ -259,13 +259,13 @@ workflows:
             branches:
               only:
                 - master
-      - build-windows:
-          requires:
-            - create-release
-          filters:
-            branches:
-              only:
-                - master
+      # - build-windows:
+      #     requires:
+      #       - create-release
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
       - publish-release:
           requires:
             - build-mac
